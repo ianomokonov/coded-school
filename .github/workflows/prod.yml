@@ -3,7 +3,7 @@ name: Deploy PROD
 on:
   push:
     branches:
-      - stand2
+      - prod
 
 jobs:
   deploy:

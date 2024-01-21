@@ -3,7 +3,7 @@ name: Deploy STAND1
 on:
   push:
     branches:
-      - stand2
+      - stand1
 
 jobs:
   deploy:
