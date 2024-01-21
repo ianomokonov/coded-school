@@ -3,7 +3,7 @@ name: Deploy DEV
 on:
   push:
     branches:
-      - master
+      - stand2
 
 jobs:
   deploy:
@@ -23,20 +23,20 @@ jobs:
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
       - name: Cache server node modules
-        id: cache-npm
+        id: cache-npm-server
         uses: actions/cache@v3
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-server-node-modules
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: "/home/runner/work/coded-school/coded-school/server/node_modules"
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Cache client node modules
-        id: cache-npm
+        id: cache-npm-client
         uses: actions/cache@v3
         env:
-          cache-name: cache-node-modules
+          cache-name: cache-client-node-modules
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: "/home/runner/work/coded-school/coded-school/client/node_modules"
