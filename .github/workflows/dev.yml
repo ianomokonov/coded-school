@@ -42,10 +42,14 @@ jobs:
           path: "/home/runner/work/coded-school/coded-school/client/node_modules"
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
+      - name: Install server dependencies
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: cd ./server && npm install
+        
+      - name: Install cleint dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: cd ./client && npm install
+
       - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
