@@ -3,7 +3,7 @@ name: Deploy DEV
 on:
   push:
     branches:
-      - master
+      - stand2
 
 jobs:
   deploy:
