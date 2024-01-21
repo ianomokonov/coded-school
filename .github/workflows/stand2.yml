@@ -58,6 +58,6 @@ jobs:
 
       - name: Copy server dependences
         if: steps.cache-npm-server.cache-hit != 'true'
-        run: cd server/node_modules && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand2.codedschool.ru/server
+        run: cd server/node_modules && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand2.codedschool.ru/server/node_modules
 
       - run: ssh dev "touch ~/stand2.codedschool.ru/server/tmp/restart.txt"
