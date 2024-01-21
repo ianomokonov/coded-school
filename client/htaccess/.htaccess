@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !/api [NC]
+    RewriteCond %{REQUEST_URI} !/userimages [NC]
+    RewriteCond %{REQUEST_URI} !/taskfiles [NC]
+    RewriteCond %{REQUEST_URI} !/socket.io [NC]
+    RewriteRule . /index.html [L]
+</IfModule>
