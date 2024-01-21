@@ -43,11 +43,11 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/client/package-lock.json') }}
 
       - name: Install server dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
+        if: steps.cache-npm-server.outputs.cache-hit != 'true'
         run: cd ./server && npm install
         
       - name: Install cleint dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
+        if: steps.cache-npm-client.outputs.cache-hit != 'true'
         run: cd ./client && npm install
 
       - run: cd ./server && npm run build
