@@ -23,7 +23,7 @@ jobs:
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
       - name: Cache server node modules
-        id: cache-npm
+        id: cache-npm-server
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
@@ -33,7 +33,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Cache client node modules
-        id: cache-npm
+        id: cache-npm-client
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
