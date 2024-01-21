@@ -44,15 +44,20 @@ jobs:
 
       - name: Install server dependencies
         if: steps.cache-npm-server.outputs.cache-hit != 'true'
-        run: cd ./server && npm install
+        run: cd ./server && npm ci
         
       - name: Install cleint dependencies
         if: steps.cache-npm-client.outputs.cache-hit != 'true'
-        run: cd ./client && npm install
+        run: cd ./client && npm ci
 
       - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
-      # - run: cd dist/apps/server && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand1/SweetCake/server # полный путь до папки, куда нужно скопировать файлы
+      - run: cd server/dist && rsync -ev "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand2.codedschool.ru/server # полный путь до папки, куда нужно скопировать файлы
+      - run: cd client/dist/coded-school/browser && rsync -ev "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand2.codedschool.ru/public_html # полный путь до папки, куда нужно скопировать файлы
 
-      # - run: ssh dev "touch ~/stand2.codedschool.ru/server/tmp/restart.txt"
+      - name: Copy server dependences
+        if: steps.cache-npm-server.cache-hit != 'true'
+        run: cd server/node_modules && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand2.codedschool.ru/server
+
+      - run: ssh dev "touch ~/stand2.codedschool.ru/server/tmp/restart.txt"
