@@ -22,6 +22,7 @@ jobs:
       - run: echo "${{ secrets.secret_key }}" > "$HOME/.ssh/secret_key" # secret_key - название секрета
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
+      
       - name: Cache server node modules
         id: cache-npm-server
         uses: actions/cache@v3
@@ -30,7 +31,7 @@ jobs:
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: "/home/runner/work/coded-school/coded-school/server/node_modules"
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/server/package-lock.json') }}
 
       - name: Cache client node modules
         id: cache-npm-client
@@ -40,19 +41,25 @@ jobs:
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: "/home/runner/work/coded-school/coded-school/client/node_modules"
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/client/package-lock.json') }}
 
       - name: Install server dependencies
         if: steps.cache-npm-server.outputs.cache-hit != 'true'
-        run: cd ./server && npm install
-        
+        run: cd ./server && npm ci
+
       - name: Install cleint dependencies
         if: steps.cache-npm-client.outputs.cache-hit != 'true'
-        run: cd ./client && npm install
+        run: cd ./client && npm ci
 
       - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
-      # - run: cd dist/apps/server && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/stand1/SweetCake/server # полный путь до папки, куда нужно скопировать файлы
+      - run: cd server/dist && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/server # полный путь до папки, куда нужно скопировать файлы
+      - run: cd client/dist/coded-school/browser && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/public_html # полный путь до папки, куда нужно скопировать файлы
+      - run: cd client/htaccess && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/public_html # полный путь до папки, куда нужно скопировать файлы
 
-      # - run: ssh dev "touch ~/stand2.codedschool.ru/server/tmp/restart.txt"
+      - name: Copy server dependences
+        if: steps.cache-npm-server.cache-hit != 'true'
+        run: cd server/node_modules && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/server/node_modules
+
+      - run: ssh dev "touch ~/dev.codedschool.ru/server/tmp/restart.txt"
