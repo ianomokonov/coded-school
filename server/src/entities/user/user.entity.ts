@@ -28,4 +28,9 @@ export class UserEntity extends BaseEntity {
     nullable: false,
   })
   password: string;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  refreshToken: string;
 }

@@ -5,6 +5,7 @@ import { getJWTConfig } from 'src/configs/jwt.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 
 @Module({
   controllers: [UserController],
@@ -16,6 +17,6 @@ import { UserController } from './user.controller';
       useFactory: getJWTConfig,
     }),
   ],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy, JwtRefreshStrategy],
 })
-export class AuthModule {}
+export class UserModule {}

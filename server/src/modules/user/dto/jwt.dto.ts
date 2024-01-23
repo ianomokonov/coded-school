@@ -1,4 +1,4 @@
-export interface JwtDto {
+export class JwtDto {
   token: string;
   refreshToken: string;
 }
