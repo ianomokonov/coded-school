@@ -3,7 +3,7 @@ name: Deploy PROD
 on:
   push:
     branches:
-      - feature/CODED-25
+      - prod
 
 jobs:
   deploy:
