@@ -20,16 +20,6 @@ jobs:
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.secret_key }}" > "$HOME/.ssh/secret_key" # secret_key - название секрета
-      - name: 'Create env file'
-        run: |
-          touch .env
-          echo "${{ secrets.dev_env }}" > .env
-          cat .env
-      - name: 'Create env file 2'
-        run: |
-          touch ./server/.env
-          echo "${{ secrets.dev_env }}" > ./server/.env
-          cat ./server/.env
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: chmod 600 "/home/runner/work/coded-school/coded-school/server/.env"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
@@ -61,10 +51,13 @@ jobs:
       - name: Install cleint dependencies
         if: steps.cache-npm-client.outputs.cache-hit != 'true'
         run: cd ./client && npm ci
-
-      - run: cd ./server && ls
-      - run: ls
-      - run: cd ./server && npm run build
+      - name: Build server
+        run: |
+              cd ./server
+              touch .env
+              echo "${{ secrets.dev_env }}" > .env
+              ls
+              npm run build
       - run: cd ./client && npm run build
 
       - run: cd server/dist && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/server # полный путь до папки, куда нужно скопировать файлы
