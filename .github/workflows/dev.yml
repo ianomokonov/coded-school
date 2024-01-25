@@ -21,7 +21,6 @@ jobs:
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.secret_key }}" > "$HOME/.ssh/secret_key" # secret_key - название секрета
       - run: chmod 600 "$HOME/.ssh/secret_key"
-      - run: chmod 600 "/home/runner/work/coded-school/coded-school/server/.env"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
       
       - name: Cache server node modules
