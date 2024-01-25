@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { SecureService } from '../secure.service';
 import { finalize } from 'rxjs';
 
 @Component({
-    selector: 'app-sign-in',
+    selector: 'coded-sign-in',
     standalone: true,
     imports: [ReactiveFormsModule],
     providers: [SecureService],

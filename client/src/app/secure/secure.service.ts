@@ -3,7 +3,7 @@ import { environment } from '@environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { JwtService } from '@jwt/service';
 import { User } from '@core/models/user.model';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
 
 @Injectable({
@@ -11,6 +11,8 @@ import { TokenResponse } from '@jwt/model';
 })
 export class SecureService {
     private baseUrl = `${environment.baseURL}/user`;
+
+    private isUserAuthorized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     constructor(
         private httpClient: HttpClient,
@@ -21,6 +23,7 @@ export class SecureService {
         return this.httpClient.post<TokenResponse>(`${this.baseUrl}/sign-in`, user).pipe(
             tap((tokens: TokenResponse) => {
                 this.tokenService.storeTokens(tokens);
+                this.isUserAuthorized.next(true);
             }),
         );
     }
@@ -29,15 +32,21 @@ export class SecureService {
         return this.httpClient.post<TokenResponse>(`${this.baseUrl}/sign-up`, user).pipe(
             tap((tokens: TokenResponse) => {
                 this.tokenService.storeTokens(tokens);
+                this.isUserAuthorized.next(true);
             }),
         );
     }
 
-    public logOut(): Observable<any> {
-        return this.httpClient.post(`${this.baseUrl}/logout`, {}).pipe(
+    public logOut(): Observable<void> {
+        return this.httpClient.post<void>(`${this.baseUrl}/logout`, {}).pipe(
             tap(() => {
                 this.tokenService.removeTokens();
+                this.isUserAuthorized.next(false);
             }),
         );
+    }
+
+    public checkUserAuthStatus(): Observable<boolean> {
+        return this.isUserAuthorized;
     }
 }
