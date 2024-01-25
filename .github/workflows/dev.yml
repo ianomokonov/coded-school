@@ -52,13 +52,7 @@ jobs:
         if: steps.cache-npm-client.outputs.cache-hit != 'true'
         run: cd ./client && npm ci
 
-      - name: Build server
-        run: |
-              cd ./server
-              touch .env
-              echo "${{ secrets.dev_env }}" > .env
-              ls
-              npm run build
+      - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
       - run: cd server/dist && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/server # полный путь до папки, куда нужно скопировать файлы
