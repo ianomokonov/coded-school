@@ -2,11 +2,15 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SecureService } from '../secure.service';
 import { finalize } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
     selector: 'coded-sign-in',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, RouterLink],
     providers: [SecureService],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss',
@@ -18,6 +22,7 @@ export class SignInComponent {
     constructor(
         private fb: FormBuilder,
         private secureService: SecureService,
+        private router: Router,
     ) {
         this.userForm = fb.group({
             email: ['', Validators.required],
@@ -38,6 +43,9 @@ export class SignInComponent {
                     this.isLoading = false;
                 }),
             )
-            .subscribe(() => {});
+            .subscribe((res) => {
+                console.log(res);
+                this.router.navigate(['lk']);
+            });
     }
 }

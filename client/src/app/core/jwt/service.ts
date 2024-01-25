@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { accessToken, refreshToken } from '@jwt/const';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
 
 @Injectable({
@@ -11,7 +11,13 @@ import { TokenResponse } from '@jwt/model';
 export class JwtService {
     private baseUrl = environment.baseURL;
 
-    constructor(private http: HttpClient) {}
+    private isTokenExists: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    constructor(private http: HttpClient) {
+        if (this.getToken()) {
+            this.isTokenExists.next(true);
+        }
+    }
 
     public getRefreshToken() {
         return localStorage.getItem(refreshToken);
@@ -24,11 +30,13 @@ export class JwtService {
     public storeTokens(tokens: TokenResponse) {
         localStorage.setItem(accessToken, tokens.token);
         localStorage.setItem(refreshToken, tokens.refreshToken);
+        this.isTokenExists.next(true);
     }
 
     public removeTokens() {
         localStorage.removeItem(accessToken);
         localStorage.removeItem(refreshToken);
+        this.isTokenExists.next(false);
     }
 
     public refreshToken(token: string): Observable<TokenResponse> {
@@ -37,5 +45,9 @@ export class JwtService {
                 this.storeTokens(tokens);
             }),
         );
+    }
+
+    public checkToken(): Observable<boolean> {
+        return this.isTokenExists;
     }
 }
