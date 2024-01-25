@@ -24,10 +24,12 @@ jobs:
         run: |
           touch .env
           echo "${{ secrets.dev_env }}" > .env
+          cat .env
       - name: 'Create env file 2'
         run: |
           touch ./server/.env
           echo "${{ secrets.dev_env }}" > ./server/.env
+          cat ./server/.env
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: chmod 600 "/home/runner/work/coded-school/coded-school/server/.env"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
