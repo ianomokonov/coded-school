@@ -52,7 +52,7 @@ jobs:
         if: steps.cache-npm-client.outputs.cache-hit != 'true'
         run: cd ./client && npm ci
 
-      - run: ls
+      - run: cd ./server && ls
       - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
