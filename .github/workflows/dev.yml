@@ -20,7 +20,14 @@ jobs:
       - run: set -eu
       - run: mkdir "$HOME/.ssh"
       - run: echo "${{ secrets.secret_key }}" > "$HOME/.ssh/secret_key" # secret_key - название секрета
-      - run: echo "${{ secrets.dev_env }}" > "/home/runner/work/coded-school/coded-school/server/.env" # подстановка окружения
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo "${{ secrets.dev_env }}" > .env
+      - name: 'Create env file 2'
+        run: |
+          touch ./server/.env
+          echo "${{ secrets.dev_env }}" > ./server/.env
       - run: chmod 600 "$HOME/.ssh/secret_key"
       - run: chmod 600 "/home/runner/work/coded-school/coded-school/server/.env"
       - run: echo -e "Host dev\n\tUser nomokoiw\n\tHostname nomokoiw.beget.tech\n\tIdentityFile $HOME/.ssh/secret_key\n\tStrictHostKeyChecking No" > "$HOME/.ssh/config"
@@ -54,6 +61,7 @@ jobs:
         run: cd ./client && npm ci
 
       - run: cd ./server && ls
+      - run: ls
       - run: cd ./server && npm run build
       - run: cd ./client && npm run build
 
