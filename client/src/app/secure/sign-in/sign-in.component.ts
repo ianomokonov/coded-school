@@ -43,8 +43,7 @@ export class SignInComponent {
                     this.isLoading = false;
                 }),
             )
-            .subscribe((res) => {
-                console.log(res);
+            .subscribe(() => {
                 this.router.navigate(['lk']);
             });
     }

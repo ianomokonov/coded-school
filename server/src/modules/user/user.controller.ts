@@ -44,8 +44,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('')
   async getAuthor(@UserId() userId: number): Promise<UserShortDto> {
-    console.log(userId);
-
     return this.authService.getUser(userId);
   }
 
