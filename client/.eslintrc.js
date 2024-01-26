@@ -11,12 +11,13 @@ module.exports = {
                 'plugin:@angular-eslint/template/process-inline-templates',
                 'plugin:prettier/recommended',
             ],
+            plugins: ['unused-imports'],
             rules: {
                 '@angular-eslint/directive-selector': [
                     'error',
                     {
                         type: 'attribute',
-                        prefix: 'app',
+                        prefix: 'coded',
                         style: 'camelCase',
                     },
                 ],
@@ -24,10 +25,12 @@ module.exports = {
                     'error',
                     {
                         type: 'element',
-                        prefix: 'app',
+                        prefix: 'coded',
                         style: 'kebab-case',
                     },
                 ],
+                'unused-imports/no-unused-imports': 'error',
+                'no-console': ['error', { allow: ['warn', 'error'] }],
             },
         },
         {
