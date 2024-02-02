@@ -6,12 +6,12 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { UserShortDto } from '../../models/user-short-dto';
+import { JwtDto } from '../../models/jwt-dto';
 
 export interface RefreshTokens$Params {
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
+export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
   const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'get');
   if (params) {
   }
@@ -21,7 +21,7 @@ export function refreshTokens(http: HttpClient, rootUrl: string, params?: Refres
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<UserShortDto>;
+      return r as BaseResponse<JwtDto>;
     })
   );
 }

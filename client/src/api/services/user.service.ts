@@ -175,7 +175,7 @@ export class UserService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  patchAuthor$Response(params: PatchAuthor$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
+  patchAuthor$Response(params: PatchAuthor$Params, context?: HttpContext): Observable<BaseResponse<void>> {
     return patchAuthor(this.http, this.rootUrl, params, context);
   }
 
@@ -189,9 +189,9 @@ export class UserService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  patchAuthor(params: PatchAuthor$Params, context?: HttpContext): Observable<UserShortDto> {
+  patchAuthor(params: PatchAuthor$Params, context?: HttpContext): Observable<void> {
     return this.patchAuthor$Response(params, context).pipe(
-      map((r: BaseResponse<UserShortDto>): UserShortDto => r.body)
+      map((r: BaseResponse<void>): void => r.body)
     );
   }
 
@@ -208,7 +208,7 @@ export class UserService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  refreshTokens$Response(params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
+  refreshTokens$Response(params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
     return refreshTokens(this.http, this.rootUrl, params, context);
   }
 
@@ -222,9 +222,9 @@ export class UserService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  refreshTokens(params?: RefreshTokens$Params, context?: HttpContext): Observable<UserShortDto> {
+  refreshTokens(params?: RefreshTokens$Params, context?: HttpContext): Observable<JwtDto> {
     return this.refreshTokens$Response(params, context).pipe(
-      map((r: BaseResponse<UserShortDto>): UserShortDto => r.body)
+      map((r: BaseResponse<JwtDto>): JwtDto => r.body)
     );
   }
 
