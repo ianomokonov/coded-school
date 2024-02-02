@@ -5,6 +5,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
+import { exec } from 'child_process';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,5 +25,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, documentOptions);
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
+  exec('cd ../client && npm run api:gen', (err, stdout) => {
+    console.log(stdout);
+  });
 }
 bootstrap();
