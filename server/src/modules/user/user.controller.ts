@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -31,6 +32,7 @@ export class UserController {
 
   @Post('sign-up')
   @ApiOperation({ summary: 'Регистрация пользователя' })
+  @ApiBody({ type: SignInDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Successfully created',
@@ -44,6 +46,7 @@ export class UserController {
   @HttpCode(200)
   @Post('sign-in')
   @ApiOperation({ summary: 'Авторизация пользователя' })
+  @ApiBody({ type: LoginDto })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successfully authorization',
@@ -86,6 +89,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('')
   @ApiOperation({ summary: 'Обновление пользователя' })
+  @ApiBody({ type: UpdateUserDto })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Successfully update author',
