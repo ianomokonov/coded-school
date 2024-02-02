@@ -1,0 +1,7 @@
+<form [formGroup]="userForm" (ngSubmit)="signUp()">
+    <input pInputText type="text" formControlName="name" />
+    <input pInputText type="text" formControlName="email" />
+    <p-password formControlName="password"></p-password>
+    <p-button label="Регистрация" type="submit" severity="success"></p-button>
+    <p-button label="Вход" routerLink="/sign-in"></p-button>
+</form>
