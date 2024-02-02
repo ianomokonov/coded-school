@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -32,7 +31,6 @@ export class UserController {
 
   @Post('sign-up')
   @ApiOperation({ summary: 'Регистрация пользователя' })
-  @ApiBody({ type: SignInDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Successfully created',
@@ -46,12 +44,6 @@ export class UserController {
   @HttpCode(200)
   @Post('sign-in')
   @ApiOperation({ summary: 'Авторизация пользователя' })
-  @ApiBody({ type: LoginDto })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully authorization',
-    type: JwtDto,
-  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async logIn(@Body() dto: LoginDto): Promise<JwtDto> {
     return this.authService.logIn(dto);
@@ -75,11 +67,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('')
   @ApiOperation({ summary: 'Получение пользователя' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully get author',
-    type: UserShortDto,
-  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async getAuthor(@UserId() userId: number): Promise<UserShortDto> {
     return this.authService.getUser(userId);
@@ -89,12 +76,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('')
   @ApiOperation({ summary: 'Обновление пользователя' })
-  @ApiBody({ type: UpdateUserDto })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully update author',
-    type: UserShortDto,
-  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async patchAuthor(@UserId() userId: number, @Body() dto: UpdateUserDto) {
     return this.authService.updateUser(userId, dto);
@@ -104,11 +85,6 @@ export class UserController {
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   @ApiOperation({ summary: 'Обновление токенов' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully refresh tokens',
-    type: UserShortDto,
-  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   refreshTokens(
     @UserId() { id, refreshToken }: { id: number; refreshToken: string },
