@@ -1,10 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerDocumentOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  const documentOptions: SwaggerDocumentOptions = {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
+  };
   const config = new DocumentBuilder()
     .setTitle('CodedSchool')
     .setDescription('CodedSchool API description')
@@ -14,7 +21,7 @@ async function bootstrap() {
       'JWT',
     )
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, documentOptions);
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }

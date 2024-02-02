@@ -10,7 +10,7 @@ import { BehaviorSubject, catchError, filter, of, switchMap, take, throwError } 
 import { TokenResponse } from '@jwt/model';
 
 let isRefreshing = false;
-const refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+const refreshTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
 export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
     const tokenService = inject(JwtService);
@@ -41,14 +41,14 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 const handle401Error = (
-    request: HttpRequest<any>,
+    request: HttpRequest<unknown>,
     next: HttpHandlerFn,
     tokenService: JwtService,
 ) => {
     const refreshToken = tokenService.getRefreshToken();
     if (!isRefreshing && refreshToken) {
         isRefreshing = true;
-        refreshTokenSubject.next(null);
+        refreshTokenSubject.next('');
 
         return tokenService.refreshToken(refreshToken).pipe(
             switchMap((tokenResponse: TokenResponse) => {
@@ -67,7 +67,7 @@ const handle401Error = (
     );
 };
 
-const addToken = (request: HttpRequest<any>, token: string) => {
+const addToken = (request: HttpRequest<unknown>, token: string) => {
     return request.clone({
         setHeaders: {
             Authorization: `Bearer ${token}`,
