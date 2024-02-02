@@ -22,6 +22,10 @@ export class UserService {
   ) {}
 
   async signIn(dto: SignInDto): Promise<JwtDto> {
+    const user = await this.findUserByEmail(dto.email);
+    if (user) {
+      throw new UnauthorizedException('Пользователь уже зарегистрирован');
+    }
     const salt = await genSalt(10);
     const newUser = UserEntity.create({
       email: dto.email,

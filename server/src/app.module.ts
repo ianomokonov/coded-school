@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { getDataSource } from './core/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -17,7 +16,6 @@ import { UserModule } from './modules/user/user.module';
     }),
     UserModule,
   ],
-  providers: [AppService],
 })
 export class AppModule {
   public static getDatabaseConfig(): unknown {
