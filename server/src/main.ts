@@ -25,6 +25,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, documentOptions);
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
+
+  if (!process.env.GEN_API) {
+    return;
+  }
+
   exec('cd ../client && npm run api:gen', (err, stdout) => {
     console.log(stdout);
   });
