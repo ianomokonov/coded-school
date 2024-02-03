@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from 'src/entities/user/user.entity';
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { JwtDto } from './dto/jwt.dto';
 
@@ -136,7 +136,7 @@ describe('UserService', () => {
     });
   });
   describe('getTokens', () => {
-    it('should throw error if user does not exists', async () => {
+    it('should return signed tokens', async () => {
       jest
         .spyOn<any, any>(jwtService, 'signAsync')
         .mockResolvedValueOnce(jwtDtoMock.token)
@@ -147,6 +147,70 @@ describe('UserService', () => {
         .mockResolvedValueOnce('2');
 
       expect(await userService['getTokens'](1)).toEqual(jwtDtoMock);
+    });
+  });
+
+  describe('refreshTokens', () => {
+    it('should throw error if user does not exists', async () => {
+      jest
+        .spyOn<any, any>(UserEntity, 'findOne')
+        .mockImplementation(async () => null);
+
+      try {
+        await userService['refreshTokens'](1, jwtDtoMock.refreshToken);
+      } catch (error) {
+        expect(error).toBeInstanceOf(UnauthorizedException);
+      }
+    });
+    it('should throw error if user refresh token does not exists', async () => {
+      jest
+        .spyOn<any, any>(UserEntity, 'findOne')
+        .mockImplementation(async () => new UserEntity());
+
+      try {
+        await userService['refreshTokens'](1, jwtDtoMock.refreshToken);
+      } catch (error) {
+        expect(error).toBeInstanceOf(UnauthorizedException);
+      }
+    });
+    it('should throw error if token is incorrect', async () => {
+      jest
+        .spyOn<any, any>(UserEntity, 'findOne')
+        .mockImplementation(
+          async () => ({ refreshToken: jwtDtoMock.refreshToken }) as any,
+        );
+      jest
+        .spyOn<any, any>(bcryptjs, 'compare')
+        .mockImplementation(async () => false);
+
+      try {
+        await userService['refreshTokens'](1, jwtDtoMock.refreshToken);
+      } catch (error) {
+        expect(error).toBeInstanceOf(ForbiddenException);
+      }
+    });
+    it('should refresh tokens', async () => {
+      jest
+        .spyOn<any, any>(UserEntity, 'findOne')
+        .mockImplementation(
+          async () => ({ refreshToken: jwtDtoMock.refreshToken }) as any,
+        );
+      jest
+        .spyOn<any, any>(bcryptjs, 'compare')
+        .mockImplementation(async () => true);
+      jest
+        .spyOn<any, any>(userService, 'getTokens')
+        .mockImplementation(async () => jwtDtoMock as JwtDto);
+      jest
+        .spyOn<any, any>(userService, 'updateRefreshToken')
+        .mockImplementation(async () => {});
+
+      const result = await userService['refreshTokens'](1, '123');
+
+      expect(userService['getTokens']).toHaveBeenCalledTimes(1);
+      expect(userService['updateRefreshToken']).toHaveBeenCalledTimes(1);
+
+      expect(result).toEqual(jwtDtoMock);
     });
   });
 });
