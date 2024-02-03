@@ -2,6 +2,9 @@
 /* eslint-disable */
 export { JwtDto } from './models/jwt-dto';
 export { LoginDto } from './models/login-dto';
+export { ModuleDto } from './models/module-dto';
+export { SaveModuleDto } from './models/save-module-dto';
 export { SignInDto } from './models/sign-in-dto';
 export { UpdateUserDto } from './models/update-user-dto';
+export { UserFullInfoDto } from './models/user-full-info-dto';
 export { UserShortDto } from './models/user-short-dto';
