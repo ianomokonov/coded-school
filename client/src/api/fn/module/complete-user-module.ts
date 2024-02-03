@@ -7,12 +7,12 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface StartUserModule$Params {
+export interface CompleteUserModule$Params {
   id: number;
 }
 
-export function startUserModule(http: HttpClient, rootUrl: string, params: StartUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, startUserModule.PATH, 'post');
+export function completeUserModule(http: HttpClient, rootUrl: string, params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, completeUserModule.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -27,4 +27,4 @@ export function startUserModule(http: HttpClient, rootUrl: string, params: Start
   );
 }
 
-startUserModule.PATH = '/api/module/{id}/start';
+completeUserModule.PATH = '/api/module/{id}/start';

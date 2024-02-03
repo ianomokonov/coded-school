@@ -32,4 +32,8 @@ export class ModuleService {
   async startModule(moduleId: number, userId: number) {
     await UserModuleEntity.create({ userId, moduleId }).save();
   }
+
+  async completeModule(moduleId: number, userId: number) {
+    await UserModuleEntity.save({ userId, moduleId, isCompleted: true });
+  }
 }

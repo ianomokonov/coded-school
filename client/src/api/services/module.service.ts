@@ -9,6 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
+import { completeUserModule } from '../fn/module/complete-user-module';
+import { CompleteUserModule$Params } from '../fn/module/complete-user-module';
 import { create } from '../fn/module/create';
 import { Create$Params } from '../fn/module/create';
 import { delete$ } from '../fn/module/delete';
@@ -18,8 +20,6 @@ import { GetAllModules$Params } from '../fn/module/get-all-modules';
 import { ModuleDto } from '../models/module-dto';
 import { read } from '../fn/module/read';
 import { Read$Params } from '../fn/module/read';
-import { startUserModule } from '../fn/module/start-user-module';
-import { StartUserModule$Params } from '../fn/module/start-user-module';
 import { update } from '../fn/module/update';
 import { Update$Params } from '../fn/module/update';
 
@@ -194,8 +194,8 @@ export class ModuleService extends BaseService {
     );
   }
 
-  /** Path part for operation `startUserModule()` */
-  static readonly StartUserModulePath = '/api/module/{id}/start';
+  /** Path part for operation `completeUserModule()` */
+  static readonly CompleteUserModulePath = '/api/module/{id}/start';
 
   /**
    * Стартовать модуль для текущего пользователя.
@@ -203,12 +203,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `startUserModule()` instead.
+   * To access only the response body, use `completeUserModule()` instead.
    *
    * This method doesn't expect any request body.
    */
-  startUserModule$Response(params: StartUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return startUserModule(this.http, this.rootUrl, params, context);
+  completeUserModule$Response(params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return completeUserModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -217,12 +217,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `startUserModule$Response()` instead.
+   * To access the full response (for headers, for example), `completeUserModule$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  startUserModule(params: StartUserModule$Params, context?: HttpContext): Observable<void> {
-    return this.startUserModule$Response(params, context).pipe(
+  completeUserModule(params: CompleteUserModule$Params, context?: HttpContext): Observable<void> {
+    return this.completeUserModule$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
