@@ -1,24 +1,21 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { JwtService } from '@jwt/service';
 import { User } from '@core/models/user.model';
 import { Observable, tap } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
+import { UserService } from '@api/services/user.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SecureService {
-    private baseUrl = `${environment.baseURL}/user`;
-
     constructor(
-        private httpClient: HttpClient,
+        private userService: UserService,
         private tokenService: JwtService,
     ) {}
 
     public signIn(user: User): Observable<TokenResponse> {
-        return this.httpClient.post<TokenResponse>(`${this.baseUrl}/sign-in`, user).pipe(
+        return this.userService.logIn({ body: user }).pipe(
             tap((tokens: TokenResponse) => {
                 this.tokenService.storeTokens(tokens);
             }),
@@ -26,7 +23,7 @@ export class SecureService {
     }
 
     public signUp(user: User): Observable<TokenResponse> {
-        return this.httpClient.post<TokenResponse>(`${this.baseUrl}/sign-up`, user).pipe(
+        return this.userService.signIn({ body: user }).pipe(
             tap((tokens: TokenResponse) => {
                 this.tokenService.storeTokens(tokens);
             }),
@@ -34,7 +31,7 @@ export class SecureService {
     }
 
     public logOut(): Observable<void> {
-        return this.httpClient.post<void>(`${this.baseUrl}/logout`, {}).pipe(
+        return this.userService.logout().pipe(
             tap(() => {
                 this.tokenService.removeTokens();
             }),

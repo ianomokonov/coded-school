@@ -27,6 +27,7 @@
           "@environments/*": ["./src/app/core/environments/*"],
           "@core/*": ["./src/app/core/*"],
           "@jwt/*": ["./src/app/core/jwt/*"],
+          "@api/*": ["./src/api/*"],
       }
   },
   "angularCompilerOptions": {
