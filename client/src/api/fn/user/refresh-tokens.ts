@@ -12,7 +12,7 @@ export interface RefreshTokens$Params {
 }
 
 export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'get');
+  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
   if (params) {
   }
 

@@ -92,7 +92,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT')
   @UseGuards(RefreshTokenGuard)
-  @Get('refresh')
+  @Post('refresh')
   @ApiOperation({ summary: 'Обновление токенов' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   refreshTokens(
