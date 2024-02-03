@@ -61,4 +61,11 @@ export class ModuleController {
   async startUserModule(@UserId() userId: number, @Param('id') id: number) {
     return this.moduleService.startModule(id, userId);
   }
+  @Post(':id/start')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Стартовать модуль для текущего пользователя' })
+  async completeUserModule(@UserId() userId: number, @Param('id') id: number) {
+    return this.moduleService.completeModule(id, userId);
+  }
 }

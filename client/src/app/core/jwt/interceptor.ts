@@ -56,6 +56,10 @@ const handle401Error = (
                 refreshTokenSubject.next(tokenResponse.refreshToken);
                 return next(addToken(request, tokenResponse.token));
             }),
+            catchError((error) => {
+                tokenService.removeTokens();
+                return throwError(error);
+            }),
         );
     }
     return refreshTokenSubject.pipe(

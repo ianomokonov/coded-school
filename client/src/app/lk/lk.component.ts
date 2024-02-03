@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserFullInfoDto, UserService } from '@api/index';
 import { CardModule } from 'primeng/card';
@@ -5,7 +6,7 @@ import { CardModule } from 'primeng/card';
 @Component({
     selector: 'coded-personal-cabinet',
     standalone: true,
-    imports: [CardModule],
+    imports: [CardModule, CommonModule],
     templateUrl: './lk.component.html',
     styleUrl: './lk.component.scss',
 })
