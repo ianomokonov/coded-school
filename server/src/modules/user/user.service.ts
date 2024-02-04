@@ -13,7 +13,6 @@ import { JwtDto } from './dto/jwt.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { UserShortDto } from './dto/user.dto';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
 
 @Injectable()
 export class UserService {
@@ -63,50 +62,6 @@ export class UserService {
       id: entity.id,
       name: entity.name,
       email: entity.email,
-    };
-  }
-
-  async getUserFullInfo(id: number): Promise<UserFullInfoDto> {
-    const entity = await UserEntity.findOne({
-      where: { id },
-      relations: {
-        modules: {
-          module: true,
-        },
-        marathons: {
-          marathon: true,
-        },
-      },
-    });
-
-    return {
-      id: entity.id,
-      name: entity.name,
-      email: entity.email,
-      activeModules: entity.modules
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      completedModules: entity.modules
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      activeMarathones: entity.marathons
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
-      completedMarathones: entity.marathons
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
     };
   }
 

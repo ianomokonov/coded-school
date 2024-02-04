@@ -6,16 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { ModuleDto } from '../../models/module-dto';
+import { UserShortDto } from '../../models/user-short-dto';
 
-export interface Read$Params {
-  id: number;
+export interface GetAuthor$Params {
 }
 
-export function read(http: HttpClient, rootUrl: string, params: Read$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
-  const rb = new RequestBuilder(rootUrl, read.PATH, 'get');
+export function getAuthor(http: HttpClient, rootUrl: string, params?: GetAuthor$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
+  const rb = new RequestBuilder(rootUrl, getAuthor.PATH, 'get');
   if (params) {
-    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -23,9 +21,9 @@ export function read(http: HttpClient, rootUrl: string, params: Read$Params, con
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<ModuleDto>;
+      return r as BaseResponse<UserShortDto>;
     })
   );
 }
 
-read.PATH = '/api/module/{id}';
+getAuthor.PATH = '/api/user';

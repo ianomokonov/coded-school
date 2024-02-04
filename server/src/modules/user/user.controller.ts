@@ -23,7 +23,6 @@ import { JwtDto } from './dto/jwt.dto';
 import { UserShortDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RefreshTokenGuard } from './guards/jwt-refresh.quard';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -69,16 +68,8 @@ export class UserController {
   @Get('')
   @ApiOperation({ summary: 'Получение пользователя' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  async getUser(@UserId() userId: number): Promise<UserShortDto> {
+  async getAuthor(@UserId() userId: number): Promise<UserShortDto> {
     return this.authService.getUser(userId);
-  }
-
-  @ApiBearerAuth('JWT')
-  @UseGuards(JwtAuthGuard)
-  @Get('full-info')
-  @ApiOperation({ summary: 'Получение полной информации пользователя' })
-  async getUserFullInfo(@UserId() userId: number): Promise<UserFullInfoDto> {
-    return this.authService.getUserFullInfo(userId);
   }
 
   @ApiBearerAuth('JWT')
