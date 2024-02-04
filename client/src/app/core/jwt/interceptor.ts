@@ -40,7 +40,7 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
                 ) {
                     return handle401Error(params, next, tokenService, router);
                 }
-                return throwError(error);
+                return throwError(() => error);
             }),
         );
     }
@@ -61,7 +61,8 @@ const handle401Error = (
             }),
             catchError((err) => {
                 router.navigate(['/sign-in']);
-                return throwError(err);
+                tokenService.removeTokens();
+                return throwError(() => err);
             }),
         );
     }

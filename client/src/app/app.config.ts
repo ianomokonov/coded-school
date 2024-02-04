@@ -6,6 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TokenInterceptor } from '@jwt/interceptor';
 import { JwtService } from '@jwt/service';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { ModuleService } from '@api/index';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -13,5 +14,6 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(withInterceptors([TokenInterceptor])),
         provideAnimations(),
         JwtService,
+        ModuleService,
     ],
 };
