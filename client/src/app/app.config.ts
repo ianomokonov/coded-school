@@ -5,11 +5,13 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TokenInterceptor } from '@jwt/interceptor';
 import { JwtService } from '@jwt/service';
+import { ModuleService } from '@api/index';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(routes),
         provideHttpClient(withInterceptors([TokenInterceptor])),
         JwtService,
+        ModuleService,
     ],
 };

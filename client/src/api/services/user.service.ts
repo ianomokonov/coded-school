@@ -9,8 +9,10 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
-import { getAuthor } from '../fn/user/get-author';
-import { GetAuthor$Params } from '../fn/user/get-author';
+import { getUser } from '../fn/user/get-user';
+import { GetUser$Params } from '../fn/user/get-user';
+import { getUserFullInfo } from '../fn/user/get-user-full-info';
+import { GetUserFullInfo$Params } from '../fn/user/get-user-full-info';
 import { JwtDto } from '../models/jwt-dto';
 import { logIn } from '../fn/user/log-in';
 import { LogIn$Params } from '../fn/user/log-in';
@@ -22,6 +24,7 @@ import { refreshTokens } from '../fn/user/refresh-tokens';
 import { RefreshTokens$Params } from '../fn/user/refresh-tokens';
 import { signIn } from '../fn/user/sign-in';
 import { SignIn$Params } from '../fn/user/sign-in';
+import { UserFullInfoDto } from '../models/user-full-info-dto';
 import { UserShortDto } from '../models/user-short-dto';
 
 @Injectable({ providedIn: 'root' })
@@ -129,8 +132,8 @@ export class UserService extends BaseService {
     );
   }
 
-  /** Path part for operation `getAuthor()` */
-  static readonly GetAuthorPath = '/api/user';
+  /** Path part for operation `getUser()` */
+  static readonly GetUserPath = '/api/user';
 
   /**
    * Получение пользователя.
@@ -138,12 +141,12 @@ export class UserService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAuthor()` instead.
+   * To access only the response body, use `getUser()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAuthor$Response(params?: GetAuthor$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
-    return getAuthor(this.http, this.rootUrl, params, context);
+  getUser$Response(params?: GetUser$Params, context?: HttpContext): Observable<BaseResponse<UserShortDto>> {
+    return getUser(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -152,12 +155,12 @@ export class UserService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getAuthor$Response()` instead.
+   * To access the full response (for headers, for example), `getUser$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAuthor(params?: GetAuthor$Params, context?: HttpContext): Observable<UserShortDto> {
-    return this.getAuthor$Response(params, context).pipe(
+  getUser(params?: GetUser$Params, context?: HttpContext): Observable<UserShortDto> {
+    return this.getUser$Response(params, context).pipe(
       map((r: BaseResponse<UserShortDto>): UserShortDto => r.body)
     );
   }
@@ -192,6 +195,39 @@ export class UserService extends BaseService {
   patchAuthor(params: PatchAuthor$Params, context?: HttpContext): Observable<void> {
     return this.patchAuthor$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `getUserFullInfo()` */
+  static readonly GetUserFullInfoPath = '/api/user/full-info';
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getUserFullInfo()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getUserFullInfo$Response(params?: GetUserFullInfo$Params, context?: HttpContext): Observable<BaseResponse<UserFullInfoDto>> {
+    return getUserFullInfo(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getUserFullInfo$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getUserFullInfo(params?: GetUserFullInfo$Params, context?: HttpContext): Observable<UserFullInfoDto> {
+    return this.getUserFullInfo$Response(params, context).pipe(
+      map((r: BaseResponse<UserFullInfoDto>): UserFullInfoDto => r.body)
     );
   }
 
