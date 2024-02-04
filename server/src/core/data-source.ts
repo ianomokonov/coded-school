@@ -21,6 +21,7 @@ export const getDataSource = (
     password: password,
     database: dbName,
     charset: 'utf8mb4_unicode_ci',
+    // debug: true,
   });
   return dataSource;
 };

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ModuleEntity } from 'src/entities/module/module.entity';
 import { SaveModuleDto } from './dto/create-module.dto';
 import { UserModuleEntity } from 'src/entities/module/user-module.entity';
@@ -12,7 +12,7 @@ export class ModuleService {
   }
 
   async updateModule(moduleId: number, dto: SaveModuleDto) {
-    await ModuleEntity.save({ id: moduleId, name: dto.name });
+    await ModuleEntity.update({ id: moduleId }, { name: dto.name });
   }
 
   async deleteModule(moduleId: number) {
@@ -34,6 +34,12 @@ export class ModuleService {
   }
 
   async completeModule(moduleId: number, userId: number) {
-    await UserModuleEntity.save({ userId, moduleId, isCompleted: true });
+    const result = await UserModuleEntity.update(
+      { userId, moduleId },
+      { isCompleted: true },
+    );
+    if (!result.affected) {
+      throw new NotFoundException('Модуль пользователя не найден');
+    }
   }
 }

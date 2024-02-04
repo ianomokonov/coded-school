@@ -6,6 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { UserService } from './services/user.service';
 import { ModuleService } from './services/module.service';
+import { MarathonService } from './services/marathon.service';
 
 /**
  * Module that provides all services and configuration.
@@ -17,6 +18,7 @@ import { ModuleService } from './services/module.service';
   providers: [
     UserService,
     ModuleService,
+    MarathonService,
     ApiConfiguration
   ],
 })

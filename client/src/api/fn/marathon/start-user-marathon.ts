@@ -7,12 +7,12 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface CompleteUserModule$Params {
+export interface StartUserMarathon$Params {
   id: number;
 }
 
-export function completeUserModule(http: HttpClient, rootUrl: string, params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, completeUserModule.PATH, 'post');
+export function startUserMarathon(http: HttpClient, rootUrl: string, params: StartUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, startUserMarathon.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -27,4 +27,4 @@ export function completeUserModule(http: HttpClient, rootUrl: string, params: Co
   );
 }
 
-completeUserModule.PATH = '/api/module/{id}/complete';
+startUserMarathon.PATH = '/api/marathon/{id}/start';
