@@ -7,12 +7,12 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface CompleteUserModule$Params {
+export interface Delete_1$Params {
   id: number;
 }
 
-export function completeUserModule(http: HttpClient, rootUrl: string, params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, completeUserModule.PATH, 'post');
+export function delete_1(http: HttpClient, rootUrl: string, params: Delete_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, delete_1.PATH, 'delete');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -27,4 +27,4 @@ export function completeUserModule(http: HttpClient, rootUrl: string, params: Co
   );
 }
 
-completeUserModule.PATH = '/api/module/{id}/complete';
+delete_1.PATH = '/api/marathon/{id}';

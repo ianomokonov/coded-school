@@ -73,6 +73,9 @@ export class UserService {
         modules: {
           module: true,
         },
+        marathons: {
+          marathon: true,
+        },
       },
     });
 
@@ -91,6 +94,18 @@ export class UserService {
         .map((m) => ({
           id: m.module.id,
           name: m.module.name,
+        })),
+      activeMarathones: entity.marathons
+        .filter((m) => !m.isCompleted)
+        .map((m) => ({
+          id: m.marathon.id,
+          name: m.marathon.name,
+        })),
+      completedMarathones: entity.marathons
+        .filter((m) => m.isCompleted)
+        .map((m) => ({
+          id: m.marathon.id,
+          name: m.marathon.name,
         })),
     };
   }

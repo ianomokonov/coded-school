@@ -6,15 +6,18 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { SaveMarathonDto } from '../../models/save-marathon-dto';
 
-export interface CompleteUserModule$Params {
+export interface Update_1$Params {
   id: number;
+      body: SaveMarathonDto
 }
 
-export function completeUserModule(http: HttpClient, rootUrl: string, params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, completeUserModule.PATH, 'post');
+export function update_1(http: HttpClient, rootUrl: string, params: Update_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, update_1.PATH, 'put');
   if (params) {
     rb.path('id', params.id, {});
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -27,4 +30,4 @@ export function completeUserModule(http: HttpClient, rootUrl: string, params: Co
   );
 }
 
-completeUserModule.PATH = '/api/module/{id}/complete';
+update_1.PATH = '/api/marathon/{id}';

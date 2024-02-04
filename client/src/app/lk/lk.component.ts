@@ -33,4 +33,13 @@ export class PersonalCabinetComponent implements OnInit {
             this.router.navigate(['/sign-in']);
         });
     }
+
+    isNoDataShow(): boolean {
+        return (
+            !this.userInfo.activeModules?.length &&
+            !this.userInfo.completedModules?.length &&
+            !this.userInfo.activeMarathones?.length &&
+            !this.userInfo.completedMarathones?.length
+        );
+    }
 }

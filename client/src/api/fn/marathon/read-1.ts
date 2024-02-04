@@ -6,25 +6,26 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { MarathonDto } from '../../models/marathon-dto';
 
-export interface CompleteUserModule$Params {
+export interface Read_1$Params {
   id: number;
 }
 
-export function completeUserModule(http: HttpClient, rootUrl: string, params: CompleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, completeUserModule.PATH, 'post');
+export function read_1(http: HttpClient, rootUrl: string, params: Read_1$Params, context?: HttpContext): Observable<BaseResponse<MarathonDto>> {
+  const rb = new RequestBuilder(rootUrl, read_1.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as BaseResponse<void>;
+      return r as BaseResponse<MarathonDto>;
     })
   );
 }
 
-completeUserModule.PATH = '/api/module/{id}/complete';
+read_1.PATH = '/api/marathon/{id}';
