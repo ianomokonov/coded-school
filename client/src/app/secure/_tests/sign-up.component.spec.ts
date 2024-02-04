@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { Location } from '@angular/common';
 import { TokenResponse } from '@jwt/model';
 import { SecureService } from '../secure.service';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { provideLocationMocks } from '@angular/common/testing';
 import { routes } from '../../app.routes';
 
@@ -21,6 +21,8 @@ describe('SignUpComponent', () => {
     let component: SignUpComponent;
     let fixture: ComponentFixture<SignUpComponent>;
     let fakeSecureService: jasmine.SpyObj<SecureMockService>;
+    const fb = new FormBuilder();
+    let router: Router;
 
     beforeEach(async () => {
         fakeSecureService = jasmine.createSpyObj('SecureMockService', ['signUp']);
@@ -29,6 +31,7 @@ describe('SignUpComponent', () => {
             imports: [SignUpComponent],
             providers: [
                 { provide: SecureService, useValue: fakeSecureService },
+                { provide: FormBuilder, useValue: fb },
                 provideRouter(routes),
                 provideLocationMocks(),
             ],
@@ -41,6 +44,7 @@ describe('SignUpComponent', () => {
 
         fixture = TestBed.createComponent(SignUpComponent);
         component = fixture.componentInstance;
+        router = TestBed.inject(Router);
         fixture.detectChanges();
     });
 
@@ -49,17 +53,16 @@ describe('SignUpComponent', () => {
     });
 
     it('should register user', () => {
-        component.userForm = TestBed.inject(FormBuilder).group({
-            name: ['name'],
-            email: ['email'],
-
-            password: ['password'],
+        component.userForm.patchValue({
+            name: 'name',
+            email: 'email',
+            password: 'password',
         });
+        const navigateSpy = spyOn(router, 'navigate').and.returnValue({} as any);
         component.signUp();
         fixture.whenStable().then(() => {
-            const location = TestBed.inject(Location);
-
-            expect(location.path()).toBe('/lk');
+            expect(navigateSpy).toHaveBeenCalledTimes(1);
+            expect(navigateSpy).toHaveBeenCalledWith(['/lk']);
         });
     });
 });
