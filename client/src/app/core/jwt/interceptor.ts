@@ -6,17 +6,24 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { JwtService } from '@jwt/service';
-import { BehaviorSubject, catchError, filter, of, switchMap, take, throwError } from 'rxjs';
+import { catchError, of, switchMap, throwError } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
-
-let isRefreshing = false;
-const refreshTokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+import { Router } from '@angular/router';
 
 export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
     const tokenService = inject(JwtService);
+    const router: Router = inject(Router);
+    let params = req;
 
-    if (req.url.includes('api/')) {
-        let params = req;
+    if (req.url.includes('/refresh')) {
+        const rToken = tokenService.getRefreshToken();
+        if (rToken) {
+            params = addToken(req, rToken);
+        }
+        return next(params);
+    }
+
+    if (req.url.includes('/api')) {
         const token = tokenService.getToken();
         if (token) {
             params = addToken(req, token);
@@ -31,7 +38,7 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
                     error.status === 401 &&
                     tokenService.getRefreshToken()
                 ) {
-                    return handle401Error(params, next, tokenService);
+                    return handle401Error(params, next, tokenService, router);
                 }
                 return throwError(error);
             }),
@@ -44,27 +51,22 @@ const handle401Error = (
     request: HttpRequest<unknown>,
     next: HttpHandlerFn,
     tokenService: JwtService,
+    router: Router,
 ) => {
     const refreshToken = tokenService.getRefreshToken();
-    if (!isRefreshing && refreshToken) {
-        isRefreshing = true;
-        refreshTokenSubject.next('');
-
-        return tokenService.refreshToken(refreshToken).pipe(
+    if (refreshToken) {
+        return tokenService.refreshToken().pipe(
             switchMap((tokenResponse: TokenResponse) => {
-                isRefreshing = false;
-                refreshTokenSubject.next(tokenResponse.refreshToken);
                 return next(addToken(request, tokenResponse.token));
+            }),
+            catchError((err) => {
+                router.navigate(['/sign-in']);
+                return throwError(err);
             }),
         );
     }
-    return refreshTokenSubject.pipe(
-        filter((token) => token != null),
-        take(1),
-        switchMap((jwt) => {
-            return next(addToken(request, jwt));
-        }),
-    );
+    router.navigate(['/sign-in']);
+    return next(request);
 };
 
 const addToken = (request: HttpRequest<unknown>, token: string) => {
