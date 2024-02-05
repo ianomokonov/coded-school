@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignInComponent } from '../sign-in/sign-in.component';
-import { provideRouter } from '@angular/router';
+import { SignInComponent } from './sign-in.component';
+import { provideRouter, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
-import { tokensMock } from './mocks/tokens.mock';
-import { FormBuilder } from '@angular/forms';
-import { Location } from '@angular/common';
+import { tokensMock } from '../_tests-mocks/tokens.mock';
 import { SecureService } from '../secure.service';
 import { provideLocationMocks } from '@angular/common/testing';
 import { routes } from '../../app.routes';
@@ -21,6 +19,7 @@ describe('SignInComponent', () => {
     let component: SignInComponent;
     let fixture: ComponentFixture<SignInComponent>;
     let fakeSecureService: jasmine.SpyObj<SecureMockService>;
+    let router: Router;
 
     beforeEach(async () => {
         fakeSecureService = jasmine.createSpyObj('SecureMockService', ['signIn']);
@@ -41,6 +40,7 @@ describe('SignInComponent', () => {
 
         fixture = TestBed.createComponent(SignInComponent);
         component = fixture.componentInstance;
+        router = TestBed.inject(Router);
         fixture.detectChanges();
     });
 
@@ -48,16 +48,16 @@ describe('SignInComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('should authorize user', () => {
-    //     component.userForm = TestBed.inject(FormBuilder).group({
-    //         email: ['email'],
-    //         password: ['password'],
-    //     });
-    //     component.signIn();
-    //     fixture.whenStable().then(() => {
-    //         const location = TestBed.inject(Location);
-
-    //         expect(location.path()).toBe('/lk');
-    //     });
-    // });
+    it('should authorize user', () => {
+        component.userForm.patchValue({
+            email: 'email',
+            password: 'password',
+        });
+        const navigateSpy = spyOn(router, 'navigate').and.returnValue({} as any);
+        component.signIn();
+        fixture.whenStable().then(() => {
+            expect(navigateSpy).toHaveBeenCalledTimes(1);
+            expect(navigateSpy).toHaveBeenCalledWith(['/lk']);
+        });
+    });
 });

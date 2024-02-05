@@ -1,10 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignUpComponent } from '../sign-up/sign-up.component';
-import { FormBuilder } from '@angular/forms';
-import { tokensMock } from './mocks/tokens.mock';
+import { SignUpComponent } from './sign-up.component';
+import { tokensMock } from '../_tests-mocks/tokens.mock';
 import { Observable, of } from 'rxjs';
-import { Location } from '@angular/common';
 import { TokenResponse } from '@jwt/model';
 import { SecureService } from '../secure.service';
 import { Router, provideRouter } from '@angular/router';
@@ -21,7 +19,6 @@ describe('SignUpComponent', () => {
     let component: SignUpComponent;
     let fixture: ComponentFixture<SignUpComponent>;
     let fakeSecureService: jasmine.SpyObj<SecureMockService>;
-    const fb = new FormBuilder();
     let router: Router;
 
     beforeEach(async () => {
@@ -31,7 +28,6 @@ describe('SignUpComponent', () => {
             imports: [SignUpComponent],
             providers: [
                 { provide: SecureService, useValue: fakeSecureService },
-                { provide: FormBuilder, useValue: fb },
                 provideRouter(routes),
                 provideLocationMocks(),
             ],
