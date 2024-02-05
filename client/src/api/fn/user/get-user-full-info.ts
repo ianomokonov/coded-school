@@ -6,13 +6,13 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { JwtDto } from '../../models/jwt-dto';
+import { UserFullInfoDto } from '../../models/user-full-info-dto';
 
-export interface RefreshTokens$Params {
+export interface GetUserFullInfo$Params {
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
+export function getUserFullInfo(http: HttpClient, rootUrl: string, params?: GetUserFullInfo$Params, context?: HttpContext): Observable<BaseResponse<UserFullInfoDto>> {
+  const rb = new RequestBuilder(rootUrl, getUserFullInfo.PATH, 'get');
   if (params) {
   }
 
@@ -21,9 +21,9 @@ export function refreshTokens(http: HttpClient, rootUrl: string, params?: Refres
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<JwtDto>;
+      return r as BaseResponse<UserFullInfoDto>;
     })
   );
 }
 
-refreshTokens.PATH = '/api/user/refresh';
+getUserFullInfo.PATH = '/api/user/full-info';

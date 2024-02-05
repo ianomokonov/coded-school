@@ -6,14 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { JwtDto } from '../../models/jwt-dto';
+import { SaveModuleDto } from '../../models/save-module-dto';
 
-export interface RefreshTokens$Params {
+export interface Create$Params {
+      body: SaveModuleDto
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
+export function create(http: HttpClient, rootUrl: string, params: Create$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+  const rb = new RequestBuilder(rootUrl, create.PATH, 'post');
   if (params) {
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -21,9 +23,9 @@ export function refreshTokens(http: HttpClient, rootUrl: string, params?: Refres
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<JwtDto>;
+      return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as BaseResponse<number>;
     })
   );
 }
 
-refreshTokens.PATH = '/api/user/refresh';
+create.PATH = '/api/module';

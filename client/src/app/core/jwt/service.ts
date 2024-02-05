@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { accessToken, refreshToken } from '@jwt/const';
 import { Observable, tap } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
+import { UserService } from '@api/services/user.service';
 
 @Injectable({
     providedIn: null,
 })
 export class JwtService {
-    private baseUrl = environment.baseURL;
-
-    constructor(private http: HttpClient) {}
+    constructor(private userService: UserService) {}
 
     public getRefreshToken() {
         return localStorage.getItem(refreshToken);
@@ -31,8 +28,8 @@ export class JwtService {
         localStorage.removeItem(refreshToken);
     }
 
-    public refreshToken(token: string): Observable<TokenResponse> {
-        return this.http.post<TokenResponse>(`${this.baseUrl}/user/refresh`, { token }).pipe(
+    public refreshToken(): Observable<TokenResponse> {
+        return this.userService.refreshTokens().pipe(
             tap((tokens: TokenResponse) => {
                 this.storeTokens(tokens);
             }),

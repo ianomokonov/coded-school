@@ -6,13 +6,13 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { JwtDto } from '../../models/jwt-dto';
+import { ModuleDto } from '../../models/module-dto';
 
-export interface RefreshTokens$Params {
+export interface GetAllModules$Params {
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
+export function getAllModules(http: HttpClient, rootUrl: string, params?: GetAllModules$Params, context?: HttpContext): Observable<BaseResponse<Array<ModuleDto>>> {
+  const rb = new RequestBuilder(rootUrl, getAllModules.PATH, 'get');
   if (params) {
   }
 
@@ -21,9 +21,9 @@ export function refreshTokens(http: HttpClient, rootUrl: string, params?: Refres
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<JwtDto>;
+      return r as BaseResponse<Array<ModuleDto>>;
     })
   );
 }
 
-refreshTokens.PATH = '/api/user/refresh';
+getAllModules.PATH = '/api/module/all';

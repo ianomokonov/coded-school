@@ -6,14 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { JwtDto } from '../../models/jwt-dto';
+import { MarathonDto } from '../../models/marathon-dto';
 
-export interface RefreshTokens$Params {
+export interface Read_1$Params {
+  id: number;
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
+export function read_1(http: HttpClient, rootUrl: string, params: Read_1$Params, context?: HttpContext): Observable<BaseResponse<MarathonDto>> {
+  const rb = new RequestBuilder(rootUrl, read_1.PATH, 'get');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -21,9 +23,9 @@ export function refreshTokens(http: HttpClient, rootUrl: string, params?: Refres
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<JwtDto>;
+      return r as BaseResponse<MarathonDto>;
     })
   );
 }
 
-refreshTokens.PATH = '/api/user/refresh';
+read_1.PATH = '/api/marathon/{id}';

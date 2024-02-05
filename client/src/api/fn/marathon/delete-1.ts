@@ -6,24 +6,25 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { JwtDto } from '../../models/jwt-dto';
 
-export interface RefreshTokens$Params {
+export interface Delete_1$Params {
+  id: number;
 }
 
-export function refreshTokens(http: HttpClient, rootUrl: string, params?: RefreshTokens$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, refreshTokens.PATH, 'post');
+export function delete_1(http: HttpClient, rootUrl: string, params: Delete_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, delete_1.PATH, 'delete');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'json', accept: 'application/json', context })
+    rb.build({ responseType: 'text', accept: '*/*', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<JwtDto>;
+      return (r as HttpResponse<any>).clone({ body: undefined }) as BaseResponse<void>;
     })
   );
 }
 
-refreshTokens.PATH = '/api/user/refresh';
+delete_1.PATH = '/api/marathon/{id}';
