@@ -40,10 +40,10 @@ export class AchievementService {
 
   async setUserAchievement(userId: number, achievementId: number) {
     const achievement = await this.readAchievement(achievementId);
+
     if (!achievement) {
       throw new NotFoundException('Достижение не найдено');
     }
-
     await UserAchievementEntity.create({
       userId,
       achievementId,
@@ -57,6 +57,11 @@ export class AchievementService {
   ) {
     const { points } = await UserEntity.findOne({ where: { id: userId } });
 
-    await UserEntity.update({ id: userId }, { points: callback(points) });
+    const resultPoints = callback(points);
+
+    await UserEntity.update(
+      { id: userId },
+      { points: resultPoints > 0 ? resultPoints : 0 },
+    );
   }
 }
