@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserModuleEntity } from '../module/user-module.entity';
 import { UserMarathonEntity } from '../marathon/user-marathon.entity';
+import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 
 @Entity('user', {
   schema: 'sec',
@@ -43,9 +44,18 @@ export class UserEntity extends BaseEntity {
   })
   refreshToken: string;
 
+  @Column({ default: 0 })
+  points: number;
+
   @OneToMany(() => UserModuleEntity, (userModule) => userModule.user)
   modules: UserModuleEntity[];
 
   @OneToMany(() => UserMarathonEntity, (userMarathon) => userMarathon.user)
   marathons: UserMarathonEntity[];
+
+  @OneToMany(
+    () => UserAchievementEntity,
+    (userAchievement) => userAchievement.user,
+  )
+  achievements: UserAchievementEntity[];
 }
