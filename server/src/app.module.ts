@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { ModuleModule } from './modules/module/module.module';
 import { MarathonModule } from './modules/marathon/marathon.module';
+import { AchievementModule } from './modules/achievement/achievement.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MarathonModule } from './modules/marathon/marathon.module';
     UserModule,
     ModuleModule,
     MarathonModule,
+    AchievementModule,
   ],
   providers: [AppService],
 })
