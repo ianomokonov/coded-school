@@ -24,6 +24,7 @@ import { UserShortDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RefreshTokenGuard } from './guards/jwt-refresh.quard';
 import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { RefreshToken } from 'src/decorators/refresh-token.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -95,9 +96,7 @@ export class UserController {
   @Post('refresh')
   @ApiOperation({ summary: 'Обновление токенов' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-  refreshTokens(
-    @UserId() { id, refreshToken }: { id: number; refreshToken: string },
-  ) {
+  refreshTokens(@UserId() id: number, @RefreshToken() refreshToken: string) {
     return this.authService.refreshTokens(id, refreshToken);
   }
 }

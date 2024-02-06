@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { UserShortDto } from './dto/user.dto';
 import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { UserRoleEntity } from 'src/entities/user/user-role.entity';
 
 @Injectable()
 export class UserService {
@@ -160,10 +161,15 @@ export class UserService {
   }
 
   private async getTokens(id: number): Promise<JwtDto> {
+    const roles = await UserRoleEntity.find({
+      where: { userId: id },
+      relations: { role: true },
+    });
     const [token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           id,
+          roles: roles.map((r) => r.role.name),
         },
         {
           secret: this.configService.get<string>('JWT_SECRET'),
