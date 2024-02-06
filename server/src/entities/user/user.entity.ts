@@ -9,6 +9,7 @@ import {
 import { UserModuleEntity } from '../module/user-module.entity';
 import { UserMarathonEntity } from '../marathon/user-marathon.entity';
 import { UserRoleEntity } from './user-role.entity';
+import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 
 @Entity('user', {
   schema: 'sec',
@@ -44,6 +45,9 @@ export class UserEntity extends BaseEntity {
   })
   refreshToken: string;
 
+  @Column({ default: 0 })
+  points: number;
+
   @OneToMany(() => UserModuleEntity, (userModule) => userModule.user)
   modules: UserModuleEntity[];
 
@@ -52,4 +56,10 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => UserRoleEntity, (userRole) => userRole.user)
   roles: UserRoleEntity[];
+
+  @OneToMany(
+    () => UserAchievementEntity,
+    (userAchievement) => userAchievement.user,
+  )
+  achievements: UserAchievementEntity[];
 }

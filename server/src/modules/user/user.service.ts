@@ -77,6 +77,9 @@ export class UserService {
         marathons: {
           marathon: true,
         },
+        achievements: {
+          achievement: true,
+        },
       },
     });
 
@@ -84,6 +87,7 @@ export class UserService {
       id: entity.id,
       name: entity.name,
       email: entity.email,
+      points: entity.points,
       activeModules: entity.modules
         .filter((m) => !m.isCompleted)
         .map((m) => ({
@@ -108,6 +112,11 @@ export class UserService {
           id: m.marathon.id,
           name: m.marathon.name,
         })),
+      achievements: entity.achievements.map((a) => ({
+        id: a.achievement.id,
+        name: a.achievement.name,
+        points: a.achievement.points,
+      })),
     };
   }
 

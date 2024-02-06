@@ -6,8 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { ModuleModule } from './modules/module/module.module';
 import { MarathonModule } from './modules/marathon/marathon.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './modules/user/guards/roles.guard';
+import { AchievementModule } from './modules/achievement/achievement.module';
 
 @Module({
   imports: [
@@ -22,14 +21,9 @@ import { RolesGuard } from './modules/user/guards/roles.guard';
     UserModule,
     ModuleModule,
     MarathonModule,
+    AchievementModule,
   ],
-  providers: [
-    AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
-  ],
+  providers: [AppService],
 })
 export class AppModule {
   public static getDatabaseConfig(): unknown {
