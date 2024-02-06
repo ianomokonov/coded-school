@@ -53,4 +53,4 @@ jobs:
       - name: Run server tests
         run: cd ./server && npm run test
       - name: Run client tests
-        run: cd ./client && npm run test
+        run: cd ./client && npm run test:ci
