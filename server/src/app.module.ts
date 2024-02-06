@@ -25,10 +25,10 @@ import { RolesGuard } from './modules/user/guards/roles.guard';
   ],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule {

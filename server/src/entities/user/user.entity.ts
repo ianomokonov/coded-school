@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserModuleEntity } from '../module/user-module.entity';
 import { UserMarathonEntity } from '../marathon/user-marathon.entity';
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity('user', {
   schema: 'sec',
@@ -48,4 +49,7 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => UserMarathonEntity, (userMarathon) => userMarathon.user)
   marathons: UserMarathonEntity[];
+
+  @OneToMany(() => UserRoleEntity, (userRole) => userRole.user)
+  roles: UserRoleEntity[];
 }
