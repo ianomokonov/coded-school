@@ -8,7 +8,11 @@ import { JwtDto } from '@dtos/user/jwt.dto';
 import { UserRoleEntity } from '@entities/user/user-role.entity';
 import { Mapper } from '@automapper/core';
 
-const loginDtoMock = { email: 'email', password: 'password' };
+const loginDtoMock = {
+  email: 'email',
+  password: 'password',
+  firstName: 'firstName',
+};
 const jwtDtoMock = {
   token: 'token',
   refreshToken: 'refreshToken',
@@ -67,7 +71,7 @@ describe('UserService', () => {
       expect(UserEntity.create).toHaveBeenCalledWith({
         email: loginDtoMock.email,
         password: 'hash',
-        name: undefined,
+        firstName: loginDtoMock.firstName,
       });
       expect(userService['getTokens']).toHaveBeenCalledWith(1);
       expect(userService['updateRefreshToken']).toHaveBeenCalledWith(

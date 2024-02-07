@@ -25,7 +25,7 @@ import { UpdateUserDto } from '@dtos/user/update-user.dto';
 import { RefreshTokenGuard } from '@guards/user/jwt-refresh.quard';
 import { RefreshToken } from '@decorators/refresh-token.decorator';
 import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
-import { PassportUserDto } from './dto/passport.user.dto';
+import { PassportUserDto } from '@dtos/user/passport.user.dto';
 
 @ApiTags('User')
 @Controller('user')

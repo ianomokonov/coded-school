@@ -8,15 +8,15 @@
             <h3>{{ userInfo.email }}</h3>
             <p-button class="mb-3" routerLink="passport">Профиль</p-button>
             <p-button (onClick)="logOut()">Выйти</p-button>
-    </div>
+        </div>
+    </p-sidebar>
     <div class="mb-3" *ngIf="userInfo.achievements?.length">
         <p-card header="Достижения">
             <div class="border-bottom" *ngFor="let achievement of userInfo.achievements">
                 {{ achievement.name }}
             </div>
         </p-card>
-        </div>
-    </p-sidebar>
+    </div>
     <div class="mb-3">
         <p-card header="Активные модули">
             <h3 *ngIf="!userInfo.activeModules?.length">Нет активных модулей</h3>

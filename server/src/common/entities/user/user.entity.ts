@@ -8,10 +8,10 @@ import {
 } from 'typeorm';
 import { UserModuleEntity } from '../module/user-module.entity';
 import { UserMarathonEntity } from '../marathon/user-marathon.entity';
-import { GenderEnum } from '../../modules/user/dto/passport.user.dto';
 import { UserRoleEntity } from './user-role.entity';
 import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 import { AutoMap } from '@automapper/classes';
+import { GenderEnum } from '@dtos/user/passport.user.dto';
 
 @Entity('user', {
   schema: 'sec',

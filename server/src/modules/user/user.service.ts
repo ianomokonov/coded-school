@@ -17,7 +17,7 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserShortDto } from '@dtos/user/user.dto';
 import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
-import { PassportUserDto } from './dto/passport.user.dto';
+import { PassportUserDto } from '@dtos/user/passport.user.dto';
 
 @Injectable()
 export class UserService {

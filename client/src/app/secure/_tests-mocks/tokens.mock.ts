@@ -1,11 +1,11 @@
-import { TokenResponse } from '@jwt/model';
+import { JwtDto } from '@api/models/jwt-dto';
 
-export const tokensMock: TokenResponse = {
+export const tokensMock: JwtDto = {
     token: 'Token',
     refreshToken: 'RefreshToken',
 };
 
-export const refreshedTokensMock: TokenResponse = {
+export const refreshedTokensMock: JwtDto = {
     token: 'newToken',
     refreshToken: 'newRefreshToken',
 };

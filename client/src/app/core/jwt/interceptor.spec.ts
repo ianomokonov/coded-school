@@ -1,11 +1,11 @@
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { TokenInterceptor } from '@jwt/interceptor';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { JwtService } from '@jwt/service';
 import { refreshedTokensMock, tokensMock } from '../../secure/_tests-mocks/tokens.mock';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { tokenInterceptor } from '@jwt/interceptors';
 
 describe('TokenInterceptor', () => {
     let httpTestingController: HttpTestingController;
@@ -22,7 +22,7 @@ describe('TokenInterceptor', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                provideHttpClient(withInterceptors([TokenInterceptor])),
+                provideHttpClient(withInterceptors([tokenInterceptor])),
                 provideHttpClientTesting(),
                 { provide: JwtService, useValue: fakeTokenService },
             ],
