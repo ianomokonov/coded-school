@@ -32,6 +32,10 @@ describe('TokenInterceptor', () => {
         router = TestBed.inject(Router);
     });
 
+    afterEach(() => {
+        httpTestingController.verify();
+    });
+
     it('should intercept /api requests', () => {
         const url = '/api/user';
 
@@ -44,6 +48,9 @@ describe('TokenInterceptor', () => {
 
     it('should refresh tokens if access token expired', () => {
         const url = '/api/user';
+
+        const refUrl = '/api/user/refresh';
+
         const refreshSpy = spyOn(fakeTokenService, 'refreshToken').and.returnValue(
             of(refreshedTokensMock),
         );
@@ -53,6 +60,14 @@ describe('TokenInterceptor', () => {
         httpTestingController.expectOne(url).error(new ProgressEvent('error'), { status: 401 });
 
         expect(refreshSpy).toHaveBeenCalledTimes(1);
+
+        httpClient.get(refUrl).subscribe();
+
+        const refReq = httpTestingController.expectOne(refUrl);
+
+        expect(refReq.request.headers.get('Authorization')).toEqual(
+            `Bearer ${tokensMock.refreshToken}`,
+        );
 
         const req = httpTestingController.expectOne(url);
 
