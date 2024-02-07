@@ -5,6 +5,7 @@ import { UserEntity } from 'src/entities/user/user.entity';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { JwtDto } from './dto/jwt.dto';
+import { UserRoleEntity } from 'src/entities/user/user-role.entity';
 
 const loginDtoMock = { email: 'email', password: 'password' };
 const jwtDtoMock = {
@@ -145,6 +146,8 @@ describe('UserService', () => {
         .spyOn<any, any>(configService, 'get')
         .mockReturnValueOnce('1')
         .mockResolvedValueOnce('2');
+
+      jest.spyOn(UserRoleEntity, 'find').mockImplementation(async () => []);
 
       expect(await userService['getTokens'](1)).toEqual(jwtDtoMock);
     });
