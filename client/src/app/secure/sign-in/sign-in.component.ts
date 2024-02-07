@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SecureService } from '../secure.service';
 import { finalize } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '@api/services';
 
 @Component({
     selector: 'coded-sign-in',
     standalone: true,
     imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, RouterLink],
-    providers: [SecureService],
+    providers: [UserService],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss',
 })
@@ -21,7 +21,7 @@ export class SignInComponent {
 
     constructor(
         private fb: FormBuilder,
-        private secureService: SecureService,
+        private userService: UserService,
         private router: Router,
     ) {
         this.userForm = fb.group({
@@ -36,8 +36,8 @@ export class SignInComponent {
         }
         const user = this.userForm.getRawValue();
         this.isLoading = true;
-        this.secureService
-            .signIn(user)
+        this.userService
+            .logIn({ body: user })
             .pipe(
                 finalize(() => {
                     this.isLoading = false;

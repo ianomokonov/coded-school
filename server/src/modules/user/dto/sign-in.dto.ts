@@ -1,5 +1,7 @@
 import { LoginDto } from './login.dto';
 
 export class SignInDto extends LoginDto {
-  name?: string;
+  firstName: string;
+  secondName?: string;
+  surname?: string;
 }

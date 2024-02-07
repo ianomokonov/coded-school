@@ -3,11 +3,13 @@
 import { MarathonDto } from '../models/marathon-dto';
 import { ModuleDto } from '../models/module-dto';
 export interface UserFullInfoDto {
-  activeMarathones: Array<MarathonDto>;
+  activeMarathons: Array<MarathonDto>;
   activeModules: Array<ModuleDto>;
-  completedMarathones: Array<MarathonDto>;
+  completedMarathons: Array<MarathonDto>;
   completedModules: Array<ModuleDto>;
   email: string;
+  firstName: string;
   id: number;
-  name: string;
+  secondName?: string;
+  surname?: string;
 }

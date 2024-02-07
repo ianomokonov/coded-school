@@ -2,6 +2,8 @@
 /* eslint-disable */
 export interface SignInDto {
   email: string;
-  name?: string;
+  firstName: string;
   password: string;
+  secondName?: string;
+  surname?: string;
 }

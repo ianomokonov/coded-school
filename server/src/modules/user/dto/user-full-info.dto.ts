@@ -5,6 +5,6 @@ import { MarathonDto } from 'src/modules/marathon/dto/marathon.dto';
 export class UserFullInfoDto extends UserShortDto {
   activeModules: ModuleDto[];
   completedModules: ModuleDto[];
-  activeMarathones: MarathonDto[];
-  completedMarathones: MarathonDto[];
+  activeMarathons: MarathonDto[];
+  completedMarathons: MarathonDto[];
 }

@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { UserShortDto } from './dto/user.dto';
 import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { PassportUserDto } from './dto/passport.user.dto';
 
 @Injectable()
 export class UserService {
@@ -25,9 +26,8 @@ export class UserService {
   async signIn(dto: SignInDto): Promise<JwtDto> {
     const salt = await genSalt(10);
     const newUser = UserEntity.create({
-      email: dto.email,
+      ...dto,
       password: await hash(dto.password, salt),
-      name: dto.name,
     });
     const { id } = await newUser.save();
 
@@ -61,7 +61,7 @@ export class UserService {
 
     return {
       id: entity.id,
-      name: entity.name,
+      firstName: entity.firstName,
       email: entity.email,
     };
   }
@@ -81,7 +81,7 @@ export class UserService {
 
     return {
       id: entity.id,
-      name: entity.name,
+      firstName: entity.firstName,
       email: entity.email,
       activeModules: entity.modules
         .filter((m) => !m.isCompleted)
@@ -95,18 +95,32 @@ export class UserService {
           id: m.module.id,
           name: m.module.name,
         })),
-      activeMarathones: entity.marathons
+      activeMarathons: entity.marathons
         .filter((m) => !m.isCompleted)
         .map((m) => ({
           id: m.marathon.id,
           name: m.marathon.name,
         })),
-      completedMarathones: entity.marathons
+      completedMarathons: entity.marathons
         .filter((m) => m.isCompleted)
         .map((m) => ({
           id: m.marathon.id,
           name: m.marathon.name,
         })),
+    };
+  }
+
+  async getUserPassport(id: number): Promise<PassportUserDto> {
+    const entity = await UserEntity.findOne({ where: { id } });
+    return {
+      id: entity.id,
+      email: entity.email,
+      firstName: entity.firstName,
+      secondName: entity.secondName,
+      surname: entity.surname,
+      birthDate: entity.birtDate,
+      address: entity.address,
+      gender: entity.gender,
     };
   }
 

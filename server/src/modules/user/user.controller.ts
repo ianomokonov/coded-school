@@ -24,6 +24,7 @@ import { UserShortDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RefreshTokenGuard } from './guards/jwt-refresh.quard';
 import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { PassportUserDto } from './dto/passport.user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -76,9 +77,17 @@ export class UserController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @Get('full-info')
-  @ApiOperation({ summary: 'Получение полной информации пользователя' })
+  @ApiOperation({ summary: 'Получение информации в Личном кабинете' })
   async getUserFullInfo(@UserId() userId: number): Promise<UserFullInfoDto> {
     return this.authService.getUserFullInfo(userId);
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @Get('passport')
+  @ApiOperation({ summary: 'Получение полной информации пользователя' })
+  async getPassportInfo(@UserId() userId: number): Promise<PassportUserDto> {
+    return this.authService.getUserPassport(userId);
   }
 
   @ApiBearerAuth('JWT')

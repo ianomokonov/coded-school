@@ -1,5 +1,7 @@
 export class UserShortDto {
   id: number;
   email: string;
-  name: string;
+  firstName: string;
+  secondName?: string;
+  surname?: string;
 }

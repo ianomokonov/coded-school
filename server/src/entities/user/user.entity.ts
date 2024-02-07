@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserModuleEntity } from '../module/user-module.entity';
 import { UserMarathonEntity } from '../marathon/user-marathon.entity';
+import { GenderEnum } from '../../modules/user/dto/passport.user.dto';
 
 @Entity('user', {
   schema: 'sec',
@@ -26,7 +27,17 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', {
     nullable: true,
   })
-  name: string;
+  secondName: string;
+
+  @Column('varchar', {
+    nullable: false,
+  })
+  firstName: string;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  surname: string;
 
   @Column('varchar', {
     nullable: false,
@@ -37,6 +48,22 @@ export class UserEntity extends BaseEntity {
     nullable: false,
   })
   password: string;
+
+  @Column('date', {
+    nullable: true,
+  })
+  birtDate: Date;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  address: string;
+
+  @Column('enum', {
+    nullable: true,
+    enum: GenderEnum,
+  })
+  gender: GenderEnum;
 
   @Column('varchar', {
     nullable: true,

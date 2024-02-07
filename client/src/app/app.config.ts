@@ -1,17 +1,17 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { routes } from './app.routes';
+import { APP_ROUTES } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { TokenInterceptor } from '@jwt/interceptor';
 import { JwtService } from '@jwt/service';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ModuleService } from '@api/index';
+import { storeTokensInterceptor, tokenInterceptor } from '@jwt/interceptors';
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes),
-        provideHttpClient(withInterceptors([TokenInterceptor])),
+        provideRouter(APP_ROUTES),
+        provideHttpClient(withInterceptors([tokenInterceptor, storeTokensInterceptor])),
         provideAnimations(),
         JwtService,
         ModuleService,

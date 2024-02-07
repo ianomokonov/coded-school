@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { accessToken, refreshToken } from '@jwt/const';
 import { Observable, tap } from 'rxjs';
-import { TokenResponse } from '@jwt/model';
 import { UserService } from '@api/services/user.service';
+import { JwtDto } from '@api/models/jwt-dto';
 
 @Injectable({
     providedIn: null,
@@ -18,7 +18,7 @@ export class JwtService {
         return localStorage.getItem(accessToken);
     }
 
-    public storeTokens(tokens: TokenResponse) {
+    public storeTokens(tokens: JwtDto) {
         localStorage.setItem(accessToken, tokens.token);
         localStorage.setItem(refreshToken, tokens.refreshToken);
     }
@@ -28,9 +28,9 @@ export class JwtService {
         localStorage.removeItem(refreshToken);
     }
 
-    public refreshToken(): Observable<TokenResponse> {
+    public refreshToken(): Observable<JwtDto> {
         return this.userService.refreshTokens().pipe(
-            tap((tokens: TokenResponse) => {
+            tap((tokens: JwtDto) => {
                 this.storeTokens(tokens);
             }),
         );

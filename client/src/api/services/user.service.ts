@@ -9,6 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
+import { getPassportInfo } from '../fn/user/get-passport-info';
+import { GetPassportInfo$Params } from '../fn/user/get-passport-info';
 import { getUser } from '../fn/user/get-user';
 import { GetUser$Params } from '../fn/user/get-user';
 import { getUserFullInfo } from '../fn/user/get-user-full-info';
@@ -18,6 +20,7 @@ import { logIn } from '../fn/user/log-in';
 import { LogIn$Params } from '../fn/user/log-in';
 import { logout } from '../fn/user/logout';
 import { Logout$Params } from '../fn/user/logout';
+import { PassportUserDto } from '../models/passport-user-dto';
 import { patchAuthor } from '../fn/user/patch-author';
 import { PatchAuthor$Params } from '../fn/user/patch-author';
 import { refreshTokens } from '../fn/user/refresh-tokens';
@@ -202,7 +205,7 @@ export class UserService extends BaseService {
   static readonly GetUserFullInfoPath = '/api/user/full-info';
 
   /**
-   * Получение полной информации пользователя.
+   * Получение информации в Личном кабинете.
    *
    *
    *
@@ -216,7 +219,7 @@ export class UserService extends BaseService {
   }
 
   /**
-   * Получение полной информации пользователя.
+   * Получение информации в Личном кабинете.
    *
    *
    *
@@ -228,6 +231,39 @@ export class UserService extends BaseService {
   getUserFullInfo(params?: GetUserFullInfo$Params, context?: HttpContext): Observable<UserFullInfoDto> {
     return this.getUserFullInfo$Response(params, context).pipe(
       map((r: BaseResponse<UserFullInfoDto>): UserFullInfoDto => r.body)
+    );
+  }
+
+  /** Path part for operation `getPassportInfo()` */
+  static readonly GetPassportInfoPath = '/api/user/passport';
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getPassportInfo()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPassportInfo$Response(params?: GetPassportInfo$Params, context?: HttpContext): Observable<BaseResponse<PassportUserDto>> {
+    return getPassportInfo(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getPassportInfo$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPassportInfo(params?: GetPassportInfo$Params, context?: HttpContext): Observable<PassportUserDto> {
+    return this.getPassportInfo$Response(params, context).pipe(
+      map((r: BaseResponse<PassportUserDto>): PassportUserDto => r.body)
     );
   }
 
