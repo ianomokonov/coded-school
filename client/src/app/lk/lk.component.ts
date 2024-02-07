@@ -34,12 +34,12 @@ export class PersonalCabinetComponent implements OnInit {
         });
     }
 
-    isNoDataShow(): boolean {
-        return (
-            !this.userInfo.activeModules?.length &&
-            !this.userInfo.completedModules?.length &&
-            !this.userInfo.activeMarathones?.length &&
-            !this.userInfo.completedMarathones?.length
-        );
-    }
+    // isNoDataShow(): boolean {
+    //     return (
+    //         !this.userInfo.activeModules?.length &&
+    //         !this.userInfo.completedModules?.length &&
+    //         !this.userInfo.activeMarathones?.length &&
+    //         !this.userInfo.completedMarathones?.length
+    //     );
+    // }
 }

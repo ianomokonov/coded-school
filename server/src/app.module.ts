@@ -6,6 +6,8 @@ import { UserModule } from './modules/user/user.module';
 import { ModuleModule } from './modules/module/module.module';
 import { MarathonModule } from './modules/marathon/marathon.module';
 import { AchievementModule } from './modules/achievement/achievement.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [
@@ -17,6 +19,13 @@ import { AchievementModule } from './modules/achievement/achievement.module';
     ConfigModule.forRoot({
       envFilePath: ['.env.local', '.env'],
     }),
+    // AutomapperModule.forRoot([
+    //   {
+    //     name: 'classes',
+    //     strategyInitializer: classes(),
+    //   },
+    // ]),
+    AutomapperModule.forRoot({ strategyInitializer: classes() }),
     UserModule,
     ModuleModule,
     MarathonModule,

@@ -23,8 +23,8 @@ import { JwtDto } from './dto/jwt.dto';
 import { UserShortDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RefreshTokenGuard } from './guards/jwt-refresh.quard';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
 import { RefreshToken } from 'src/decorators/refresh-token.decorator';
+import { UserFullInfoDto } from './dto/user-full-info.dto';
 
 @ApiTags('User')
 @Controller('user')

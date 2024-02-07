@@ -7,7 +7,7 @@ export class UserFullInfoDto extends UserShortDto {
   points: number;
   activeModules: ModuleDto[];
   completedModules: ModuleDto[];
-  activeMarathones: MarathonDto[];
-  completedMarathones: MarathonDto[];
+  activeMarathons: MarathonDto[];
+  completedMarathons: MarathonDto[];
   achievements: AchievementDto[];
 }

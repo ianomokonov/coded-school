@@ -38,11 +38,17 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', {
     nullable: false,
   })
+  /**
+   * @autoMapIgnore
+   */
   password: string;
 
   @Column('varchar', {
     nullable: true,
   })
+  /**
+   * @autoMapIgnore
+   */
   refreshToken: string;
 
   @Column({ default: 0 })
