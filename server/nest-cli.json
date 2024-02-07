@@ -4,9 +4,6 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "plugins": [
-      "@nestjs/swagger",
-      { "name": "@automapper/classes/transformer-plugin" }
-    ]
+    "plugins": ["@nestjs/swagger", "@automapper/classes/transformer-plugin"]
   }
 }
