@@ -21,6 +21,9 @@
     "migration": "typeorm migration:create ./migrations/new-migration"
   },
   "dependencies": {
+    "@automapper/classes": "^8.8.1",
+    "@automapper/core": "^8.8.1",
+    "@automapper/nestjs": "^8.8.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
@@ -32,7 +35,7 @@
     "bcryptjs": "^2.4.3",
     "mysql": "^2.18.1",
     "passport-jwt": "^4.0.1",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.19"
   },
@@ -69,7 +72,16 @@
     ],
     "rootDir": "src",
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
+      "^src/(.*)$": "<rootDir>/$1",
+      "@core/(.*)$": "<rootDir>/core/$1",
+      "@entities/(.*)$": "<rootDir>/common/entities/$1",
+      "@decorators/(.*)$": "<rootDir>/common/decorators/$1",
+      "@configs/(.*)$": "<rootDir>/configs/$1",
+      "@modules/(.*)$": "<rootDir>/modules/$1",
+      "@dtos/(.*)$": "<rootDir>/common/dtos/$1",
+      "@guards/(.*)$": "<rootDir>/common/guards/$1",
+      "@strategies/(.*)$": "<rootDir>/common/strategies/$1",
+      "@profiles/(.*)$": "<rootDir>/common/profiles/$1"
     },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

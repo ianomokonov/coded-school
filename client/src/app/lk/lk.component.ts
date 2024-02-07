@@ -38,8 +38,8 @@ export class PersonalCabinetComponent implements OnInit {
         return (
             !this.userInfo.activeModules?.length &&
             !this.userInfo.completedModules?.length &&
-            !this.userInfo.activeMarathones?.length &&
-            !this.userInfo.completedMarathones?.length
+            !this.userInfo.activeMarathons?.length &&
+            !this.userInfo.completedMarathons?.length
         );
     }
 }

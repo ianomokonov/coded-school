@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SaveAchievementDto } from './dto/save-achievement.dto';
-import { AchievementDto } from './dto/achievement.dto';
-import { AchievementEntity } from 'src/entities/achievement/achievement.entity';
-import { UserAchievementEntity } from 'src/entities/achievement/user-achievement.entity';
-import { UserEntity } from 'src/entities/user/user.entity';
+import { SaveAchievementDto } from '@dtos/achievment/save-achievement.dto';
+import { AchievementDto } from '@dtos/achievment/achievement.dto';
+import { AchievementEntity } from '@entities/achievement/achievement.entity';
+import { UserAchievementEntity } from '@entities/achievement/user-achievement.entity';
+import { UserEntity } from '@entities/user/user.entity';
 
 @Injectable()
 export class AchievementService {

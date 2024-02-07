@@ -5,9 +5,9 @@ import { MarathonDto } from '../models/marathon-dto';
 import { ModuleDto } from '../models/module-dto';
 export interface UserFullInfoDto {
   achievements: Array<AchievementDto>;
-  activeMarathones: Array<MarathonDto>;
+  activeMarathons: Array<MarathonDto>;
   activeModules: Array<ModuleDto>;
-  completedMarathones: Array<MarathonDto>;
+  completedMarathons: Array<MarathonDto>;
   completedModules: Array<ModuleDto>;
   email: string;
   id: number;

@@ -1,11 +1,12 @@
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
-import { UserEntity } from 'src/entities/user/user.entity';
+import { UserEntity } from '@entities/user/user.entity';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
-import { JwtDto } from './dto/jwt.dto';
-import { UserRoleEntity } from 'src/entities/user/user-role.entity';
+import { JwtDto } from '@dtos/user/jwt.dto';
+import { UserRoleEntity } from '@entities/user/user-role.entity';
+import { Mapper } from '@automapper/core';
 
 const loginDtoMock = { email: 'email', password: 'password' };
 const jwtDtoMock = {
@@ -17,11 +18,12 @@ describe('UserService', () => {
   let userService: UserService;
   let jwtService: JwtService;
   let configService: ConfigService;
+  let mapper: Mapper;
 
   beforeEach(() => {
     jwtService = new JwtService();
     configService = new ConfigService();
-    userService = new UserService(jwtService, configService);
+    userService = new UserService(mapper, jwtService, configService);
   });
 
   describe('signIn', () => {

@@ -6,19 +6,22 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcryptjs';
-import { LoginDto } from './dto/login.dto';
-import { SignInDto } from './dto/sign-in.dto';
-import { UserEntity } from 'src/entities/user/user.entity';
-import { JwtDto } from './dto/jwt.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginDto } from '@dtos/user/login.dto';
+import { SignInDto } from '@dtos/user/sign-in.dto';
+import { UserEntity } from '@entities/user/user.entity';
+import { JwtDto } from '@dtos/user/jwt.dto';
+import { UpdateUserDto } from '@dtos/user/update-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserShortDto } from './dto/user.dto';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
-import { UserRoleEntity } from 'src/entities/user/user-role.entity';
+import { UserRoleEntity } from '@entities/user/user-role.entity';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
 
 @Injectable()
 export class UserService {
   constructor(
+    @InjectMapper() private mapper: Mapper,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -60,19 +63,14 @@ export class UserService {
   }
 
   async getUser(id: number): Promise<UserShortDto> {
-    const entity = await UserEntity.findOne({
+    const user = await UserEntity.findOne({
       where: { id },
     });
-
-    return {
-      id: entity.id,
-      name: entity.name,
-      email: entity.email,
-    };
+    return this.mapper.map(user, UserEntity, UserShortDto);
   }
 
   async getUserFullInfo(id: number): Promise<UserFullInfoDto> {
-    const entity = await UserEntity.findOne({
+    const user = await UserEntity.findOne({
       where: { id },
       relations: {
         modules: {
@@ -86,42 +84,7 @@ export class UserService {
         },
       },
     });
-
-    return {
-      id: entity.id,
-      name: entity.name,
-      email: entity.email,
-      points: entity.points,
-      activeModules: entity.modules
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      completedModules: entity.modules
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      activeMarathones: entity.marathons
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
-      completedMarathones: entity.marathons
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
-      achievements: entity.achievements.map((a) => ({
-        id: a.achievement.id,
-        name: a.achievement.name,
-        points: a.achievement.points,
-      })),
-    };
+    return this.mapper.map(user, UserEntity, UserFullInfoDto);
   }
 
   async updateUser(userId: number, dto: UpdateUserDto) {

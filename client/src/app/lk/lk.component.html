@@ -25,16 +25,16 @@
             </div>
         </p-card>
     </div>
-    <div class="mb-3" *ngIf="userInfo.activeMarathones?.length">
+    <div class="mb-3" *ngIf="userInfo.activeMarathons?.length">
         <p-card header="Активные марафоны">
-            <div class="border-bottom" *ngFor="let marathon of userInfo.activeMarathones">
+            <div class="border-bottom" *ngFor="let marathon of userInfo.activeMarathons">
                 {{ marathon.name }}
             </div>
         </p-card>
     </div>
-    <div class="mb-3" *ngIf="userInfo.completedMarathones?.length">
+    <div class="mb-3" *ngIf="userInfo.completedMarathons?.length">
         <p-card header="Архивные марафоны">
-            <div class="border-bottom" *ngFor="let marathon of userInfo.completedMarathones">
+            <div class="border-bottom" *ngFor="let marathon of userInfo.completedMarathons">
                 {{ marathon.name }}
             </div>
         </p-card>

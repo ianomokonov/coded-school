@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SaveMarathonDto } from './dto/save-marathon.dto';
-import { MarathonEntity } from 'src/entities/marathon/marathon.entity';
-import { MarathonDto } from './dto/marathon.dto';
-import { UserMarathonEntity } from 'src/entities/marathon/user-marathon.entity';
+import { SaveMarathonDto } from '@dtos/marathon/save-marathon.dto';
+import { MarathonEntity } from '@entities/marathon/marathon.entity';
+import { MarathonDto } from '@dtos/marathon/marathon.dto';
+import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
 
 @Injectable()
 export class MarathonService {
