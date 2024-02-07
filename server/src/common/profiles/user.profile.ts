@@ -1,4 +1,4 @@
-import { UserEntity } from './user.entity';
+import { UserEntity } from '@entities/user/user.entity';
 import {
   createMap,
   extend,
@@ -9,14 +9,14 @@ import {
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { UserFullInfoDto } from '../../modules/user/dto/user-full-info.dto';
-import { UserShortDto } from '../../modules/user/dto/user.dto';
-import { ModuleDto } from '../../modules/module/dto/module.dto';
-import { UserModuleEntity } from '../module/user-module.entity';
-import { UserMarathonEntity } from '../marathon/user-marathon.entity';
-import { MarathonDto } from '../../modules/marathon/dto/marathon.dto';
-import { UserAchievementEntity } from '../achievement/user-achievement.entity';
-import { AchievementDto } from '../../modules/achievement/dto/achievement.dto';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { ModuleDto } from '@dtos/module/module.dto';
+import { MarathonDto } from '@dtos/marathon/marathon.dto';
+import { AchievementDto } from '@dtos/achievment/achievement.dto';
+import { ModuleEntity } from '@entities/module/module.entity';
+import { MarathonEntity } from '@entities/marathon/marathon.entity';
+import { AchievementEntity } from '@entities/achievement/achievement.entity';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -27,6 +27,9 @@ export class UserProfile extends AutomapperProfile {
   get profile(): MappingProfile {
     return (mapper) => {
       createMap(mapper, UserEntity, UserShortDto);
+      createMap(mapper, ModuleEntity, ModuleDto);
+      createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(mapper, AchievementEntity, AchievementDto);
       createMap(
         mapper,
         UserEntity,
@@ -34,48 +37,41 @@ export class UserProfile extends AutomapperProfile {
         extend(UserEntity, UserShortDto),
         forMember(
           (destination) => destination.activeModules,
-          mapFrom(
-            (source) =>
-              source.modules
-                .filter((m) => !m.isCompleted)
-                .map((m) => mapper.map(m, UserModuleEntity, ModuleDto)),
-
-            // mapper.map(
-            //   source.modules.filter((m) => !m.isCompleted),
-            //   UserModuleEntity,
-            //   ModuleDto,
-            // ),
+          mapFrom((source) =>
+            source.modules
+              .filter((e) => !e.isCompleted)
+              .map((e) => mapper.map(e.module, ModuleEntity, ModuleDto)),
           ),
         ),
         forMember(
           (destination) => destination.completedModules,
           mapFrom((source) =>
             source.modules
-              .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m, UserModuleEntity, ModuleDto)),
+              .filter((e) => e.isCompleted)
+              .map((e) => mapper.map(e.module, ModuleEntity, ModuleDto)),
           ),
         ),
         forMember(
           (destination) => destination.activeMarathons,
           mapFrom((source) =>
             source.marathons
-              .filter((m) => !m.isCompleted)
-              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
+              .filter((e) => !e.isCompleted)
+              .map((e) => mapper.map(e.marathon, MarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
           (destination) => destination.completedMarathons,
           mapFrom((source) =>
             source.marathons
-              .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
+              .filter((e) => e.isCompleted)
+              .map((e) => mapper.map(e.marathon, MarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
           (destination) => destination.achievements,
           mapFrom((source) =>
-            source.achievements.map((a) =>
-              mapper.map(a, UserAchievementEntity, AchievementDto),
+            source.achievements.map((e) =>
+              mapper.map(e.achievement, AchievementEntity, AchievementDto),
             ),
           ),
         ),

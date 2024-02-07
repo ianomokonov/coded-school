@@ -10,9 +10,9 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { SaveAchievementDto } from './dto/save-achievement.dto';
-import { UserId } from 'src/decorators/author-id.decorator';
-import { JwtAuthGuard } from '../user/guards/jwt.guard';
+import { SaveAchievementDto } from '@dtos/achievment/save-achievement.dto';
+import { UserId } from '../../common/decorators/author-id.decorator';
+import { JwtAuthGuard } from '@guards/user/jwt.guard';
 
 @ApiTags('Achievement')
 @Controller('achievement')

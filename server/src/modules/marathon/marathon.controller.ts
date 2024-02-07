@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MarathonService } from './marathon.service';
-import { UserId } from 'src/decorators/author-id.decorator';
-import { JwtAuthGuard } from '../user/guards/jwt.guard';
-import { SaveMarathonDto } from './dto/save-marathon.dto';
+import { UserId } from '@decorators/author-id.decorator';
+import { JwtAuthGuard } from '@guards/user/jwt.guard';
+import { SaveMarathonDto } from '@dtos/marathon/save-marathon.dto';
 
 @ApiTags('Marathon')
 @Controller('marathon')
