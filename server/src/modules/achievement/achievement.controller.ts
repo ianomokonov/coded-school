@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SaveAchievementDto } from '@dtos/achievment/save-achievement.dto';
-import { UserId } from '../../common/decorators/author-id.decorator';
+import { UserId } from '@decorators/author-id.decorator';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
 
 @ApiTags('Achievement')
