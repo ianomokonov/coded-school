@@ -9,6 +9,7 @@ import { JwtService } from '@jwt/service';
 import { catchError, of, switchMap, throwError } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
 import { Router } from '@angular/router';
+import { addToken } from '@jwt/const';
 
 export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
     const tokenService = inject(JwtService);
@@ -61,19 +62,10 @@ const handle401Error = (
             }),
             catchError((err) => {
                 router.navigate(['/sign-in']);
-                tokenService.removeTokens();
                 return throwError(() => err);
             }),
         );
     }
     router.navigate(['/sign-in']);
     return next(request);
-};
-
-const addToken = (request: HttpRequest<unknown>, token: string) => {
-    return request.clone({
-        setHeaders: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
 };

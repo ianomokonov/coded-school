@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { accessToken, refreshToken } from '@jwt/const';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { TokenResponse } from '@jwt/model';
 import { UserService } from '@api/services/user.service';
 
@@ -15,16 +15,16 @@ export class JwtService {
     }
 
     public getToken() {
-        return localStorage.getItem(accessToken);
+        return sessionStorage.getItem(accessToken);
     }
 
     public storeTokens(tokens: TokenResponse) {
-        localStorage.setItem(accessToken, tokens.token);
+        sessionStorage.setItem(accessToken, tokens.token);
         localStorage.setItem(refreshToken, tokens.refreshToken);
     }
 
     public removeTokens() {
-        localStorage.removeItem(accessToken);
+        sessionStorage.removeItem(accessToken);
         localStorage.removeItem(refreshToken);
     }
 
@@ -32,6 +32,10 @@ export class JwtService {
         return this.userService.refreshTokens().pipe(
             tap((tokens: TokenResponse) => {
                 this.storeTokens(tokens);
+            }),
+            catchError((err) => {
+                this.removeTokens();
+                return throwError(() => err);
             }),
         );
     }

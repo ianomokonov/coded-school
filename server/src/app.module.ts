@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { getDataSource } from './core/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -23,7 +22,6 @@ import { AchievementModule } from './modules/achievement/achievement.module';
     MarathonModule,
     AchievementModule,
   ],
-  providers: [AppService],
 })
 export class AppModule {
   public static getDatabaseConfig(): unknown {
