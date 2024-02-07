@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { RoleEntity } from './role.entity';
 import { UserEntity } from './user.entity';
+import { AutoMap } from '@automapper/classes';
 
 @Entity('user_role', {
   schema: 'sec',
@@ -24,9 +25,11 @@ export class UserRoleEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.roles)
   @JoinColumn({ name: 'userId' })
+  @AutoMap(() => UserEntity)
   user: UserEntity;
 
   @ManyToOne(() => RoleEntity)
   @JoinColumn({ name: 'roleId' })
+  @AutoMap(() => RoleEntity)
   role: RoleEntity;
 }

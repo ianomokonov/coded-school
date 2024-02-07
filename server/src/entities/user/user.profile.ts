@@ -12,11 +12,11 @@ import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { UserFullInfoDto } from '../../modules/user/dto/user-full-info.dto';
 import { UserShortDto } from '../../modules/user/dto/user.dto';
 import { ModuleDto } from '../../modules/module/dto/module.dto';
-import { UserModuleEntity } from '../module/user-module.entity';
-import { UserMarathonEntity } from '../marathon/user-marathon.entity';
 import { MarathonDto } from '../../modules/marathon/dto/marathon.dto';
-import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 import { AchievementDto } from '../../modules/achievement/dto/achievement.dto';
+import { ModuleEntity } from '../module/module.entity';
+import { MarathonEntity } from '../marathon/marathon.entity';
+import { AchievementEntity } from '../achievement/achievement.entity';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -27,6 +27,10 @@ export class UserProfile extends AutomapperProfile {
   get profile(): MappingProfile {
     return (mapper) => {
       createMap(mapper, UserEntity, UserShortDto);
+      createMap(mapper, ModuleEntity, ModuleDto);
+      createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(mapper, AchievementEntity, AchievementDto);
+      createMap(mapper, ModuleEntity, ModuleDto);
       createMap(
         mapper,
         UserEntity,
@@ -38,7 +42,7 @@ export class UserProfile extends AutomapperProfile {
             (source) =>
               source.modules
                 .filter((m) => !m.isCompleted)
-                .map((m) => mapper.map(m, UserModuleEntity, ModuleDto)),
+                .map((m) => mapper.map(m.module, ModuleEntity, ModuleDto)),
 
             // mapper.map(
             //   source.modules.filter((m) => !m.isCompleted),
@@ -52,7 +56,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.modules
               .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m, UserModuleEntity, ModuleDto)),
+              .map((m) => mapper.map(m.module, ModuleEntity, ModuleDto)),
           ),
         ),
         forMember(
@@ -60,7 +64,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => !m.isCompleted)
-              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
@@ -68,14 +72,14 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
           (destination) => destination.achievements,
           mapFrom((source) =>
             source.achievements.map((a) =>
-              mapper.map(a, UserAchievementEntity, AchievementDto),
+              mapper.map(a.achievement, AchievementEntity, AchievementDto),
             ),
           ),
         ),

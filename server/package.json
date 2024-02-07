@@ -35,11 +35,12 @@
     "bcryptjs": "^2.4.3",
     "mysql": "^2.18.1",
     "passport-jwt": "^4.0.1",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.19"
   },
   "devDependencies": {
+    "@nartc/automapper-transformer-plugin": "^1.0.21",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
