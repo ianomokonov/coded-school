@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ModuleEntity } from 'src/entities/module/module.entity';
-import { SaveModuleDto } from './dto/create-module.dto';
-import { UserModuleEntity } from 'src/entities/module/user-module.entity';
-import { ModuleDto } from './dto/module.dto';
+import { ModuleEntity } from '@entities/module/module.entity';
+import { SaveModuleDto } from '@dtos/module/create-module.dto';
+import { UserModuleEntity } from '@entities/module/user-module.entity';
+import { ModuleDto } from '@dtos/module/module.dto';
 
 @Injectable()
 export class ModuleService {
@@ -20,8 +20,7 @@ export class ModuleService {
   }
 
   async readModule(moduleId: number): Promise<ModuleDto> {
-    const module = await ModuleEntity.findOne({ where: { id: moduleId } });
-    return module;
+    return await ModuleEntity.findOne({ where: { id: moduleId } });
   }
 
   async getAllModules(): Promise<ModuleDto[]> {

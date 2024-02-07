@@ -4,10 +4,17 @@
     </div>
     <p-sidebar [(visible)]="sideBarVisible" position="right" [showCloseIcon]="false">
         <div class="flex flex-column">
-            <h1>{{ userInfo.firstName }}</h1>
+            <h1>{{ userInfo.firstName }} ({{ userInfo.points }})</h1>
             <h3>{{ userInfo.email }}</h3>
             <p-button class="mb-3" routerLink="passport">Профиль</p-button>
             <p-button (onClick)="logOut()">Выйти</p-button>
+    </div>
+    <div class="mb-3" *ngIf="userInfo.achievements?.length">
+        <p-card header="Достижения">
+            <div class="border-bottom" *ngFor="let achievement of userInfo.achievements">
+                {{ achievement.name }}
+            </div>
+        </p-card>
         </div>
     </p-sidebar>
     <div class="mb-3">
@@ -20,7 +27,6 @@
     </div>
     <div class="mb-3">
         <p-card header="Архивные модули">
-            <h3 *ngIf="!userInfo.completedModules?.length">Нет архивных модулей</h3>
             <div class="border-bottom" *ngFor="let module of userInfo.completedModules">
                 {{ module.name }}
             </div>

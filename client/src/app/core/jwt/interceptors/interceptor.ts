@@ -62,7 +62,6 @@ const handle401Error = (
             }),
             catchError((err) => {
                 router.navigate(['/sign-in']);
-                tokenService.removeTokens();
                 return throwError(() => err);
             }),
         );

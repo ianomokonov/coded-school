@@ -6,24 +6,32 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcryptjs';
-import { LoginDto } from './dto/login.dto';
-import { SignInDto } from './dto/sign-in.dto';
-import { UserEntity } from 'src/entities/user/user.entity';
-import { JwtDto } from './dto/jwt.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginDto } from '@dtos/user/login.dto';
+import { SignInDto } from '@dtos/user/sign-in.dto';
+import { UserEntity } from '@entities/user/user.entity';
+import { JwtDto } from '@dtos/user/jwt.dto';
+import { UpdateUserDto } from '@dtos/user/update-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserShortDto } from './dto/user.dto';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { UserRoleEntity } from '@entities/user/user-role.entity';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
 import { PassportUserDto } from './dto/passport.user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
+    @InjectMapper() private mapper: Mapper,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
   async signIn(dto: SignInDto): Promise<JwtDto> {
+    const user = await this.findUserByEmail(dto.email);
+    if (user) {
+      throw new UnauthorizedException('Пользователь уже зарегистрирован');
+    }
     const salt = await genSalt(10);
     const newUser = UserEntity.create({
       ...dto,
@@ -55,19 +63,14 @@ export class UserService {
   }
 
   async getUser(id: number): Promise<UserShortDto> {
-    const entity = await UserEntity.findOne({
+    const user = await UserEntity.findOne({
       where: { id },
     });
-
-    return {
-      id: entity.id,
-      firstName: entity.firstName,
-      email: entity.email,
-    };
+    return this.mapper.map(user, UserEntity, UserShortDto);
   }
 
   async getUserFullInfo(id: number): Promise<UserFullInfoDto> {
-    const entity = await UserEntity.findOne({
+    const user = await UserEntity.findOne({
       where: { id },
       relations: {
         modules: {
@@ -76,38 +79,12 @@ export class UserService {
         marathons: {
           marathon: true,
         },
+        achievements: {
+          achievement: true,
+        },
       },
     });
-
-    return {
-      id: entity.id,
-      firstName: entity.firstName,
-      email: entity.email,
-      activeModules: entity.modules
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      completedModules: entity.modules
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.module.id,
-          name: m.module.name,
-        })),
-      activeMarathons: entity.marathons
-        .filter((m) => !m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
-      completedMarathons: entity.marathons
-        .filter((m) => m.isCompleted)
-        .map((m) => ({
-          id: m.marathon.id,
-          name: m.marathon.name,
-        })),
-    };
+    return this.mapper.map(user, UserEntity, UserFullInfoDto);
   }
 
   async getUserPassport(id: number): Promise<PassportUserDto> {
@@ -165,10 +142,15 @@ export class UserService {
   }
 
   private async getTokens(id: number): Promise<JwtDto> {
+    const roles = await UserRoleEntity.find({
+      where: { userId: id },
+      relations: { role: true },
+    });
     const [token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           id,
+          roles: roles.map((r) => r.role.name),
         },
         {
           secret: this.configService.get<string>('JWT_SECRET'),

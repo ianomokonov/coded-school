@@ -44,7 +44,7 @@ export class SignInComponent {
                 }),
             )
             .subscribe(() => {
-                this.router.navigate(['lk']);
+                this.router.navigate(['/lk']);
             });
     }
 }
