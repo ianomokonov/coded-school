@@ -1,4 +1,4 @@
-import { UserEntity } from './user.entity';
+import { UserEntity } from '@entities/user/user.entity';
 import {
   createMap,
   extend,
@@ -9,14 +9,14 @@ import {
 } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { UserFullInfoDto } from '../../modules/user/dto/user-full-info.dto';
-import { UserShortDto } from '../../modules/user/dto/user.dto';
-import { ModuleDto } from '../../modules/module/dto/module.dto';
-import { MarathonDto } from '../../modules/marathon/dto/marathon.dto';
-import { AchievementDto } from '../../modules/achievement/dto/achievement.dto';
-import { ModuleEntity } from '../module/module.entity';
-import { MarathonEntity } from '../marathon/marathon.entity';
-import { AchievementEntity } from '../achievement/achievement.entity';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { ModuleDto } from '@dtos/module/module.dto';
+import { MarathonDto } from '@dtos/marathon/marathon.dto';
+import { AchievementDto } from '@dtos/achievment/achievement.dto';
+import { ModuleEntity } from '@entities/module/module.entity';
+import { MarathonEntity } from '@entities/marathon/marathon.entity';
+import { AchievementEntity } from '@entities/achievement/achievement.entity';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -30,7 +30,6 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
       createMap(mapper, AchievementEntity, AchievementDto);
-      createMap(mapper, ModuleEntity, ModuleDto);
       createMap(
         mapper,
         UserEntity,
@@ -38,17 +37,10 @@ export class UserProfile extends AutomapperProfile {
         extend(UserEntity, UserShortDto),
         forMember(
           (destination) => destination.activeModules,
-          mapFrom(
-            (source) =>
-              source.modules
-                .filter((m) => !m.isCompleted)
-                .map((m) => mapper.map(m.module, ModuleEntity, ModuleDto)),
-
-            // mapper.map(
-            //   source.modules.filter((m) => !m.isCompleted),
-            //   UserModuleEntity,
-            //   ModuleDto,
-            // ),
+          mapFrom((source) =>
+            source.modules
+              .filter((m) => !m.isCompleted)
+              .map((m) => mapper.map(m.module, ModuleEntity, ModuleDto)),
           ),
         ),
         forMember(

@@ -1,8 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
 import { AchievementService } from './achievement.service';
-import { UserAchievementEntity } from 'src/entities/achievement/user-achievement.entity';
-import { AchievementEntity } from 'src/entities/achievement/achievement.entity';
-import { UserEntity } from 'src/entities/user/user.entity';
+import { UserAchievementEntity } from '@entities/achievement/user-achievement.entity';
+import { AchievementEntity } from '@entities/achievement/achievement.entity';
+import { UserEntity } from '@entities/user/user.entity';
 
 describe('AchievementService', () => {
   let achievementService: AchievementService;

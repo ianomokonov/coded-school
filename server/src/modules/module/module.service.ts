@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ModuleEntity } from 'src/entities/module/module.entity';
-import { SaveModuleDto } from './dto/create-module.dto';
-import { UserModuleEntity } from 'src/entities/module/user-module.entity';
-import { ModuleDto } from './dto/module.dto';
+import { ModuleEntity } from '../../common/entities/module/module.entity';
+import { SaveModuleDto } from '@dtos/module/create-module.dto';
+import { UserModuleEntity } from '../../common/entities/module/user-module.entity';
+import { ModuleDto } from '@dtos/module/module.dto';
 
 @Injectable()
 export class ModuleService {

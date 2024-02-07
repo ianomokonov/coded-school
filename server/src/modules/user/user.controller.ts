@@ -14,17 +14,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserId } from 'src/decorators/author-id.decorator';
-import { LoginDto } from './dto/login.dto';
-import { SignInDto } from './dto/sign-in.dto';
-import { JwtAuthGuard } from './guards/jwt.guard';
+import { UserId } from '@decorators/author-id.decorator';
+import { LoginDto } from '@dtos/user/login.dto';
+import { SignInDto } from '@dtos/user/sign-in.dto';
+import { JwtAuthGuard } from '@guards/user/jwt.guard';
 import { UserService } from './user.service';
-import { JwtDto } from './dto/jwt.dto';
-import { UserShortDto } from './dto/user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { RefreshTokenGuard } from './guards/jwt-refresh.quard';
-import { RefreshToken } from 'src/decorators/refresh-token.decorator';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { JwtDto } from '@dtos/user/jwt.dto';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { UpdateUserDto } from '@dtos/user/update-user.dto';
+import { RefreshTokenGuard } from '@guards/user/jwt-refresh.quard';
+import { RefreshToken } from '@decorators/refresh-token.decorator';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
 
 @ApiTags('User')
 @Controller('user')

@@ -6,17 +6,17 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcryptjs';
-import { LoginDto } from './dto/login.dto';
-import { SignInDto } from './dto/sign-in.dto';
-import { UserEntity } from 'src/entities/user/user.entity';
-import { JwtDto } from './dto/jwt.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginDto } from '@dtos/user/login.dto';
+import { SignInDto } from '@dtos/user/sign-in.dto';
+import { UserEntity } from '@entities/user/user.entity';
+import { JwtDto } from '@dtos/user/jwt.dto';
+import { UpdateUserDto } from '@dtos/user/update-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserRoleEntity } from 'src/entities/user/user-role.entity';
+import { UserRoleEntity } from '@entities/user/user-role.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { UserShortDto } from './dto/user.dto';
-import { UserFullInfoDto } from './dto/user-full-info.dto';
+import { UserShortDto } from '@dtos/user/user.dto';
+import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
 
 @Injectable()
 export class UserService {

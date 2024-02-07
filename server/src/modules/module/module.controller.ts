@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ModuleService } from './module.service';
-import { UserId } from 'src/decorators/author-id.decorator';
-import { JwtAuthGuard } from '../user/guards/jwt.guard';
-import { SaveModuleDto } from './dto/create-module.dto';
-import { Role, Roles } from 'src/decorators/roles.decorator';
-import { RolesGuard } from '../user/guards/roles.guard';
+import { UserId } from '@decorators/author-id.decorator';
+import { JwtAuthGuard } from '@guards/user/jwt.guard';
+import { SaveModuleDto } from '@dtos/module/create-module.dto';
+import { Role, Roles } from '@decorators/roles.decorator';
+import { RolesGuard } from '@guards/user/roles.guard';
 
 @ApiTags('Module')
 @Controller('module')

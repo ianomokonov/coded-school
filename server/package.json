@@ -73,7 +73,16 @@
     ],
     "rootDir": "src",
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
+      "^src/(.*)$": "<rootDir>/$1",
+      "@core/(.*)$": "<rootDir>/core/$1",
+      "@entities/(.*)$": "<rootDir>/common/entities/$1",
+      "@decorators/(.*)$": "<rootDir>/common/decorators/$1",
+      "@configs/(.*)$": "<rootDir>/configs/$1",
+      "@modules/(.*)$": "<rootDir>/modules/$1",
+      "@dtos/(.*)$": "<rootDir>/common/dtos/$1",
+      "@guards/(.*)$": "<rootDir>/common/guards/$1",
+      "@strategies/(.*)$": "<rootDir>/common/strategies/$1",
+      "@profiles/(.*)$": "<rootDir>/common/profiles/$1"
     },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

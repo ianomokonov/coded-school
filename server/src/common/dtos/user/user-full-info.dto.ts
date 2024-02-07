@@ -1,7 +1,7 @@
-import { ModuleDto } from 'src/modules/module/dto/module.dto';
+import { ModuleDto } from '@dtos/module/module.dto';
 import { UserShortDto } from './user.dto';
-import { MarathonDto } from 'src/modules/marathon/dto/marathon.dto';
-import { AchievementDto } from 'src/modules/achievement/dto/achievement.dto';
+import { MarathonDto } from '@dtos/marathon/marathon.dto';
+import { AchievementDto } from '@dtos/achievment/achievement.dto';
 import { AutoMap } from '@automapper/classes';
 
 export class UserFullInfoDto extends UserShortDto {
