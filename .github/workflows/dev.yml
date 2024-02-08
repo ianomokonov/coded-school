@@ -55,7 +55,6 @@ jobs:
 
       - run: cd server/dist && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/server # полный путь до папки, куда нужно скопировать файлы
       - run: cd client/dist/coded-school/browser && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress --delete . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/public_html # полный путь до папки, куда нужно скопировать файлы
-      - run: cd client/htaccess && rsync -e "ssh -i $HOME/.ssh/secret_key -o StrictHostKeyChecking=no" --archive --compress . nomokoiw@nomokoiw.beget.tech:/home/n/nomokoiw/dev.codedschool.ru/public_html # полный путь до папки, куда нужно скопировать файлы
 
       - name: Copy server dependences
         if: steps.cache-npm-server.cache-hit != 'true'
