@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { GenderEnum } from '@shared/enums/gender.enum';
 import { DestroyService } from '@core/destroy.service';
 import { PassportUserDto } from '@api/models/passport-user-dto';
+import { LabelValue } from '@shared/models/label.model';
 
 @Component({
     selector: 'coded-account-data',
@@ -35,6 +36,21 @@ export class AccountDataComponent implements OnInit {
 
     passportForm: FormGroup;
 
+    readonly genderValues: LabelValue[] = [
+        {
+            label: 'Мужской',
+            value: GenderEnum.MALE,
+        },
+        {
+            label: 'Женский',
+            value: GenderEnum.FEMALE,
+        },
+        {
+            label: 'Не указан',
+            value: GenderEnum.UNSET,
+        },
+    ];
+
     constructor(private fb: FormBuilder) {
         this.passportForm = this.fb.group({
             firstName: ['', Validators.required],
@@ -52,23 +68,6 @@ export class AccountDataComponent implements OnInit {
             ...this.passportData,
             birthDate: this.passportData.birthDate ? new Date(this.passportData.birthDate) : '',
         });
-    }
-
-    getGenderValues(): Record<string, string>[] {
-        return [
-            {
-                label: 'Мужской',
-                value: GenderEnum.MALE,
-            },
-            {
-                label: 'Женский',
-                value: GenderEnum.FEMALE,
-            },
-            {
-                label: 'Не указан',
-                value: GenderEnum.UNSET,
-            },
-        ];
     }
 
     dateFormat(date: Date): void {
