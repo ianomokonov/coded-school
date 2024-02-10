@@ -5,7 +5,7 @@ import { UserEntity } from '@entities/user/user.entity';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { JwtDto } from '@dtos/user/jwt.dto';
-import { UserRoleEntity } from '@entities/user/user-role.entity';
+import { UserRoleEntity } from '@entities/role/user-role.entity';
 import { Mapper } from '@automapper/core';
 import { MailService } from '@mail/service';
 import { SignUpDto } from '@dtos/user/sign-up.dto';

@@ -11,4 +11,8 @@ export const PERSONAL_CABINET_ROUTES: Routes = [
         loadComponent: () =>
             import('./passport/passport.component').then((c) => c.PassportComponent),
     },
+    {
+        path: 'notes',
+        loadChildren: () => import('./notes/notes.routes').then((m) => m.NOTES_ROUTES),
+    },
 ];

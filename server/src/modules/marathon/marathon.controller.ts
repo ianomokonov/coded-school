@@ -28,7 +28,7 @@ export class MarathonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Создать марафон' })
-  async create(@Body() dto: SaveMarathonDto) {
+  async createUserMarathon(@Body() dto: SaveMarathonDto) {
     return this.marathonService.createMarathon(dto);
   }
 
@@ -36,21 +36,24 @@ export class MarathonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Изменить марафон' })
-  async update(@Param('id') id: number, @Body() dto: SaveMarathonDto) {
+  async updateUserMarathon(
+    @Param('id') id: number,
+    @Body() dto: SaveMarathonDto,
+  ) {
     return this.marathonService.updateMarathon(id, dto);
   }
   @Delete(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Удалить марафон' })
-  async delete(@Param('id') id: number) {
+  async deleteUserMarathon(@Param('id') id: number) {
     return this.marathonService.deleteMarathon(id);
   }
   @Get(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить марафон' })
-  async read(@Param('id') id: number) {
+  async readUserMarathon(@Param('id') id: number) {
     return this.marathonService.readMarathon(id);
   }
   @Post(':id/start')

@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from '@entities/user/user.entity';
 import { JwtDto } from '@dtos/user/jwt.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserRoleEntity } from '@entities/user/user-role.entity';
+import { UserRoleEntity } from '@entities/role/user-role.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserShortDto } from '@dtos/user/user.dto';

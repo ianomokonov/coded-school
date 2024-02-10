@@ -8,6 +8,7 @@ import { UserService } from './services/user.service';
 import { ModuleService } from './services/module.service';
 import { MarathonService } from './services/marathon.service';
 import { AchievementService } from './services/achievement.service';
+import { NotesService } from './services/notes.service';
 
 /**
  * Module that provides all services and configuration.
@@ -21,6 +22,7 @@ import { AchievementService } from './services/achievement.service';
     ModuleService,
     MarathonService,
     AchievementService,
+    NotesService,
     ApiConfiguration
   ],
 })

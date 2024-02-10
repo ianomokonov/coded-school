@@ -1,6 +1,12 @@
 <div class="container passport mb-5" *ngIf="passport">
     <div class="flex justify-content-between mt-5">
-        <p-avatar shape="circle" icon="pi pi-angle-left" size="large" routerLink="/lk"></p-avatar>
+        <p-avatar
+            class="cursor-pointer"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
         <coded-avatar [userInfo]="passport"></coded-avatar>
     </div>
     <coded-account-data

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleEntity } from './role.entity';
-import { UserEntity } from './user.entity';
+import { UserEntity } from '../user/user.entity';
 import { AutoMap } from '@automapper/classes';
 
 @Entity('user_role', {

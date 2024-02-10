@@ -6,16 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveModuleDto } from '../../models/save-module-dto';
+import { NoteDto } from '../../models/note-dto';
 
-export interface Create$Params {
-      body: SaveModuleDto
+export interface GetAllNotes$Params {
+  isFavorite: boolean;
 }
 
-export function create(http: HttpClient, rootUrl: string, params: Create$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-  const rb = new RequestBuilder(rootUrl, create.PATH, 'post');
+export function getAllNotes(http: HttpClient, rootUrl: string, params: GetAllNotes$Params, context?: HttpContext): Observable<BaseResponse<Array<NoteDto>>> {
+  const rb = new RequestBuilder(rootUrl, getAllNotes.PATH, 'get');
   if (params) {
-    rb.body(params.body, 'application/json');
+    rb.query('isFavorite', params.isFavorite, {});
   }
 
   return http.request(
@@ -23,9 +23,9 @@ export function create(http: HttpClient, rootUrl: string, params: Create$Params,
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as BaseResponse<number>;
+      return r as BaseResponse<Array<NoteDto>>;
     })
   );
 }
 
-create.PATH = '/api/module';
+getAllNotes.PATH = '/api/note/all';

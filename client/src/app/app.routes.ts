@@ -34,9 +34,9 @@ export const APP_ROUTES: Routes = [
         loadComponent: () =>
             import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),
     },
-    {
-        path: '**',
-        redirectTo: 'error/404',
-        pathMatch: 'full',
-    },
+    // {
+    //     path: '**',
+    //     redirectTo: 'error/404',
+    //     pathMatch: 'full',
+    // },
 ];

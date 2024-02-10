@@ -6,15 +6,15 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveModuleDto } from '../../models/save-module-dto';
+import { SaveNoteDto } from '../../models/save-note-dto';
 
-export interface Update$Params {
+export interface UpdateNote$Params {
   id: number;
-      body: SaveModuleDto
+      body: SaveNoteDto
 }
 
-export function update(http: HttpClient, rootUrl: string, params: Update$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, update.PATH, 'put');
+export function updateNote(http: HttpClient, rootUrl: string, params: UpdateNote$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, updateNote.PATH, 'put');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');
@@ -30,4 +30,4 @@ export function update(http: HttpClient, rootUrl: string, params: Update$Params,
   );
 }
 
-update.PATH = '/api/module/{id}';
+updateNote.PATH = '/api/note/{id}';
