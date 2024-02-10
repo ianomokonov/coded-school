@@ -1,0 +1,18 @@
+.header, .form {
+    width: 50%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+::ng-deep {
+    .p-card-content {
+        display: flex;
+    }
+    .p-dropdown, .p-calendar {
+        width: 100%
+    }
+}

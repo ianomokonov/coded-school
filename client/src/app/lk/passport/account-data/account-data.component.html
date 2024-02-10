@@ -1,0 +1,54 @@
+<p-card [formGroup]="passportForm">
+    <div class="header">
+        <h1>Учетные данные</h1>
+    </div>
+    <div class="form">
+        <span class="p-float-label">
+            <input pInputText class="w-12" id="firstName" formControlName="firstName" />
+            <label for="firstName">Имя</label>
+        </span>
+
+        <span class="p-float-label">
+            <input pInputText class="w-12" id="secondName" formControlName="secondName" />
+            <label for="secondName">Фамилия</label>
+        </span>
+
+        <span class="p-float-label">
+            <input pInputText class="w-12" id="surname" formControlName="surname" />
+            <label for="surname">Отчество (при наличии)</label>
+        </span>
+
+        <span class="p-float-label">
+            <p-calendar
+                inputId="birthDate"
+                class="w-12"
+                formControlName="birthDate"
+                dateFormat="dd.mm.yy"
+                (onSelect)="dateFormat($event)"
+            ></p-calendar>
+            <label for="birthDate">Дата рождения</label>
+        </span>
+
+        <span class="p-float-label">
+            <input pInputText id="country" class="w-12" formControlName="country" />
+            <label for="country">Страна</label>
+        </span>
+
+        <span class="p-float-label">
+            <input pInputText id="city" class="w-12" formControlName="city" />
+            <label for="city">Город</label>
+        </span>
+
+        <span class="p-float-label">
+            <p-dropdown
+                [options]="getGenderValues()"
+                inputId="gender"
+                formControlName="gender"
+                class="w-12"
+            ></p-dropdown>
+            <label for="gender">Пол</label>
+        </span>
+
+        <p-button label="Сохранить" severity="success" (onClick)="saveUser()"></p-button>
+    </div>
+</p-card>

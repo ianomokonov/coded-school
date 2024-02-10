@@ -18,8 +18,25 @@ export const APP_ROUTES: Routes = [
         component: SignUpComponent,
     },
     {
+        path: 'forgot-password/:token',
+        loadComponent: () =>
+            import('./secure/forgot-password/forgot-password.component').then(
+                (c) => c.ForgotPasswordComponent,
+            ),
+    },
+    {
         path: 'lk',
         loadChildren: () => import('./lk/lk.routes').then((m) => m.PERSONAL_CABINET_ROUTES),
         canActivate: [jwtGuard],
+    },
+    {
+        path: 'error/404',
+        loadComponent: () =>
+            import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),
+    },
+    {
+        path: '**',
+        redirectTo: 'error/404',
+        pathMatch: 'full',
     },
 ];

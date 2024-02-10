@@ -55,19 +55,30 @@ export class UserEntity extends BaseEntity {
    */
   password: string;
 
-  @Column('date', {
+  @Column('datetime', {
     nullable: true,
   })
-  birtDate: Date;
+  birthDate: Date;
+
+  @Column('datetime', {
+    nullable: false,
+  })
+  registrationDate: Date;
 
   @Column('varchar', {
     nullable: true,
   })
-  address: string;
+  country: string;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  city: string;
 
   @Column('enum', {
-    nullable: true,
+    nullable: false,
     enum: GenderEnum,
+    default: GenderEnum.UNSET,
   })
   gender: GenderEnum;
 

@@ -38,7 +38,7 @@ export class SignUpComponent {
         const user = this.userForm.getRawValue();
         this.isLoading = true;
         this.userService
-            .signIn({ body: user })
+            .signUp({ body: user })
             .pipe(
                 finalize(() => {
                     this.isLoading = false;

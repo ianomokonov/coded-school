@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { UpdateUserDto } from '../../models/update-user-dto';
+import { UpdateForgottenPassDto } from '../../models/update-forgotten-pass-dto';
 
-export interface PatchAuthor$Params {
-      body: UpdateUserDto
+export interface UpdateForgottenPassword$Params {
+      body: UpdateForgottenPassDto
 }
 
-export function patchAuthor(http: HttpClient, rootUrl: string, params: PatchAuthor$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, patchAuthor.PATH, 'put');
+export function updateForgottenPassword(http: HttpClient, rootUrl: string, params: UpdateForgottenPassword$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, updateForgottenPassword.PATH, 'put');
   if (params) {
     rb.body(params.body, 'application/json');
   }
@@ -28,4 +28,4 @@ export function patchAuthor(http: HttpClient, rootUrl: string, params: PatchAuth
   );
 }
 
-patchAuthor.PATH = '/api/user';
+updateForgottenPassword.PATH = '/api/user/forgot-password';

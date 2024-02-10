@@ -28,6 +28,7 @@
           "@core/*": ["./src/app/core/*"],
           "@jwt/*": ["./src/app/core/jwt/*"],
           "@api/*": ["./src/api/*"],
+          "@shared/*": ["./src/app/shared/*"]
       }
   },
   "angularCompilerOptions": {

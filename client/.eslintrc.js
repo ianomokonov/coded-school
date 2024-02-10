@@ -29,6 +29,7 @@ module.exports = {
                         style: 'kebab-case',
                     },
                 ],
+                '@angular-eslint/no-output-on-prefix': 'off',
                 'unused-imports/no-unused-imports': 'error',
                 'no-console': ['error', { allow: ['warn', 'error'] }],
             },

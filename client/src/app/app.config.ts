@@ -7,13 +7,18 @@ import { JwtService } from '@jwt/service';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ModuleService } from '@api/index';
 import { storeTokensInterceptor, tokenInterceptor } from '@jwt/interceptors';
+import { MessageService } from 'primeng/api';
+import { errorInterceptor } from '@core/error/interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(APP_ROUTES),
-        provideHttpClient(withInterceptors([tokenInterceptor, storeTokensInterceptor])),
+        provideHttpClient(
+            withInterceptors([tokenInterceptor, storeTokensInterceptor, errorInterceptor]),
+        ),
         provideAnimations(),
         JwtService,
         ModuleService,
+        MessageService,
     ],
 };

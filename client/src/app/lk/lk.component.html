@@ -1,6 +1,6 @@
 <div class="container" *ngIf="userInfo">
-    <div class="flex justify-content-end">
-        <p-button (onClick)="sideBarVisible = true">Данные</p-button>
+    <div class="flex justify-content-end mb-3 mt-5">
+        <coded-avatar [userInfo]="userInfo" (click)="sideBarVisible = true"></coded-avatar>
     </div>
     <p-sidebar [(visible)]="sideBarVisible" position="right" [showCloseIcon]="false">
         <div class="flex flex-column">

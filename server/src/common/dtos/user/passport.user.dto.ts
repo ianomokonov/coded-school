@@ -1,13 +1,14 @@
 import { UserShortDto } from './user.dto';
 
 export enum GenderEnum {
-  MALE = 'Мужской',
-  FEMALE = 'Женский',
-  UNSET = 'Не указано',
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  UNSET = 'UNSET',
 }
 
 export class PassportUserDto extends UserShortDto {
-  birthDate: Date;
+  birthDate?: Date;
   gender: GenderEnum;
-  address: string;
+  city?: string;
+  country?: string;
 }
