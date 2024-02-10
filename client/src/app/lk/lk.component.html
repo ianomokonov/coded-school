@@ -10,8 +10,31 @@
             <p-button (onClick)="logOut()">Выйти</p-button>
         </div>
     </p-sidebar>
-    <div class="mb-3" *ngIf="userInfo.achievements?.length">
+    <div class="mb-3">
+        <p-card header="Реферальная программа">
+            <span class="p-float-label p-input-icon-right">
+                <i
+                    class="pi pi-copy"
+                    pTooltip="Скопировать ссылку"
+                    tooltipPosition="left"
+                    (click)="copyReferLink()"
+                ></i>
+                <input
+                    (mousedown)="preventEvent($event)"
+                    (selectstart)="preventEvent($event)"
+                    readonly
+                    pInputText
+                    class="w-12 refer-link-input"
+                    id="referLink"
+                    [ngModel]="userInfo.referLink"
+                />
+                <label for="referLink">Реферальная ссылка</label>
+            </span>
+        </p-card>
+    </div>
+    <div class="mb-3">
         <p-card header="Достижения">
+            <h3 *ngIf="!userInfo.achievements?.length">У Вас нет достижений</h3>
             <div class="border-bottom" *ngFor="let achievement of userInfo.achievements">
                 {{ achievement.name }}
             </div>

@@ -31,9 +31,7 @@ export class UserService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private mailService: MailService,
-  ) {
-    const uniqueLink = uuidv4();
-  }
+  ) {}
 
   async signUp(dto: SignUpDto): Promise<JwtDto> {
     const user = await this.findUserByEmail(dto.email);
@@ -43,6 +41,7 @@ export class UserService {
     const newUser = UserEntity.create({
       ...dto,
       registrationDate: dateNow(),
+      referLink: uuidv4(),
       password: await this.getSaltedHash(dto.password),
     });
     const { id } = await newUser.save();

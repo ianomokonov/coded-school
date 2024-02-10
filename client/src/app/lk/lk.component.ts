@@ -9,6 +9,13 @@ import { AvatarModule } from 'primeng/avatar';
 import { AvatarComponent } from '@shared/components/avatar/avatar.component';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorModule } from 'primeng/paginator';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
+import { ClipboardService } from 'ngx-clipboard';
+import { environment } from '@environments/environment';
 
 @Component({
     selector: 'coded-personal-cabinet',
@@ -22,6 +29,10 @@ import { takeUntil } from 'rxjs';
         SidebarModule,
         AvatarModule,
         AvatarComponent,
+        InputTextModule,
+        PaginatorModule,
+        ReactiveFormsModule,
+        TooltipModule,
     ],
     providers: [DestroyService],
     templateUrl: './lk.component.html',
@@ -34,6 +45,8 @@ export class PersonalCabinetComponent implements OnInit {
 
     constructor(
         private userService: UserService,
+        private messageService: MessageService,
+        private clipboardService: ClipboardService,
         private destroy$: DestroyService,
         private router: Router,
     ) {}
@@ -51,5 +64,18 @@ export class PersonalCabinetComponent implements OnInit {
         this.userService.logout().subscribe(() => {
             this.router.navigate(['/sign-in']);
         });
+    }
+
+    copyReferLink(): void {
+        this.clipboardService.copy(`${environment.host}sign-up?ref=${this.userInfo.referLink}`);
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Ссылка скопирована',
+            detail: 'Теперь Вы можете отправить ссылку другу!',
+        });
+    }
+
+    preventEvent(event: Event) {
+        event.preventDefault();
     }
 }

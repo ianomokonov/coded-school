@@ -13,6 +13,7 @@ export interface UserFullInfoDto {
   firstName: string;
   id: number;
   points: number;
+  referLink: string;
   registrationDate: string;
   secondName?: string;
   surname?: string;

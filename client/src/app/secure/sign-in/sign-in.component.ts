@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
@@ -19,7 +19,6 @@ import { MessageService } from 'primeng/api';
 })
 export class SignInComponent {
     userForm: FormGroup;
-    isLoading = false;
 
     constructor(
         private fb: FormBuilder,
@@ -28,25 +27,17 @@ export class SignInComponent {
         private messageService: MessageService,
         private router: Router,
     ) {
-        this.userForm = fb.group({
+        this.userForm = this.fb.group({
             email: ['', Validators.required],
             password: ['', Validators.required],
         });
     }
 
     signIn(): void {
-        if (this.userForm.invalid) {
-            return;
-        }
-        const user = this.userForm.getRawValue();
-        this.isLoading = true;
+        if (this.userForm.invalid) return;
         this.userService
-            .signIn({ body: user })
-            .pipe(
-                finalize(() => {
-                    this.isLoading = false;
-                }),
-            )
+            .signIn({ body: this.userForm.getRawValue() })
+            .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
                 this.router.navigate(['/lk']);
             });

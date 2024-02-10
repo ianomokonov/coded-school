@@ -8,6 +8,7 @@ export interface PassportUserDto {
   firstName: string;
   gender: 'MALE' | 'FEMALE' | 'UNSET';
   id: number;
+  referLink: string;
   registrationDate: string;
   secondName?: string;
   surname?: string;
