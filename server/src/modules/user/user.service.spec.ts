@@ -2,13 +2,16 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '@entities/user/user.entity';
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import * as bcryptjs from 'bcryptjs';
 import { JwtDto } from '@dtos/user/jwt.dto';
 import { UserRoleEntity } from '@entities/user/user-role.entity';
 import { Mapper } from '@automapper/core';
+import { MailService } from '@mail/service';
+import { SignUpDto } from '@dtos/user/sign-up.dto';
+import { dateNow } from '@core/date-now.fn';
 
-const loginDtoMock = {
+const signUpDtoMock: SignUpDto = {
   email: 'email',
   password: 'password',
   firstName: 'firstName',
@@ -22,24 +25,30 @@ describe('UserService', () => {
   let userService: UserService;
   let jwtService: JwtService;
   let configService: ConfigService;
+  let mailService: MailService;
   let mapper: Mapper;
 
   beforeEach(() => {
     jwtService = new JwtService();
     configService = new ConfigService();
-    userService = new UserService(mapper, jwtService, configService);
+    userService = new UserService(
+      mapper,
+      jwtService,
+      configService,
+      mailService,
+    );
   });
 
-  describe('signIn', () => {
+  describe('signUp', () => {
     it('should throw error if user exists', async () => {
       jest
         .spyOn<any, any>(userService, 'findUserByEmail')
         .mockImplementation(async () => new UserEntity());
 
       try {
-        await userService.signIn(loginDtoMock);
+        await userService.signUp(signUpDtoMock);
       } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error).toBeInstanceOf(ForbiddenException);
       }
     });
 
@@ -65,13 +74,14 @@ describe('UserService', () => {
         .spyOn<any, any>(userService, 'updateRefreshToken')
         .mockImplementation(async () => {});
 
-      const result = await userService.signIn(loginDtoMock);
+      const result = await userService.signUp(signUpDtoMock);
 
-      expect(bcryptjs.hash).toHaveBeenCalledWith(loginDtoMock.password, '123');
+      expect(bcryptjs.hash).toHaveBeenCalledWith(signUpDtoMock.password, '123');
       expect(UserEntity.create).toHaveBeenCalledWith({
-        email: loginDtoMock.email,
+        email: signUpDtoMock.email,
         password: 'hash',
-        firstName: loginDtoMock.firstName,
+        firstName: signUpDtoMock.firstName,
+        registrationDate: dateNow(),
       });
       expect(userService['getTokens']).toHaveBeenCalledWith(1);
       expect(userService['updateRefreshToken']).toHaveBeenCalledWith(
@@ -81,16 +91,16 @@ describe('UserService', () => {
       expect(result).toEqual(jwtDtoMock);
     });
   });
-  describe('logIn', () => {
+  describe('signIn', () => {
     it('should throw error if user does not exists', async () => {
       jest
         .spyOn<any, any>(userService, 'findUserByEmail')
         .mockImplementation(async () => null);
 
       try {
-        await userService.logIn(loginDtoMock);
+        await userService.signIn(signUpDtoMock);
       } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error).toBeInstanceOf(NotFoundException);
       }
     });
 
@@ -101,22 +111,9 @@ describe('UserService', () => {
       jest.spyOn(bcryptjs, 'compare').mockImplementation(() => false);
 
       try {
-        await userService.logIn(loginDtoMock);
+        await userService.signIn(signUpDtoMock);
       } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
-      }
-    });
-
-    it('should throw error if password is not correct', async () => {
-      jest
-        .spyOn<any, any>(userService, 'findUserByEmail')
-        .mockImplementation(async () => new UserEntity());
-      jest.spyOn(bcryptjs, 'compare').mockImplementation(() => false);
-
-      try {
-        await userService.logIn(loginDtoMock);
-      } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error).toBeInstanceOf(ForbiddenException);
       }
     });
 
@@ -132,7 +129,7 @@ describe('UserService', () => {
         .mockImplementation(async () => {});
       jest.spyOn(bcryptjs, 'compare').mockImplementation(() => true);
 
-      const result = await userService.logIn(loginDtoMock);
+      const result = await userService.signIn(signUpDtoMock);
 
       expect(userService['getTokens']).toHaveBeenCalledWith(1);
       expect(userService['updateRefreshToken']).toHaveBeenCalledWith(
@@ -168,7 +165,7 @@ describe('UserService', () => {
       try {
         await userService['refreshTokens'](1, jwtDtoMock.refreshToken);
       } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error).toBeInstanceOf(NotFoundException);
       }
     });
     it('should throw error if user refresh token does not exists', async () => {
@@ -179,7 +176,7 @@ describe('UserService', () => {
       try {
         await userService['refreshTokens'](1, jwtDtoMock.refreshToken);
       } catch (error) {
-        expect(error).toBeInstanceOf(UnauthorizedException);
+        expect(error).toBeInstanceOf(NotFoundException);
       }
     });
     it('should throw error if token is incorrect', async () => {

@@ -77,6 +77,7 @@
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1",
       "@core/(.*)$": "<rootDir>/core/$1",
+      "@mail/(.*)$": "<rootDir>/mail/$1",
       "@entities/(.*)$": "<rootDir>/common/entities/$1",
       "@decorators/(.*)$": "<rootDir>/common/decorators/$1",
       "@configs/(.*)$": "<rootDir>/configs/$1",

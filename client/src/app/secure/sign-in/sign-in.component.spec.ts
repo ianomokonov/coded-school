@@ -8,9 +8,10 @@ import { provideLocationMocks } from '@angular/common/testing';
 import { APP_ROUTES } from '../../app.routes';
 import { UserService } from '@api/services';
 import { JwtDto } from '@api/models/jwt-dto';
+import { MessageService } from 'primeng/api';
 
 class UserMockService {
-    logIn(): Observable<JwtDto> {
+    signIn(): Observable<JwtDto> {
         return of(tokensMock);
     }
 }
@@ -22,12 +23,13 @@ describe('SignInComponent', () => {
     let router: Router;
 
     beforeEach(async () => {
-        fakeUserService = jasmine.createSpyObj('UserMockService', ['logIn']);
-        fakeUserService.logIn.and.returnValue(of(tokensMock));
+        fakeUserService = jasmine.createSpyObj('UserMockService', ['signIn']);
+        fakeUserService.signIn.and.returnValue(of(tokensMock));
         await TestBed.configureTestingModule({
             imports: [SignInComponent],
             providers: [
                 { provide: UserService, useValue: fakeUserService },
+                MessageService,
                 provideRouter(APP_ROUTES),
                 provideLocationMocks(),
             ],
