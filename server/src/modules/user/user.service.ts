@@ -31,18 +31,18 @@ export class UserService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private mailService: MailService,
-  ) {
-    const uniqueLink = uuidv4();
-  }
+  ) {}
 
   async signUp(dto: SignUpDto): Promise<JwtDto> {
     const user = await this.findUserByEmail(dto.email);
     if (user) {
       throw new ForbiddenException('Пользователь уже зарегистрирован');
     }
+    const { inviterCode, ...userData } = dto;
     const newUser = UserEntity.create({
-      ...dto,
+      ...userData,
       registrationDate: dateNow(),
+      referralCode: uuidv4(),
       password: await this.getSaltedHash(dto.password),
     });
     const { id } = await newUser.save();
@@ -95,7 +95,8 @@ export class UserService {
       template: 'reset-password/template',
       context: {
         link:
-          process.env.FRONT_URL + (await this.getResetPasswordToken(user.id)),
+          process.env.RESET_PASSWORD_URL +
+          (await this.getResetPasswordToken(user.id)),
         userName: user.firstName,
       },
     };

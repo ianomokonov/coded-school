@@ -3,6 +3,7 @@ export class UserShortDto {
   email: string;
   firstName: string;
   registrationDate: Date;
+  referralCode: string;
   secondName?: string;
   surname?: string;
 }

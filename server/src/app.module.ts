@@ -22,6 +22,7 @@ import * as path from 'path';
     }),
     ConfigModule.forRoot({
       envFilePath: ['.env.local', '.env'],
+      expandVariables: true,
     }),
     MailerModule.forRoot({
       transport: {

@@ -71,6 +71,11 @@ export class UserEntity extends BaseEntity {
   country: string;
 
   @Column('varchar', {
+    nullable: false,
+  })
+  referralCode: string;
+
+  @Column('varchar', {
     nullable: true,
   })
   city: string;
