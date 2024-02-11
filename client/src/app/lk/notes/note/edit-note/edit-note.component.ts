@@ -78,6 +78,6 @@ export class EditNoteComponent implements OnInit {
     }
 
     private redirectToLk(): void {
-        this.router.navigate(['../../lk']);
+        this.router.navigate(['/lk']);
     }
 }

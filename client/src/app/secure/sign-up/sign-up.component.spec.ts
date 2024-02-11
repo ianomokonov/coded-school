@@ -2,28 +2,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignUpComponent } from './sign-up.component';
 import { tokensMock } from '../_tests-mocks/tokens.mock';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Router, provideRouter } from '@angular/router';
-import { provideLocationMocks } from '@angular/common/testing';
-import { JwtDto } from '@api/models/jwt-dto';
 import { UserService } from '@api/services';
 import { APP_ROUTES } from '../../app.routes';
 import { MessageService } from 'primeng/api';
 
-class UserMockService {
-    signUp(): Observable<JwtDto> {
-        return of(tokensMock);
-    }
-}
-
 describe('SignUpComponent', () => {
     let component: SignUpComponent;
     let fixture: ComponentFixture<SignUpComponent>;
-    let fakeUserService: jasmine.SpyObj<UserMockService>;
+    let fakeUserService: jasmine.SpyObj<UserService>;
     let router: Router;
 
     beforeEach(async () => {
-        fakeUserService = jasmine.createSpyObj('SecureMockService', ['signUp']);
+        fakeUserService = jasmine.createSpyObj('UserMockService', ['signUp']);
         fakeUserService.signUp.and.returnValue(of(tokensMock));
         await TestBed.configureTestingModule({
             imports: [SignUpComponent],
@@ -31,14 +23,8 @@ describe('SignUpComponent', () => {
                 { provide: UserService, useValue: fakeUserService },
                 MessageService,
                 provideRouter(APP_ROUTES),
-                provideLocationMocks(),
             ],
-        })
-            .overrideComponent(SignUpComponent, {
-                remove: { providers: [UserService] },
-                add: { providers: [UserMockService] },
-            })
-            .compileComponents();
+        }).compileComponents();
 
         fixture = TestBed.createComponent(SignUpComponent);
         component = fixture.componentInstance;
