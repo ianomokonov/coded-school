@@ -11,19 +11,19 @@ import { BaseResponse } from '../base-response';
 
 import { completeUserMarathon } from '../fn/marathon/complete-user-marathon';
 import { CompleteUserMarathon$Params } from '../fn/marathon/complete-user-marathon';
-import { create_1 } from '../fn/marathon/create-1';
-import { Create_1$Params } from '../fn/marathon/create-1';
-import { delete_1 } from '../fn/marathon/delete-1';
-import { Delete_1$Params } from '../fn/marathon/delete-1';
+import { createUserMarathon } from '../fn/marathon/create-user-marathon';
+import { CreateUserMarathon$Params } from '../fn/marathon/create-user-marathon';
+import { deleteUserMarathon } from '../fn/marathon/delete-user-marathon';
+import { DeleteUserMarathon$Params } from '../fn/marathon/delete-user-marathon';
 import { getAllMarathons } from '../fn/marathon/get-all-marathons';
 import { GetAllMarathons$Params } from '../fn/marathon/get-all-marathons';
 import { MarathonDto } from '../models/marathon-dto';
-import { read_1 } from '../fn/marathon/read-1';
-import { Read_1$Params } from '../fn/marathon/read-1';
+import { readUserMarathon } from '../fn/marathon/read-user-marathon';
+import { ReadUserMarathon$Params } from '../fn/marathon/read-user-marathon';
 import { startUserMarathon } from '../fn/marathon/start-user-marathon';
 import { StartUserMarathon$Params } from '../fn/marathon/start-user-marathon';
-import { update_1 } from '../fn/marathon/update-1';
-import { Update_1$Params } from '../fn/marathon/update-1';
+import { updateUserMarathon } from '../fn/marathon/update-user-marathon';
+import { UpdateUserMarathon$Params } from '../fn/marathon/update-user-marathon';
 
 @Injectable({ providedIn: 'root' })
 export class MarathonService extends BaseService {
@@ -64,8 +64,8 @@ export class MarathonService extends BaseService {
     );
   }
 
-  /** Path part for operation `create_1()` */
-  static readonly Create_1Path = '/api/marathon';
+  /** Path part for operation `createUserMarathon()` */
+  static readonly CreateUserMarathonPath = '/api/marathon';
 
   /**
    * Создать марафон.
@@ -73,12 +73,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `create_1()` instead.
+   * To access only the response body, use `createUserMarathon()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  create_1$Response(params: Create_1$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-    return create_1(this.http, this.rootUrl, params, context);
+  createUserMarathon$Response(params: CreateUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+    return createUserMarathon(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -87,18 +87,18 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `create_1$Response()` instead.
+   * To access the full response (for headers, for example), `createUserMarathon$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  create_1(params: Create_1$Params, context?: HttpContext): Observable<number> {
-    return this.create_1$Response(params, context).pipe(
+  createUserMarathon(params: CreateUserMarathon$Params, context?: HttpContext): Observable<number> {
+    return this.createUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `read_1()` */
-  static readonly Read_1Path = '/api/marathon/{id}';
+  /** Path part for operation `readUserMarathon()` */
+  static readonly ReadUserMarathonPath = '/api/marathon/{id}';
 
   /**
    * Получить марафон.
@@ -106,12 +106,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `read_1()` instead.
+   * To access only the response body, use `readUserMarathon()` instead.
    *
    * This method doesn't expect any request body.
    */
-  read_1$Response(params: Read_1$Params, context?: HttpContext): Observable<BaseResponse<MarathonDto>> {
-    return read_1(this.http, this.rootUrl, params, context);
+  readUserMarathon$Response(params: ReadUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<MarathonDto>> {
+    return readUserMarathon(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -120,18 +120,18 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `read_1$Response()` instead.
+   * To access the full response (for headers, for example), `readUserMarathon$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  read_1(params: Read_1$Params, context?: HttpContext): Observable<MarathonDto> {
-    return this.read_1$Response(params, context).pipe(
+  readUserMarathon(params: ReadUserMarathon$Params, context?: HttpContext): Observable<MarathonDto> {
+    return this.readUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<MarathonDto>): MarathonDto => r.body)
     );
   }
 
-  /** Path part for operation `update_1()` */
-  static readonly Update_1Path = '/api/marathon/{id}';
+  /** Path part for operation `updateUserMarathon()` */
+  static readonly UpdateUserMarathonPath = '/api/marathon/{id}';
 
   /**
    * Изменить марафон.
@@ -139,12 +139,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update_1()` instead.
+   * To access only the response body, use `updateUserMarathon()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update_1$Response(params: Update_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return update_1(this.http, this.rootUrl, params, context);
+  updateUserMarathon$Response(params: UpdateUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return updateUserMarathon(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -153,18 +153,18 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `update_1$Response()` instead.
+   * To access the full response (for headers, for example), `updateUserMarathon$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update_1(params: Update_1$Params, context?: HttpContext): Observable<void> {
-    return this.update_1$Response(params, context).pipe(
+  updateUserMarathon(params: UpdateUserMarathon$Params, context?: HttpContext): Observable<void> {
+    return this.updateUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
 
-  /** Path part for operation `delete_1()` */
-  static readonly Delete_1Path = '/api/marathon/{id}';
+  /** Path part for operation `deleteUserMarathon()` */
+  static readonly DeleteUserMarathonPath = '/api/marathon/{id}';
 
   /**
    * Удалить марафон.
@@ -172,12 +172,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete_1()` instead.
+   * To access only the response body, use `deleteUserMarathon()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete_1$Response(params: Delete_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return delete_1(this.http, this.rootUrl, params, context);
+  deleteUserMarathon$Response(params: DeleteUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return deleteUserMarathon(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -186,12 +186,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `delete_1$Response()` instead.
+   * To access the full response (for headers, for example), `deleteUserMarathon$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete_1(params: Delete_1$Params, context?: HttpContext): Observable<void> {
-    return this.delete_1$Response(params, context).pipe(
+  deleteUserMarathon(params: DeleteUserMarathon$Params, context?: HttpContext): Observable<void> {
+    return this.deleteUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }

@@ -11,19 +11,19 @@ import { BaseResponse } from '../base-response';
 
 import { completeUserModule } from '../fn/module/complete-user-module';
 import { CompleteUserModule$Params } from '../fn/module/complete-user-module';
-import { create } from '../fn/module/create';
-import { Create$Params } from '../fn/module/create';
-import { delete$ } from '../fn/module/delete';
-import { Delete$Params } from '../fn/module/delete';
+import { createUserModule } from '../fn/module/create-user-module';
+import { CreateUserModule$Params } from '../fn/module/create-user-module';
+import { deleteUserModule } from '../fn/module/delete-user-module';
+import { DeleteUserModule$Params } from '../fn/module/delete-user-module';
 import { getAllModules } from '../fn/module/get-all-modules';
 import { GetAllModules$Params } from '../fn/module/get-all-modules';
 import { ModuleDto } from '../models/module-dto';
-import { read } from '../fn/module/read';
-import { Read$Params } from '../fn/module/read';
+import { readUserModule } from '../fn/module/read-user-module';
+import { ReadUserModule$Params } from '../fn/module/read-user-module';
 import { startUserModule } from '../fn/module/start-user-module';
 import { StartUserModule$Params } from '../fn/module/start-user-module';
-import { update } from '../fn/module/update';
-import { Update$Params } from '../fn/module/update';
+import { updateUserModule } from '../fn/module/update-user-module';
+import { UpdateUserModule$Params } from '../fn/module/update-user-module';
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService extends BaseService {
@@ -64,8 +64,8 @@ export class ModuleService extends BaseService {
     );
   }
 
-  /** Path part for operation `create()` */
-  static readonly CreatePath = '/api/module';
+  /** Path part for operation `createUserModule()` */
+  static readonly CreateUserModulePath = '/api/module';
 
   /**
    * Создать модуль.
@@ -73,12 +73,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `create()` instead.
+   * To access only the response body, use `createUserModule()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  create$Response(params: Create$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-    return create(this.http, this.rootUrl, params, context);
+  createUserModule$Response(params: CreateUserModule$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+    return createUserModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -87,18 +87,18 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `create$Response()` instead.
+   * To access the full response (for headers, for example), `createUserModule$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  create(params: Create$Params, context?: HttpContext): Observable<number> {
-    return this.create$Response(params, context).pipe(
+  createUserModule(params: CreateUserModule$Params, context?: HttpContext): Observable<number> {
+    return this.createUserModule$Response(params, context).pipe(
       map((r: BaseResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `read()` */
-  static readonly ReadPath = '/api/module/{id}';
+  /** Path part for operation `readUserModule()` */
+  static readonly ReadUserModulePath = '/api/module/{id}';
 
   /**
    * Получить модуль.
@@ -106,12 +106,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `read()` instead.
+   * To access only the response body, use `readUserModule()` instead.
    *
    * This method doesn't expect any request body.
    */
-  read$Response(params: Read$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
-    return read(this.http, this.rootUrl, params, context);
+  readUserModule$Response(params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
+    return readUserModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -120,18 +120,18 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `read$Response()` instead.
+   * To access the full response (for headers, for example), `readUserModule$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  read(params: Read$Params, context?: HttpContext): Observable<ModuleDto> {
-    return this.read$Response(params, context).pipe(
+  readUserModule(params: ReadUserModule$Params, context?: HttpContext): Observable<ModuleDto> {
+    return this.readUserModule$Response(params, context).pipe(
       map((r: BaseResponse<ModuleDto>): ModuleDto => r.body)
     );
   }
 
-  /** Path part for operation `update()` */
-  static readonly UpdatePath = '/api/module/{id}';
+  /** Path part for operation `updateUserModule()` */
+  static readonly UpdateUserModulePath = '/api/module/{id}';
 
   /**
    * Изменить модуль.
@@ -139,12 +139,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update()` instead.
+   * To access only the response body, use `updateUserModule()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update$Response(params: Update$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return update(this.http, this.rootUrl, params, context);
+  updateUserModule$Response(params: UpdateUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return updateUserModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -153,18 +153,18 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `update$Response()` instead.
+   * To access the full response (for headers, for example), `updateUserModule$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update(params: Update$Params, context?: HttpContext): Observable<void> {
-    return this.update$Response(params, context).pipe(
+  updateUserModule(params: UpdateUserModule$Params, context?: HttpContext): Observable<void> {
+    return this.updateUserModule$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
 
-  /** Path part for operation `delete()` */
-  static readonly DeletePath = '/api/module/{id}';
+  /** Path part for operation `deleteUserModule()` */
+  static readonly DeleteUserModulePath = '/api/module/{id}';
 
   /**
    * Удалить модуль.
@@ -172,12 +172,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete()` instead.
+   * To access only the response body, use `deleteUserModule()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete$Response(params: Delete$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return delete$(this.http, this.rootUrl, params, context);
+  deleteUserModule$Response(params: DeleteUserModule$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return deleteUserModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -186,12 +186,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `delete$Response()` instead.
+   * To access the full response (for headers, for example), `deleteUserModule$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete(params: Delete$Params, context?: HttpContext): Observable<void> {
-    return this.delete$Response(params, context).pipe(
+  deleteUserModule(params: DeleteUserModule$Params, context?: HttpContext): Observable<void> {
+    return this.deleteUserModule$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }

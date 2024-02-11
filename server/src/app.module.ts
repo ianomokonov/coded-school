@@ -12,6 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import * as process from 'process';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import * as path from 'path';
+import { NoteModule } from '@modules/note/note.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import * as path from 'path';
     ModuleModule,
     MarathonModule,
     AchievementModule,
+    NoteModule,
   ],
 })
 export class AppModule {

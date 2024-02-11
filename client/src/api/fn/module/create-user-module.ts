@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveMarathonDto } from '../../models/save-marathon-dto';
+import { SaveModuleDto } from '../../models/save-module-dto';
 
-export interface Create_1$Params {
-      body: SaveMarathonDto
+export interface CreateUserModule$Params {
+      body: SaveModuleDto
 }
 
-export function create_1(http: HttpClient, rootUrl: string, params: Create_1$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-  const rb = new RequestBuilder(rootUrl, create_1.PATH, 'post');
+export function createUserModule(http: HttpClient, rootUrl: string, params: CreateUserModule$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+  const rb = new RequestBuilder(rootUrl, createUserModule.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
   }
@@ -28,4 +28,4 @@ export function create_1(http: HttpClient, rootUrl: string, params: Create_1$Par
   );
 }
 
-create_1.PATH = '/api/marathon';
+createUserModule.PATH = '/api/module';

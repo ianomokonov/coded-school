@@ -20,8 +20,7 @@ export class MarathonService {
   }
 
   async readMarathon(marathonId: number): Promise<MarathonDto> {
-    const module = await MarathonEntity.findOne({ where: { id: marathonId } });
-    return module;
+    return await MarathonEntity.findOne({ where: { id: marathonId } });
   }
 
   async getAllMarathons(): Promise<MarathonDto[]> {

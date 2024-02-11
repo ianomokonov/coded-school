@@ -18,6 +18,8 @@ import { ModuleEntity } from '@entities/module/module.entity';
 import { MarathonEntity } from '@entities/marathon/marathon.entity';
 import { AchievementEntity } from '@entities/achievement/achievement.entity';
 import { PassportUserDto } from '@dtos/user/passport.user.dto';
+import { NoteEntity } from '@entities/note/note.entity';
+import { NoteDto } from '@dtos/note/note.dto';
 import * as process from 'process';
 
 @Injectable()
@@ -29,6 +31,7 @@ export class UserProfile extends AutomapperProfile {
   get profile(): MappingProfile {
     return (mapper) => {
       createMap(mapper, UserEntity, UserShortDto);
+      createMap(mapper, NoteEntity, NoteDto);
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
       createMap(mapper, AchievementEntity, AchievementDto);

@@ -32,7 +32,7 @@ export class ModuleController {
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Создать модуль' })
-  async create(@Body() dto: SaveModuleDto) {
+  async createUserModule(@Body() dto: SaveModuleDto) {
     return this.moduleService.createModule(dto);
   }
 
@@ -41,7 +41,7 @@ export class ModuleController {
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Изменить модуль' })
-  async update(@Param('id') id: number, @Body() dto: SaveModuleDto) {
+  async updateUserModule(@Param('id') id: number, @Body() dto: SaveModuleDto) {
     return this.moduleService.updateModule(id, dto);
   }
   @Delete(':id')
@@ -49,13 +49,13 @@ export class ModuleController {
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Удалить модуль' })
-  async delete(@Param('id') id: number) {
+  async deleteUserModule(@Param('id') id: number) {
     return this.moduleService.deleteModule(id);
   }
   @Get(':id')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Получить модуль' })
-  async read(@Param('id') id: number) {
+  async readUserModule(@Param('id') id: number) {
     return this.moduleService.readModule(id);
   }
   @Post(':id/start')

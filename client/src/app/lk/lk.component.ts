@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
@@ -15,6 +15,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ClipboardService } from 'ngx-clipboard';
+import { NotesComponent } from './notes/notes.component';
+
+export enum SideBarBlockDisplayed {
+    PERSONAL_CABINET_MENU = 'PERSONAL_CABINET_MENU',
+    NOTES = 'NOTES',
+    CREATE_NOTE = 'CREATE_NOTE',
+}
 
 @Component({
     selector: 'coded-personal-cabinet',
@@ -32,6 +39,9 @@ import { ClipboardService } from 'ngx-clipboard';
         PaginatorModule,
         ReactiveFormsModule,
         TooltipModule,
+        NgSwitch,
+        NgSwitchCase,
+        NotesComponent,
     ],
     providers: [DestroyService],
     templateUrl: './lk.component.html',
@@ -41,6 +51,7 @@ export class PersonalCabinetComponent implements OnInit {
     userInfo!: UserFullInfoDto;
 
     sideBarVisible: boolean = false;
+    sideBarBlocks: SideBarBlockDisplayed = SideBarBlockDisplayed.PERSONAL_CABINET_MENU;
 
     constructor(
         private userService: UserService,
@@ -82,4 +93,6 @@ export class PersonalCabinetComponent implements OnInit {
     preventEvent(event: Event) {
         event.preventDefault();
     }
+
+    protected readonly SideBarBlockDisplayed = SideBarBlockDisplayed;
 }
