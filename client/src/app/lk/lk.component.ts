@@ -15,7 +15,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ClipboardService } from 'ngx-clipboard';
-import { environment } from '@environments/environment';
 
 @Component({
     selector: 'coded-personal-cabinet',
@@ -67,12 +66,17 @@ export class PersonalCabinetComponent implements OnInit {
     }
 
     copyReferLink(): void {
-        this.clipboardService.copy(`${environment.host}sign-up?ref=${this.userInfo.referLink}`);
+        this.clipboardService.copy(this.userInfo.referralCode);
         this.messageService.add({
             severity: 'success',
             summary: 'Ссылка скопирована',
             detail: 'Теперь Вы можете отправить ссылку другу!',
         });
+    }
+
+    getDisplayedRefLink(): string {
+        const link = this.userInfo.referralCode.split('=');
+        return link[link.length - 1];
     }
 
     preventEvent(event: Event) {

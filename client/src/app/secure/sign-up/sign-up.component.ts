@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
 import { UserService } from '@api/services/user.service';
-import { environment } from '@environments/environment';
 
 @Component({
     selector: 'coded-sign-up',
@@ -18,7 +17,9 @@ import { environment } from '@environments/environment';
     styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent {
-    public userForm: FormGroup;
+    userForm: FormGroup;
+
+    referralCode?: string;
 
     constructor(
         private fb: FormBuilder,
@@ -28,10 +29,7 @@ export class SignUpComponent {
         private destroy$: DestroyService,
     ) {
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-            const refLink = params['ref'];
-            if (environment.devMode) {
-                console.log(refLink);
-            }
+            this.referralCode = params['ref'];
         });
         this.userForm = this.fb.group({
             name: ['', Validators.required],

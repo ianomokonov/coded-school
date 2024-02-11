@@ -4,7 +4,7 @@ export interface UserShortDto {
   email: string;
   firstName: string;
   id: number;
-  referLink: string;
+  referralCode: string;
   registrationDate: string;
   secondName?: string;
   surname?: string;

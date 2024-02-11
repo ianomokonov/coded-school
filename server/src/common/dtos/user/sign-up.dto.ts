@@ -4,4 +4,5 @@ export class SignUpDto extends SignInDto {
   firstName: string;
   secondName?: string;
   surname?: string;
+  inviterCode?: string;
 }

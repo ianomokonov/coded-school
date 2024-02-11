@@ -18,6 +18,7 @@ import { ModuleEntity } from '@entities/module/module.entity';
 import { MarathonEntity } from '@entities/marathon/marathon.entity';
 import { AchievementEntity } from '@entities/achievement/achievement.entity';
 import { PassportUserDto } from '@dtos/user/passport.user.dto';
+import * as process from 'process';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -84,6 +85,13 @@ export class UserProfile extends AutomapperProfile {
             source.achievements.map((a) =>
               mapper.map(a.achievement, AchievementEntity, AchievementDto),
             ),
+          ),
+        ),
+        forMember(
+          (destination) => destination.referralCode,
+          mapFrom(
+            (source) =>
+              `${process.env.FRONT_URL}sign-up?ref=${source.referralCode}`,
           ),
         ),
       );

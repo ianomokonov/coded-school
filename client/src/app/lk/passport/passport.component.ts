@@ -53,9 +53,6 @@ export class PassportComponent implements OnInit {
     }
 
     saveUser(data: PassportUserDto): void {
-        this.userService
-            .patchPassport({ body: { ...data, referLink: this.passport.referLink } })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe();
+        this.userService.patchPassport({ body: data }).pipe(takeUntil(this.destroy$)).subscribe();
     }
 }
