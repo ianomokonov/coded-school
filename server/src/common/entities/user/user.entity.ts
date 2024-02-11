@@ -11,6 +11,7 @@ import { UserMarathonEntity } from '../marathon/user-marathon.entity';
 import { UserRoleEntity } from './user-role.entity';
 import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 import { AutoMap } from '@automapper/classes';
+import { GenderEnum } from '@dtos/user/passport.user.dto';
 
 @Entity('user', {
   schema: 'sec',
@@ -29,7 +30,17 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', {
     nullable: true,
   })
-  name: string;
+  secondName: string;
+
+  @Column('varchar', {
+    nullable: false,
+  })
+  firstName: string;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  surname: string;
 
   @Column('varchar', {
     nullable: false,
@@ -43,6 +54,33 @@ export class UserEntity extends BaseEntity {
    * @autoMapIgnore
    */
   password: string;
+
+  @Column('datetime', {
+    nullable: true,
+  })
+  birthDate: Date;
+
+  @Column('datetime', {
+    nullable: false,
+  })
+  registrationDate: Date;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  country: string;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  city: string;
+
+  @Column('enum', {
+    nullable: false,
+    enum: GenderEnum,
+    default: GenderEnum.UNSET,
+  })
+  gender: GenderEnum;
 
   @Column('varchar', {
     nullable: true,

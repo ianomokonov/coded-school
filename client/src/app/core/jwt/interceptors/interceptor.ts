@@ -7,11 +7,11 @@ import {
 import { inject } from '@angular/core';
 import { JwtService } from '@jwt/service';
 import { catchError, of, switchMap, throwError } from 'rxjs';
-import { TokenResponse } from '@jwt/model';
 import { Router } from '@angular/router';
+import { JwtDto } from '@api/models/jwt-dto';
 import { addToken } from '@jwt/const';
 
-export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
+export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     const tokenService = inject(JwtService);
     const router: Router = inject(Router);
     let params = req;
@@ -57,7 +57,7 @@ const handle401Error = (
     const refreshToken = tokenService.getRefreshToken();
     if (refreshToken) {
         return tokenService.refreshToken().pipe(
-            switchMap((tokenResponse: TokenResponse) => {
+            switchMap((tokenResponse: JwtDto) => {
                 return next(addToken(request, tokenResponse.token));
             }),
             catchError((err) => {

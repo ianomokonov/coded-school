@@ -29,4 +29,4 @@ export function signIn(http: HttpClient, rootUrl: string, params: SignIn$Params,
   );
 }
 
-signIn.PATH = '/api/user/sign-up';
+signIn.PATH = '/api/user/sign-in';

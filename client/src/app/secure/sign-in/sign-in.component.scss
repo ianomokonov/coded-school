@@ -1,0 +1,28 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+        width: 60%;
+
+        .buttons-group {
+            display: flex;
+            column-gap: 20px;
+        }
+
+        ::ng-deep {
+            .p-password {
+                display: flex;
+                input {
+                    width: 100%
+                }
+            }
+        }
+    }
+}

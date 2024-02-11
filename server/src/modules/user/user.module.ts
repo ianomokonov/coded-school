@@ -7,6 +7,7 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { JwtRefreshStrategy } from '@strategies/user/jwt-refresh.strategy';
 import { UserProfile } from '@profiles/user.profile';
+import { MailService } from '@mail/service';
 
 @Module({
   controllers: [UserController],
@@ -18,6 +19,12 @@ import { UserProfile } from '@profiles/user.profile';
       useFactory: getJWTConfig,
     }),
   ],
-  providers: [UserService, JwtStrategy, JwtRefreshStrategy, UserProfile],
+  providers: [
+    UserService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    UserProfile,
+    MailService,
+  ],
 })
 export class UserModule {}

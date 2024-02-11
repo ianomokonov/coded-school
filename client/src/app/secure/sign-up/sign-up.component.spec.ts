@@ -3,14 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignUpComponent } from './sign-up.component';
 import { tokensMock } from '../_tests-mocks/tokens.mock';
 import { Observable, of } from 'rxjs';
-import { TokenResponse } from '@jwt/model';
-import { SecureService } from '../secure.service';
 import { Router, provideRouter } from '@angular/router';
 import { provideLocationMocks } from '@angular/common/testing';
-import { routes } from '../../app.routes';
+import { JwtDto } from '@api/models/jwt-dto';
+import { UserService } from '@api/services';
+import { APP_ROUTES } from '../../app.routes';
+import { MessageService } from 'primeng/api';
 
-class SecureMockService {
-    signUp(): Observable<TokenResponse> {
+class UserMockService {
+    signUp(): Observable<JwtDto> {
         return of(tokensMock);
     }
 }
@@ -18,23 +19,24 @@ class SecureMockService {
 describe('SignUpComponent', () => {
     let component: SignUpComponent;
     let fixture: ComponentFixture<SignUpComponent>;
-    let fakeSecureService: jasmine.SpyObj<SecureMockService>;
+    let fakeUserService: jasmine.SpyObj<UserMockService>;
     let router: Router;
 
     beforeEach(async () => {
-        fakeSecureService = jasmine.createSpyObj('SecureMockService', ['signUp']);
-        fakeSecureService.signUp.and.returnValue(of(tokensMock));
+        fakeUserService = jasmine.createSpyObj('SecureMockService', ['signUp']);
+        fakeUserService.signUp.and.returnValue(of(tokensMock));
         await TestBed.configureTestingModule({
             imports: [SignUpComponent],
             providers: [
-                { provide: SecureService, useValue: fakeSecureService },
-                provideRouter(routes),
+                { provide: UserService, useValue: fakeUserService },
+                MessageService,
+                provideRouter(APP_ROUTES),
                 provideLocationMocks(),
             ],
         })
             .overrideComponent(SignUpComponent, {
-                remove: { providers: [SecureService] },
-                add: { providers: [SecureMockService] },
+                remove: { providers: [UserService] },
+                add: { providers: [UserMockService] },
             })
             .compileComponents();
 

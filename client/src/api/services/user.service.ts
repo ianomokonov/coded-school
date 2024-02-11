@@ -9,21 +9,32 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
+import { forgotPassword } from '../fn/user/forgot-password';
+import { ForgotPassword$Params } from '../fn/user/forgot-password';
+import { getPassportInfo } from '../fn/user/get-passport-info';
+import { GetPassportInfo$Params } from '../fn/user/get-passport-info';
 import { getUser } from '../fn/user/get-user';
 import { GetUser$Params } from '../fn/user/get-user';
 import { getUserFullInfo } from '../fn/user/get-user-full-info';
 import { GetUserFullInfo$Params } from '../fn/user/get-user-full-info';
+import { isPasswordCorrect } from '../fn/user/is-password-correct';
+import { IsPasswordCorrect$Params } from '../fn/user/is-password-correct';
 import { JwtDto } from '../models/jwt-dto';
-import { logIn } from '../fn/user/log-in';
-import { LogIn$Params } from '../fn/user/log-in';
 import { logout } from '../fn/user/logout';
 import { Logout$Params } from '../fn/user/logout';
-import { patchAuthor } from '../fn/user/patch-author';
-import { PatchAuthor$Params } from '../fn/user/patch-author';
+import { PassportUserDto } from '../models/passport-user-dto';
+import { patchPassport } from '../fn/user/patch-passport';
+import { PatchPassport$Params } from '../fn/user/patch-passport';
+import { patchPassword } from '../fn/user/patch-password';
+import { PatchPassword$Params } from '../fn/user/patch-password';
 import { refreshTokens } from '../fn/user/refresh-tokens';
 import { RefreshTokens$Params } from '../fn/user/refresh-tokens';
 import { signIn } from '../fn/user/sign-in';
 import { SignIn$Params } from '../fn/user/sign-in';
+import { signUp } from '../fn/user/sign-up';
+import { SignUp$Params } from '../fn/user/sign-up';
+import { updateForgottenPassword } from '../fn/user/update-forgotten-password';
+import { UpdateForgottenPassword$Params } from '../fn/user/update-forgotten-password';
 import { UserFullInfoDto } from '../models/user-full-info-dto';
 import { UserShortDto } from '../models/user-short-dto';
 
@@ -33,11 +44,44 @@ export class UserService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `signIn()` */
-  static readonly SignInPath = '/api/user/sign-up';
+  /** Path part for operation `signUp()` */
+  static readonly SignUpPath = '/api/user/sign-up';
 
   /**
    * Регистрация пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `signUp()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  signUp$Response(params: SignUp$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
+    return signUp(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Регистрация пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `signUp$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  signUp(params: SignUp$Params, context?: HttpContext): Observable<JwtDto> {
+    return this.signUp$Response(params, context).pipe(
+      map((r: BaseResponse<JwtDto>): JwtDto => r.body)
+    );
+  }
+
+  /** Path part for operation `signIn()` */
+  static readonly SignInPath = '/api/user/sign-in';
+
+  /**
+   * Авторизация пользователя.
    *
    *
    *
@@ -51,7 +95,7 @@ export class UserService extends BaseService {
   }
 
   /**
-   * Регистрация пользователя.
+   * Авторизация пользователя.
    *
    *
    *
@@ -62,39 +106,6 @@ export class UserService extends BaseService {
    */
   signIn(params: SignIn$Params, context?: HttpContext): Observable<JwtDto> {
     return this.signIn$Response(params, context).pipe(
-      map((r: BaseResponse<JwtDto>): JwtDto => r.body)
-    );
-  }
-
-  /** Path part for operation `logIn()` */
-  static readonly LogInPath = '/api/user/sign-in';
-
-  /**
-   * Авторизация пользователя.
-   *
-   *
-   *
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `logIn()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  logIn$Response(params: LogIn$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-    return logIn(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * Авторизация пользователя.
-   *
-   *
-   *
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `logIn$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  logIn(params: LogIn$Params, context?: HttpContext): Observable<JwtDto> {
-    return this.logIn$Response(params, context).pipe(
       map((r: BaseResponse<JwtDto>): JwtDto => r.body)
     );
   }
@@ -165,35 +176,167 @@ export class UserService extends BaseService {
     );
   }
 
-  /** Path part for operation `patchAuthor()` */
-  static readonly PatchAuthorPath = '/api/user';
+  /** Path part for operation `patchPassport()` */
+  static readonly PatchPassportPath = '/api/user';
 
   /**
-   * Обновление пользователя.
+   * Обновление информации о пользователе.
    *
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `patchAuthor()` instead.
+   * To access only the response body, use `patchPassport()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  patchAuthor$Response(params: PatchAuthor$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return patchAuthor(this.http, this.rootUrl, params, context);
+  patchPassport$Response(params: PatchPassport$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return patchPassport(this.http, this.rootUrl, params, context);
   }
 
   /**
-   * Обновление пользователя.
+   * Обновление информации о пользователе.
    *
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `patchAuthor$Response()` instead.
+   * To access the full response (for headers, for example), `patchPassport$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  patchAuthor(params: PatchAuthor$Params, context?: HttpContext): Observable<void> {
-    return this.patchAuthor$Response(params, context).pipe(
+  patchPassport(params: PatchPassport$Params, context?: HttpContext): Observable<void> {
+    return this.patchPassport$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `patchPassword()` */
+  static readonly PatchPasswordPath = '/api/user/update-password';
+
+  /**
+   * Обновление пароля пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `patchPassword()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  patchPassword$Response(params: PatchPassword$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return patchPassword(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Обновление пароля пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `patchPassword$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  patchPassword(params: PatchPassword$Params, context?: HttpContext): Observable<void> {
+    return this.patchPassword$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `isPasswordCorrect()` */
+  static readonly IsPasswordCorrectPath = '/api/user/check-password';
+
+  /**
+   * Проверка корректности пароля.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `isPasswordCorrect()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  isPasswordCorrect$Response(params: IsPasswordCorrect$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
+    return isPasswordCorrect(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Проверка корректности пароля.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `isPasswordCorrect$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  isPasswordCorrect(params: IsPasswordCorrect$Params, context?: HttpContext): Observable<boolean> {
+    return this.isPasswordCorrect$Response(params, context).pipe(
+      map((r: BaseResponse<boolean>): boolean => r.body)
+    );
+  }
+
+  /** Path part for operation `forgotPassword()` */
+  static readonly ForgotPasswordPath = '/api/user/forgot-password';
+
+  /**
+   * Отправка ссылки для нового пароля.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `forgotPassword()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  forgotPassword$Response(params: ForgotPassword$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return forgotPassword(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Отправка ссылки для нового пароля.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `forgotPassword$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  forgotPassword(params: ForgotPassword$Params, context?: HttpContext): Observable<void> {
+    return this.forgotPassword$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `updateForgottenPassword()` */
+  static readonly UpdateForgottenPasswordPath = '/api/user/forgot-password';
+
+  /**
+   * Восстановление пароля по ссылке.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `updateForgottenPassword()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateForgottenPassword$Response(params: UpdateForgottenPassword$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return updateForgottenPassword(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Восстановление пароля по ссылке.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `updateForgottenPassword$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateForgottenPassword(params: UpdateForgottenPassword$Params, context?: HttpContext): Observable<void> {
+    return this.updateForgottenPassword$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
@@ -202,7 +345,7 @@ export class UserService extends BaseService {
   static readonly GetUserFullInfoPath = '/api/user/full-info';
 
   /**
-   * Получение полной информации пользователя.
+   * Получение информации в Личном кабинете.
    *
    *
    *
@@ -216,7 +359,7 @@ export class UserService extends BaseService {
   }
 
   /**
-   * Получение полной информации пользователя.
+   * Получение информации в Личном кабинете.
    *
    *
    *
@@ -228,6 +371,39 @@ export class UserService extends BaseService {
   getUserFullInfo(params?: GetUserFullInfo$Params, context?: HttpContext): Observable<UserFullInfoDto> {
     return this.getUserFullInfo$Response(params, context).pipe(
       map((r: BaseResponse<UserFullInfoDto>): UserFullInfoDto => r.body)
+    );
+  }
+
+  /** Path part for operation `getPassportInfo()` */
+  static readonly GetPassportInfoPath = '/api/user/passport';
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getPassportInfo()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPassportInfo$Response(params?: GetPassportInfo$Params, context?: HttpContext): Observable<BaseResponse<PassportUserDto>> {
+    return getPassportInfo(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получение полной информации пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getPassportInfo$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPassportInfo(params?: GetPassportInfo$Params, context?: HttpContext): Observable<PassportUserDto> {
+    return this.getPassportInfo$Response(params, context).pipe(
+      map((r: BaseResponse<PassportUserDto>): PassportUserDto => r.body)
     );
   }
 

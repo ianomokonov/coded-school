@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface LoginDto {
-  email: string;
+export interface UpdateForgottenPassDto {
   password: string;
+  uniqueId: string;
 }

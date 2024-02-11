@@ -2,21 +2,27 @@
 import {
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcryptjs';
-import { LoginDto } from '@dtos/user/login.dto';
-import { SignInDto } from '@dtos/user/sign-in.dto';
+import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from '@entities/user/user.entity';
 import { JwtDto } from '@dtos/user/jwt.dto';
-import { UpdateUserDto } from '@dtos/user/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { UserRoleEntity } from '@entities/user/user-role.entity';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { UserShortDto } from '@dtos/user/user.dto';
 import { UserFullInfoDto } from '@dtos/user/user-full-info.dto';
+import { PassportUserDto } from '@dtos/user/passport.user.dto';
+import { SignUpDto } from '@dtos/user/sign-up.dto';
+import { SignInDto } from '@dtos/user/sign-in.dto';
+import { dateNow } from '@core/date-now.fn';
+import { ISendMailOptions } from '@nestjs-modules/mailer';
+import * as process from 'process';
+import { MailService } from '@mail/service';
+import { UpdateForgottenPassDto } from '@dtos/user/update-forgotten-pass.dto';
 
 @Injectable()
 export class UserService {
@@ -24,18 +30,20 @@ export class UserService {
     @InjectMapper() private mapper: Mapper,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+    private mailService: MailService,
+  ) {
+    const uniqueLink = uuidv4();
+  }
 
-  async signIn(dto: SignInDto): Promise<JwtDto> {
+  async signUp(dto: SignUpDto): Promise<JwtDto> {
     const user = await this.findUserByEmail(dto.email);
     if (user) {
-      throw new UnauthorizedException('Пользователь уже зарегистрирован');
+      throw new ForbiddenException('Пользователь уже зарегистрирован');
     }
-    const salt = await genSalt(10);
     const newUser = UserEntity.create({
-      email: dto.email,
-      password: await hash(dto.password, salt),
-      name: dto.name,
+      ...dto,
+      registrationDate: dateNow(),
+      password: await this.getSaltedHash(dto.password),
     });
     const { id } = await newUser.save();
 
@@ -45,21 +53,70 @@ export class UserService {
     return tokens;
   }
 
-  async logIn(dto: LoginDto): Promise<JwtDto> {
+  async signIn(dto: SignInDto): Promise<JwtDto> {
     const user = await this.findUserByEmail(dto.email);
     if (!user) {
-      throw new UnauthorizedException('Пользователь не найден');
+      throw new NotFoundException('Пользователь не найден');
     }
 
     const isCorrectPassword = await compare(dto.password, user.password);
     if (!isCorrectPassword) {
-      throw new UnauthorizedException('Неверный пароль');
+      throw new ForbiddenException('Неверный пароль');
     }
 
     const tokens = await this.getTokens(user.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
+  }
+
+  async passwordCheck(id: number, password: string): Promise<boolean> {
+    const user = await UserEntity.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    return compare(password, user.password);
+  }
+
+  async updatePassword(id: number, { password }): Promise<void> {
+    const hashedPassword = await this.getSaltedHash(password);
+    await UserEntity.update({ id }, { password: hashedPassword });
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    const user = await UserEntity.findOneBy({ email: email });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+    const data: ISendMailOptions = {
+      to: email,
+      subject: 'Сброс пароля',
+      template: 'reset-password/template',
+      context: {
+        link:
+          process.env.FRONT_URL + (await this.getResetPasswordToken(user.id)),
+        userName: user.firstName,
+      },
+    };
+    await this.mailService.sendMail(data);
+  }
+
+  async updateForgottenPassword({
+    password,
+    uniqueId,
+  }: UpdateForgottenPassDto): Promise<void> {
+    if (!this.jwtService.verify(uniqueId)) {
+      throw new ForbiddenException('Токен недействителен');
+    }
+    const { id } = await this.jwtService.decode(uniqueId);
+    const user = await UserEntity.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    const hashedPassword = await this.getSaltedHash(password);
+    await UserEntity.update({ id }, { password: hashedPassword });
   }
 
   async getUser(id: number): Promise<UserShortDto> {
@@ -87,13 +144,17 @@ export class UserService {
     return this.mapper.map(user, UserEntity, UserFullInfoDto);
   }
 
-  async updateUser(userId: number, dto: UpdateUserDto) {
+  async getUserPassport(id: number): Promise<PassportUserDto> {
+    const entity = await UserEntity.findOne({ where: { id } });
+    return this.mapper.map(entity, UserEntity, PassportUserDto);
+  }
+
+  async updateUserPassport(userId: number, dto: PassportUserDto) {
     await UserEntity.update({ id: userId }, dto);
   }
 
   async updateRefreshToken(userId: number, refreshToken: string) {
-    const salt = await genSalt(10);
-    const hashedRefreshToken = await hash(refreshToken, salt);
+    const hashedRefreshToken = await this.getSaltedHash(refreshToken);
     await UserEntity.update(
       { id: userId },
       {
@@ -109,7 +170,7 @@ export class UserService {
   async refreshTokens(userId: number, refreshToken: string) {
     const user = await UserEntity.findOne({ where: { id: userId } });
     if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('Пользователь не найден');
+      throw new NotFoundException('Пользователь не найден');
     }
 
     const refreshTokenMatches = await compare(refreshToken, user.refreshToken);
@@ -158,5 +219,22 @@ export class UserService {
       token,
       refreshToken,
     };
+  }
+
+  private async getResetPasswordToken(id: number): Promise<string> {
+    return this.jwtService.signAsync(
+      {
+        id,
+      },
+      {
+        secret: this.configService.get<string>('JWT_SECRET'),
+        expiresIn: '10m',
+      },
+    );
+  }
+
+  async getSaltedHash(token: string): Promise<string> {
+    const salt = await genSalt(10);
+    return hash(token, salt);
   }
 }

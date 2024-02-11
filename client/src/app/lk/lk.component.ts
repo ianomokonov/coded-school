@@ -1,45 +1,55 @@
-import { CommonModule } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { SecureService } from '../secure/secure.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserFullInfoDto, UserService } from '@api/index';
 import { CardModule } from 'primeng/card';
+import { SidebarModule } from 'primeng/sidebar';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarComponent } from '@shared/components/avatar/avatar.component';
+import { DestroyService } from '@core/destroy.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-personal-cabinet',
     standalone: true,
-    imports: [CardModule, ButtonModule, CommonModule],
+    imports: [
+        CardModule,
+        ButtonModule,
+        NgIf,
+        NgFor,
+        RouterLink,
+        SidebarModule,
+        AvatarModule,
+        AvatarComponent,
+    ],
+    providers: [DestroyService],
     templateUrl: './lk.component.html',
     styleUrl: './lk.component.scss',
 })
 export class PersonalCabinetComponent implements OnInit {
-    public userInfo!: UserFullInfoDto;
+    userInfo!: UserFullInfoDto;
+
+    sideBarVisible: boolean = false;
 
     constructor(
         private userService: UserService,
-        private secureService: SecureService,
+        private destroy$: DestroyService,
         private router: Router,
     ) {}
 
     ngOnInit(): void {
-        this.userService.getUserFullInfo().subscribe((info) => {
-            this.userInfo = info;
-        });
+        this.userService
+            .getUserFullInfo()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((info) => {
+                this.userInfo = info;
+            });
     }
 
     logOut(): void {
-        this.secureService.logOut().subscribe(() => {
+        this.userService.logout().subscribe(() => {
             this.router.navigate(['/sign-in']);
         });
-    }
-
-    isNoDataShow(): boolean {
-        return (
-            !this.userInfo.activeModules?.length &&
-            !this.userInfo.completedModules?.length &&
-            !this.userInfo.activeMarathons?.length &&
-            !this.userInfo.completedMarathons?.length
-        );
     }
 }

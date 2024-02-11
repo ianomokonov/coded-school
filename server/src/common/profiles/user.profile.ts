@@ -17,6 +17,7 @@ import { AchievementDto } from '@dtos/achievment/achievement.dto';
 import { ModuleEntity } from '@entities/module/module.entity';
 import { MarathonEntity } from '@entities/marathon/marathon.entity';
 import { AchievementEntity } from '@entities/achievement/achievement.entity';
+import { PassportUserDto } from '@dtos/user/passport.user.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -30,6 +31,16 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
       createMap(mapper, AchievementEntity, AchievementDto);
+      createMap(
+        mapper,
+        UserEntity,
+        PassportUserDto,
+        extend(UserEntity, UserShortDto),
+        forMember(
+          (destination) => destination.birthDate,
+          mapFrom((source) => new Date(source.birthDate)),
+        ),
+      );
       createMap(
         mapper,
         UserEntity,

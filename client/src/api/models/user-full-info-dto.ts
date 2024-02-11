@@ -10,7 +10,10 @@ export interface UserFullInfoDto {
   completedMarathons: Array<MarathonDto>;
   completedModules: Array<ModuleDto>;
   email: string;
+  firstName: string;
   id: number;
-  name: string;
   points: number;
+  registrationDate: string;
+  secondName?: string;
+  surname?: string;
 }

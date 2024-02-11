@@ -1,8 +1,15 @@
 <div class="container" *ngIf="userInfo">
-    <div class="flex">
-        <h1 class="mr-2">{{ userInfo.name }} ({{ userInfo.points }})</h1>
-        <p-button (onClick)="logOut()">Выйти</p-button>
+    <div class="flex justify-content-end mb-3 mt-5">
+        <coded-avatar [model]="userInfo" (click)="sideBarVisible = true"></coded-avatar>
     </div>
+    <p-sidebar [(visible)]="sideBarVisible" position="right" [showCloseIcon]="false">
+        <div class="flex flex-column">
+            <h1>{{ userInfo.firstName }} ({{ userInfo.points }})</h1>
+            <h3>{{ userInfo.email }}</h3>
+            <p-button class="mb-3" routerLink="passport">Профиль</p-button>
+            <p-button (onClick)="logOut()">Выйти</p-button>
+        </div>
+    </p-sidebar>
     <div class="mb-3" *ngIf="userInfo.achievements?.length">
         <p-card header="Достижения">
             <div class="border-bottom" *ngFor="let achievement of userInfo.achievements">
@@ -10,30 +17,32 @@
             </div>
         </p-card>
     </div>
-    <h3 *ngIf="isNoDataShow()">У вас нет ни модулей, ни марафонов.</h3>
-    <div class="mb-3" *ngIf="userInfo.activeModules?.length">
+    <div class="mb-3">
         <p-card header="Активные модули">
+            <h3 *ngIf="!userInfo.activeModules?.length">Нет активных модулей</h3>
             <div class="border-bottom" *ngFor="let module of userInfo.activeModules">
                 {{ module.name }}
             </div>
         </p-card>
     </div>
-    <div class="mb-3" *ngIf="userInfo.completedModules?.length">
+    <div class="mb-3">
         <p-card header="Архивные модули">
             <div class="border-bottom" *ngFor="let module of userInfo.completedModules">
                 {{ module.name }}
             </div>
         </p-card>
     </div>
-    <div class="mb-3" *ngIf="userInfo.activeMarathons?.length">
+    <div class="mb-3">
         <p-card header="Активные марафоны">
+            <h3 *ngIf="!userInfo.activeMarathons?.length">Нет активных марафонов</h3>
             <div class="border-bottom" *ngFor="let marathon of userInfo.activeMarathons">
                 {{ marathon.name }}
             </div>
         </p-card>
     </div>
-    <div class="mb-3" *ngIf="userInfo.completedMarathons?.length">
+    <div class="mb-3">
         <p-card header="Архивные марафоны">
+            <h3 *ngIf="!userInfo.completedMarathons?.length">Нет архивных марафонов</h3>
             <div class="border-bottom" *ngFor="let marathon of userInfo.completedMarathons">
                 {{ marathon.name }}
             </div>

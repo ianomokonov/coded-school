@@ -7,14 +7,14 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { JwtDto } from '../../models/jwt-dto';
-import { LoginDto } from '../../models/login-dto';
+import { SignUpDto } from '../../models/sign-up-dto';
 
-export interface LogIn$Params {
-      body: LoginDto
+export interface SignUp$Params {
+      body: SignUpDto
 }
 
-export function logIn(http: HttpClient, rootUrl: string, params: LogIn$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
-  const rb = new RequestBuilder(rootUrl, logIn.PATH, 'post');
+export function signUp(http: HttpClient, rootUrl: string, params: SignUp$Params, context?: HttpContext): Observable<BaseResponse<JwtDto>> {
+  const rb = new RequestBuilder(rootUrl, signUp.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
   }
@@ -29,4 +29,4 @@ export function logIn(http: HttpClient, rootUrl: string, params: LogIn$Params, c
   );
 }
 
-logIn.PATH = '/api/user/sign-in';
+signUp.PATH = '/api/user/sign-up';

@@ -1,27 +1,31 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SecureService } from '../secure.service';
-import { finalize } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '@api/services';
+import { DestroyService } from '@core/destroy.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-sign-in',
     standalone: true,
     imports: [ReactiveFormsModule, InputTextModule, PasswordModule, ButtonModule, RouterLink],
-    providers: [SecureService],
+    providers: [DestroyService],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss',
 })
 export class SignInComponent {
-    public userForm: FormGroup;
-    public isLoading = false;
+    userForm: FormGroup;
+    isLoading = false;
 
     constructor(
         private fb: FormBuilder,
-        private secureService: SecureService,
+        private userService: UserService,
+        private destroy$: DestroyService,
+        private messageService: MessageService,
         private router: Router,
     ) {
         this.userForm = fb.group({
@@ -30,14 +34,14 @@ export class SignInComponent {
         });
     }
 
-    public signIn(): void {
+    signIn(): void {
         if (this.userForm.invalid) {
             return;
         }
         const user = this.userForm.getRawValue();
         this.isLoading = true;
-        this.secureService
-            .signIn(user)
+        this.userService
+            .signIn({ body: user })
             .pipe(
                 finalize(() => {
                     this.isLoading = false;
@@ -45,6 +49,21 @@ export class SignInComponent {
             )
             .subscribe(() => {
                 this.router.navigate(['/lk']);
+            });
+    }
+
+    resetPassword(): void {
+        const email = this.userForm.getRawValue().email;
+        if (!email) return;
+        this.userService
+            .forgotPassword({ email })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Письмо отправлено',
+                    detail: 'Письмо со ссылкой на восстановление пароля отправлено на Email',
+                });
             });
     }
 }
