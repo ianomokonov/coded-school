@@ -38,10 +38,11 @@ export class UserService {
     if (user) {
       throw new ForbiddenException('Пользователь уже зарегистрирован');
     }
+    const { inviterCode, ...userData } = dto;
     const newUser = UserEntity.create({
-      ...dto,
+      ...userData,
       registrationDate: dateNow(),
-      referLink: uuidv4(),
+      referralCode: uuidv4(),
       password: await this.getSaltedHash(dto.password),
     });
     const { id } = await newUser.save();
@@ -93,7 +94,9 @@ export class UserService {
       subject: 'Сброс пароля',
       template: 'reset-password/template',
       context: {
-        link: process.env.FRONT_URL + (await this.getUniqueLink(user.id)),
+        link:
+          process.env.RESET_PASSWORD_URL +
+          (await this.getResetPasswordToken(user.id)),
         userName: user.firstName,
       },
     };
@@ -219,7 +222,7 @@ export class UserService {
     };
   }
 
-  private async getUniqueLink(id: number): Promise<string> {
+  private async getResetPasswordToken(id: number): Promise<string> {
     return this.jwtService.signAsync(
       {
         id,

@@ -48,10 +48,10 @@ export class ForgotPasswordComponent {
         this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.token = res['token'];
             this.tokenService.removeTokens();
-            this.passwordForm = this.fb.group({
-                password: ['', [Validators.required, matchValidator('confirmPassword', true)]],
-                confirmPassword: ['', [Validators.required, matchValidator('password')]],
-            });
+        });
+        this.passwordForm = this.fb.group({
+            password: ['', [Validators.required, matchValidator('confirmPassword', true)]],
+            confirmPassword: ['', [Validators.required, matchValidator('password')]],
         });
     }
 

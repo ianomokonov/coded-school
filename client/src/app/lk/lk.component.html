@@ -1,6 +1,6 @@
 <div class="container" *ngIf="userInfo">
     <div class="flex justify-content-end mb-3 mt-5">
-        <coded-avatar [userInfo]="userInfo" (click)="sideBarVisible = true"></coded-avatar>
+        <coded-avatar [model]="userInfo" (click)="sideBarVisible = true"></coded-avatar>
     </div>
     <p-sidebar
         styleClass="w-30rem"
@@ -45,9 +45,9 @@
                     pInputText
                     class="w-12 refer-link-input"
                     id="referLink"
-                    [ngModel]="userInfo.referLink"
+                    [ngModel]="getDisplayedRefLink()"
                 />
-                <label for="referLink">Реферальная ссылка</label>
+                <label for="referLink">Ваш персональный код</label>
             </span>
         </p-card>
     </div>

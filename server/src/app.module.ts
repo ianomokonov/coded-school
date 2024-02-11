@@ -23,6 +23,7 @@ import { NoteModule } from '@modules/note/note.module';
     }),
     ConfigModule.forRoot({
       envFilePath: ['.env.local', '.env'],
+      expandVariables: true,
     }),
     MailerModule.forRoot({
       transport: {

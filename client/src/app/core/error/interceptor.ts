@@ -16,14 +16,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                     case 500:
                         messageService.add({
                             severity: 'error',
-                            summary: `Ошибка сервера`,
-                            detail: 'Произошла ошибка, повторите попытку позже',
+                            detail: 'Произошла ошибка на сервере, повторите попытку позже',
                         });
                         break;
                     default:
                         messageService.add({
                             severity: 'error',
-                            summary: `Ошибка ${error.statusCode}`,
                             detail: error.message,
                         });
                 }

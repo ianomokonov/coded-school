@@ -20,6 +20,7 @@ import { AchievementEntity } from '@entities/achievement/achievement.entity';
 import { PassportUserDto } from '@dtos/user/passport.user.dto';
 import { NoteEntity } from '@entities/note/note.entity';
 import { NoteDto } from '@dtos/note/note.dto';
+import * as process from 'process';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -87,6 +88,13 @@ export class UserProfile extends AutomapperProfile {
             source.achievements.map((a) =>
               mapper.map(a.achievement, AchievementEntity, AchievementDto),
             ),
+          ),
+        ),
+        forMember(
+          (destination) => destination.referralCode,
+          mapFrom(
+            (source) =>
+              `${process.env.FRONT_URL}sign-up?ref=${source.referralCode}`,
           ),
         ),
       );

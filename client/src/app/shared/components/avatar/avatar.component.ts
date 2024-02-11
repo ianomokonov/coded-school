@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
-import { UserFullInfoDto } from '@api/models/user-full-info-dto';
-import { PassportUserDto } from '@api/models/passport-user-dto';
+import { Avatar } from '@shared/components/avatar/avatar.model';
 
 @Component({
     selector: 'coded-avatar',
@@ -12,12 +11,12 @@ import { PassportUserDto } from '@api/models/passport-user-dto';
 })
 export class AvatarComponent {
     @Input({ required: true })
-    userInfo!: UserFullInfoDto | PassportUserDto;
+    model!: Avatar;
 
     get displayedUserName(): string {
-        const firstName = this.userInfo.firstName[0];
-        if (this.userInfo.secondName) {
-            return this.userInfo.secondName[0].toUpperCase() + firstName.toLowerCase();
+        const firstName = this.model.firstName[0];
+        if (this.model.secondName) {
+            return this.model.secondName[0].toUpperCase() + firstName.toLowerCase();
         }
         return firstName?.toUpperCase();
     }

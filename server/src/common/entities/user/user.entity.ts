@@ -74,7 +74,7 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', {
     nullable: false,
   })
-  referLink: string;
+  referralCode: string;
 
   @Column('varchar', {
     nullable: true,
