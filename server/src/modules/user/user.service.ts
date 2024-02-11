@@ -93,7 +93,8 @@ export class UserService {
       subject: 'Сброс пароля',
       template: 'reset-password/template',
       context: {
-        link: process.env.FRONT_URL + (await this.getUniqueLink(user.id)),
+        link:
+          process.env.FRONT_URL + (await this.getResetPasswordToken(user.id)),
         userName: user.firstName,
       },
     };
@@ -219,7 +220,7 @@ export class UserService {
     };
   }
 
-  private async getUniqueLink(id: number): Promise<string> {
+  private async getResetPasswordToken(id: number): Promise<string> {
     return this.jwtService.signAsync(
       {
         id,
