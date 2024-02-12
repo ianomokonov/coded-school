@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { UserService } from '@api/services/user.service';
 import { takeUntil } from 'rxjs';
 import { DestroyService } from '@core/destroy.service';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
     FormBuilder,
     FormGroup,
@@ -26,7 +26,6 @@ import { MessageService } from 'primeng/api';
         NgClass,
         AsyncPipe,
         FormsModule,
-        NgIf,
         ReactiveFormsModule,
     ],
     providers: [DestroyService],

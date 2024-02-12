@@ -1,4 +1,4 @@
-<div *ngIf="isSidebar; else fullPage">
+@if (isSidebar) {
     <div class="flex justify-content-between align-items-center">
         <h3>Избранные заметки</h3>
         <p-button
@@ -8,29 +8,24 @@
             [relativeTo]="route"
         ></p-button>
     </div>
-    <div *ngIf="notes.length">
-        <div *ngFor="let note of notes">
+    @for (note of notes; track note.id) {
+        <div>
             {{ note.name }}
         </div>
-    </div>
-    <div *ngIf="!notes.length">
+    } @empty {
         <h2>Нет избранных</h2>
-    </div>
-</div>
-
-<ng-template #fullPage>
+    }
+} @else {
     <div class="container">
         <div class="flex justify-content-between align-items-center">
             <h3>Заметки</h3>
             <p-button label="Создать" routerLink="create"></p-button>
         </div>
-        <div *ngIf="notes.length">
-            <div *ngFor="let note of notes">
-                <h2 class="cursor-pointer" [routerLink]="[note.id]">{{ note.name }}</h2>
-            </div>
-        </div>
-        <div *ngIf="!notes.length">
+        @for (note of notes; track note.id) {
+            <h2 class="cursor-pointer" [routerLink]="[note.id]">{{ note.name }}</h2>
+            <p-button label="Удалить" severity="danger" (onClick)="deleteNote(note.id)"></p-button>
+        } @empty {
             <h2>Нет заметок</h2>
-        </div>
+        }
     </div>
-</ng-template>
+}

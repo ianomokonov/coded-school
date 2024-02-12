@@ -1,5 +1,9 @@
-<div *ngIf="note">
-    {{ note.name }}
-    {{ note.content }}
-    <p-button label="Редактировать" routerLink="edit"></p-button>
-</div>
+@if (note | async; as note) {
+    <div>
+        {{ note.name }}
+        {{ note.content }}
+        <p-button label="Редактировать" routerLink="edit"></p-button>
+    </div>
+} @else {
+    <h1>Такой заметки не существует</h1>
+}

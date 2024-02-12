@@ -67,17 +67,21 @@ export class EditNoteComponent implements OnInit {
             this.notesService
                 .updateNote({ id: this.noteId, body: note })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => this.redirectToLk());
+                .subscribe(() => this.redirectToNote());
         } else {
             const note: SaveNoteDto = this.noteForm.getRawValue();
             this.notesService
                 .createNote({ body: note })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => this.redirectToLk());
+                .subscribe(() => this.redirectToNotes());
         }
     }
 
-    private redirectToLk(): void {
-        this.router.navigate(['/lk']);
+    private redirectToNotes(): void {
+        this.router.navigate(['/lk/notes']);
+    }
+
+    private redirectToNote(): void {
+        this.router.navigate(['/lk/notes', this.noteId]);
     }
 }

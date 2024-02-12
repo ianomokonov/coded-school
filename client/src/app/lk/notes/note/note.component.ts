@@ -4,19 +4,19 @@ import { NoteDto } from '@api/models/note-dto';
 import { NotesService } from '@api/services/notes.service';
 import { DestroyService } from '@core/destroy.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { takeUntil } from 'rxjs';
-import { NgIf } from '@angular/common';
+import { Observable, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'coded-note',
     standalone: true,
-    imports: [ButtonModule, RouterLink, NgIf],
+    imports: [ButtonModule, RouterLink, AsyncPipe],
     providers: [DestroyService],
     templateUrl: './note.component.html',
     styleUrl: './note.component.scss',
 })
 export class NoteComponent implements OnInit {
-    note: NoteDto | undefined;
+    note!: Observable<NoteDto>;
     noteId!: number;
 
     constructor(
@@ -30,11 +30,6 @@ export class NoteComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.notesService
-            .readNote({ id: this.noteId })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((note) => {
-                this.note = note;
-            });
+        this.note = this.notesService.readNote({ id: this.noteId });
     }
 }
