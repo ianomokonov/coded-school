@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { NoteDto } from '@dtos/note/note.dto';
 import { NoteEntity } from '@entities/note/note.entity';
 import { Mapper } from '@automapper/core';
@@ -11,7 +11,6 @@ export class NoteService {
 
   async getAllNotes(): Promise<NoteDto[]> {
     const notes = await NoteEntity.find();
-    console.log(notes);
     return notes.map((note) => this.mapper.map(note, NoteEntity, NoteDto));
   }
 
@@ -34,6 +33,10 @@ export class NoteService {
   }
 
   async readNote(noteId: number): Promise<NoteDto> {
-    return await NoteEntity.findOneBy({ id: noteId });
+    const user = await NoteEntity.findOneBy({ id: noteId });
+    if (user) {
+      return user;
+    }
+    throw new NotFoundException('Заметка не найдена');
   }
 }

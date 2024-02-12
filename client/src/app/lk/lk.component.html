@@ -1,93 +1,111 @@
-<div class="container" *ngIf="userInfo">
-    <div class="flex justify-content-end mb-3 mt-5">
-        <coded-avatar [model]="userInfo" (click)="sideBarVisible = true"></coded-avatar>
-    </div>
-    <p-sidebar
-        styleClass="w-30rem"
-        [(visible)]="sideBarVisible"
-        position="right"
-        [showCloseIcon]="false"
-        (onShow)="sideBarBlocks = SideBarBlockDisplayed.PERSONAL_CABINET_MENU"
-    >
-        <div class="flex flex-column">
-            <h1>{{ userInfo.firstName }} ({{ userInfo.points }})</h1>
-            <h3>{{ userInfo.email }}</h3>
-            <ng-container [ngSwitch]="sideBarBlocks">
-                <ng-container *ngSwitchCase="SideBarBlockDisplayed.PERSONAL_CABINET_MENU">
-                    <p-button class="mb-3" routerLink="passport" label="Профиль"></p-button>
-                    <p-button
-                        class="mb-3"
-                        label="Заметки"
-                        severity="warning"
-                        (onClick)="sideBarBlocks = SideBarBlockDisplayed.NOTES"
-                    ></p-button>
-                    <p-button (onClick)="logOut()" label="Выйти" severity="danger"></p-button>
-                </ng-container>
-                <ng-container *ngSwitchCase="SideBarBlockDisplayed.NOTES">
-                    <coded-notes [isSidebar]="true"></coded-notes>
-                </ng-container>
-            </ng-container>
+@if (userInfo$ | async; as user) {
+    <div class="container">
+        <div class="flex justify-content-end mb-3 mt-5">
+            <coded-avatar [model]="user" (click)="sideBarVisible = true"></coded-avatar>
         </div>
-    </p-sidebar>
-    <div class="mb-3">
-        <p-card header="Реферальная программа">
-            <span class="p-float-label p-input-icon-right">
-                <i
-                    class="pi pi-copy"
-                    pTooltip="Скопировать ссылку"
-                    tooltipPosition="left"
-                    (click)="copyReferLink()"
-                ></i>
-                <input
-                    (mousedown)="preventEvent($event)"
-                    (selectstart)="preventEvent($event)"
-                    readonly
-                    pInputText
-                    class="w-12 refer-link-input"
-                    id="referLink"
-                    [ngModel]="getDisplayedRefLink()"
-                />
-                <label for="referLink">Ваш персональный код</label>
-            </span>
-        </p-card>
-    </div>
-    <div class="mb-3">
-        <p-card header="Достижения">
-            <h3 *ngIf="!userInfo.achievements?.length">У Вас нет достижений</h3>
-            <div class="border-bottom" *ngFor="let achievement of userInfo.achievements">
-                {{ achievement.name }}
+        <p-sidebar
+            styleClass="w-30rem"
+            [(visible)]="sideBarVisible"
+            position="right"
+            [showCloseIcon]="false"
+            (onShow)="sideBarBlocks = SideBarBlockDisplayed.PERSONAL_CABINET_MENU"
+        >
+            <div class="flex flex-column">
+                <h1>{{ user.firstName }} ({{ user.points }})</h1>
+                <h3>{{ user.email }}</h3>
+                @switch (sideBarBlocks) {
+                    @case (SideBarBlockDisplayed.PERSONAL_CABINET_MENU) {
+                        <p-button class="mb-3" routerLink="passport" label="Профиль"></p-button>
+                        <p-button
+                            class="mb-3"
+                            label="Заметки"
+                            severity="warning"
+                            (onClick)="sideBarBlocks = SideBarBlockDisplayed.NOTES"
+                        ></p-button>
+                        <p-button (onClick)="logOut()" label="Выйти" severity="danger"></p-button>
+                    }
+                    @case (SideBarBlockDisplayed.NOTES) {
+                        <coded-notes [isSidebar]="true"></coded-notes>
+                    }
+                }
             </div>
-        </p-card>
+        </p-sidebar>
+        <div class="mb-3">
+            <p-card header="Реферальная программа">
+                <span class="p-float-label p-input-icon-right">
+                    <i
+                        class="pi pi-copy"
+                        pTooltip="Скопировать ссылку"
+                        tooltipPosition="left"
+                        (click)="copyReferLink(user.referralCode)"
+                    ></i>
+                    <input
+                        (mousedown)="preventEvent($event)"
+                        (selectstart)="preventEvent($event)"
+                        readonly
+                        pInputText
+                        class="w-12 refer-link-input"
+                        id="referLink"
+                        [ngModel]="getDisplayedRefLink(user.referralCode)"
+                    />
+                    <label for="referLink">Ваш персональный код</label>
+                </span>
+            </p-card>
+        </div>
+        <div class="mb-3">
+            <p-card header="Достижения">
+                @for (achievement of user.achievements; track achievement.id) {
+                    <div class="border-bottom">
+                        {{ achievement.name }}
+                    </div>
+                } @empty {
+                    <h3>У Вас нет достижений</h3>
+                }
+            </p-card>
+        </div>
+        <div class="mb-3">
+            <p-card header="Активные модули">
+                @for (module of user.activeModules; track module.id) {
+                    <div class="border-bottom">
+                        {{ module.name }}
+                    </div>
+                } @empty {
+                    <h3>Нет активных модулей</h3>
+                }
+            </p-card>
+        </div>
+        <div class="mb-3">
+            <p-card header="Архивные модули">
+                @for (module of user.completedModules; track module.id) {
+                    <div class="border-bottom">
+                        {{ module.name }}
+                    </div>
+                } @empty {
+                    <h3>Нет архивных модулей</h3>
+                }
+            </p-card>
+        </div>
+        <div class="mb-3">
+            <p-card header="Активные марафоны">
+                @for (marathon of user.activeMarathons; track marathon.id) {
+                    <div class="border-bottom">
+                        {{ marathon.name }}
+                    </div>
+                } @empty {
+                    <h3>Нет активных марафонов</h3>
+                }
+            </p-card>
+        </div>
+        <div class="mb-3">
+            <p-card header="Архивные марафоны">
+                @for (marathon of user.completedMarathons; track marathon.id) {
+                    <div class="border-bottom">
+                        {{ marathon.name }}
+                    </div>
+                } @empty {
+                    <h3>Нет архивных марафонов</h3>
+                }
+            </p-card>
+        </div>
     </div>
-    <div class="mb-3">
-        <p-card header="Активные модули">
-            <h3 *ngIf="!userInfo.activeModules?.length">Нет активных модулей</h3>
-            <div class="border-bottom" *ngFor="let module of userInfo.activeModules">
-                {{ module.name }}
-            </div>
-        </p-card>
-    </div>
-    <div class="mb-3">
-        <p-card header="Архивные модули">
-            <div class="border-bottom" *ngFor="let module of userInfo.completedModules">
-                {{ module.name }}
-            </div>
-        </p-card>
-    </div>
-    <div class="mb-3">
-        <p-card header="Активные марафоны">
-            <h3 *ngIf="!userInfo.activeMarathons?.length">Нет активных марафонов</h3>
-            <div class="border-bottom" *ngFor="let marathon of userInfo.activeMarathons">
-                {{ marathon.name }}
-            </div>
-        </p-card>
-    </div>
-    <div class="mb-3">
-        <p-card header="Архивные марафоны">
-            <h3 *ngIf="!userInfo.completedMarathons?.length">Нет архивных марафонов</h3>
-            <div class="border-bottom" *ngFor="let marathon of userInfo.completedMarathons">
-                {{ marathon.name }}
-            </div>
-        </p-card>
-    </div>
-</div>
+}

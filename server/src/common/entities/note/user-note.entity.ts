@@ -26,7 +26,7 @@ export class UserNoteEntity extends BaseEntity {
   @Column()
   noteId: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.modules)
+  @ManyToOne(() => UserEntity, (user) => user.notes)
   @JoinColumn({ name: 'userId' })
   @AutoMap(() => UserEntity)
   user: UserEntity;
@@ -34,5 +34,5 @@ export class UserNoteEntity extends BaseEntity {
   @ManyToOne(() => NoteEntity)
   @JoinColumn({ name: 'noteId' })
   @AutoMap(() => NoteEntity)
-  module: NoteEntity;
+  note: NoteEntity;
 }
