@@ -1,4 +1,4 @@
-@if (userInfo | async; as user) {
+@if (userInfo$ | async; as user) {
     <div class="container">
         <div class="flex justify-content-end mb-3 mt-5">
             <coded-avatar [model]="user" (click)="sideBarVisible = true"></coded-avatar>

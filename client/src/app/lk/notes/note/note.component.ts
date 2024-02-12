@@ -16,7 +16,7 @@ import { AsyncPipe } from '@angular/common';
     styleUrl: './note.component.scss',
 })
 export class NoteComponent implements OnInit {
-    note!: Observable<NoteDto>;
+    note$!: Observable<NoteDto>;
     noteId!: number;
 
     constructor(
@@ -30,6 +30,6 @@ export class NoteComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.note = this.notesService.readNote({ id: this.noteId });
+        this.note$ = this.notesService.readNote({ id: this.noteId });
     }
 }

@@ -44,7 +44,7 @@ export enum SideBarBlockDisplayed {
     styleUrl: './lk.component.scss',
 })
 export class PersonalCabinetComponent implements OnInit {
-    userInfo!: Observable<UserFullInfoDto>;
+    userInfo$!: Observable<UserFullInfoDto>;
 
     sideBarVisible: boolean = false;
     sideBarBlocks: SideBarBlockDisplayed = SideBarBlockDisplayed.PERSONAL_CABINET_MENU;
@@ -59,7 +59,7 @@ export class PersonalCabinetComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.userInfo = this.userService.getUserFullInfo();
+        this.userInfo$ = this.userService.getUserFullInfo();
     }
 
     logOut(): void {
