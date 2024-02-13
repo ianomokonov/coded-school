@@ -12,7 +12,7 @@ import { UserRoleEntity } from '../role/user-role.entity';
 import { UserAchievementEntity } from '../achievement/user-achievement.entity';
 import { AutoMap } from '@automapper/classes';
 import { GenderEnum } from '@dtos/user/passport.user.dto';
-import { UserNoteEntity } from '@entities/note/user-note.entity';
+import { NoteEntity } from '@entities/note/note.entity';
 
 @Entity('user', {
   schema: 'sec',
@@ -118,7 +118,7 @@ export class UserEntity extends BaseEntity {
   @AutoMap(() => [UserAchievementEntity])
   achievements: UserAchievementEntity[];
 
-  @OneToMany(() => UserNoteEntity, (userNote) => userNote.user)
-  @AutoMap(() => [UserNoteEntity])
-  notes: UserNoteEntity[];
+  @OneToMany(() => NoteEntity, (userNote) => userNote.user)
+  @AutoMap(() => [NoteEntity])
+  notes: NoteEntity[];
 }

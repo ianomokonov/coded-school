@@ -17,6 +17,7 @@ export { SaveNoteDto } from './models/save-note-dto';
 export { SignInDto } from './models/sign-in-dto';
 export { SignUpDto } from './models/sign-up-dto';
 export { UpdateForgottenPassDto } from './models/update-forgotten-pass-dto';
+export { UpdateNoteDto } from './models/update-note-dto';
 export { UserFullInfoDto } from './models/user-full-info-dto';
 export { UserShortDto } from './models/user-short-dto';
 export { UserService } from './services/user.service';

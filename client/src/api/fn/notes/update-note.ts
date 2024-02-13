@@ -6,11 +6,11 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveNoteDto } from '../../models/save-note-dto';
+import { UpdateNoteDto } from '../../models/update-note-dto';
 
 export interface UpdateNote$Params {
   id: number;
-      body: SaveNoteDto
+      body: UpdateNoteDto
 }
 
 export function updateNote(http: HttpClient, rootUrl: string, params: UpdateNote$Params, context?: HttpContext): Observable<BaseResponse<void>> {

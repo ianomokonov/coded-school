@@ -4,27 +4,38 @@ import { NoteEntity } from '@entities/note/note.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { SaveNoteDto } from '@dtos/note/create-note.dto';
+import { dateNow } from '@core/date-now.fn';
+import { UpdateNoteDto } from '@dtos/note/update-note.dto';
 
 @Injectable()
 export class NoteService {
   constructor(@InjectMapper() private mapper: Mapper) {}
 
-  async getAllNotes(): Promise<NoteDto[]> {
-    const notes = await NoteEntity.find();
+  async getNotes(userId: number, isFavorite: boolean): Promise<NoteDto[]> {
+    const notes = isFavorite
+      ? await this.getFavoriteNotes(userId)
+      : await this.getAllNotes(userId);
     return notes.map((note) => this.mapper.map(note, NoteEntity, NoteDto));
   }
 
-  async getFavoriteNotes(): Promise<NoteDto[]> {
-    const notes = await NoteEntity.findBy({ isFavorite: true });
-    return notes.map((note) => this.mapper.map(note, NoteEntity, NoteDto));
+  private async getAllNotes(userId: number): Promise<NoteEntity[]> {
+    return await NoteEntity.find({ where: { userId } });
   }
 
-  async createNote(dto: SaveNoteDto) {
-    const { id } = await NoteEntity.create({ ...dto }).save();
+  private async getFavoriteNotes(userId: number): Promise<NoteEntity[]> {
+    return await NoteEntity.find({ where: { userId, isFavorite: true } });
+  }
+
+  async createNote(userId: number, dto: SaveNoteDto) {
+    const { id } = await NoteEntity.create({
+      ...dto,
+      createDate: dateNow(),
+      userId,
+    }).save();
     return id;
   }
 
-  async updateNote(noteId: number, dto: SaveNoteDto) {
+  async updateNote(noteId: number, dto: UpdateNoteDto) {
     await NoteEntity.update({ id: noteId }, { ...dto });
   }
 
@@ -32,10 +43,10 @@ export class NoteService {
     await NoteEntity.delete({ id: noteId });
   }
 
-  async readNote(noteId: number): Promise<NoteDto> {
-    const user = await NoteEntity.findOneBy({ id: noteId });
-    if (user) {
-      return user;
+  async readNote(id: number): Promise<NoteDto> {
+    const note = await NoteEntity.findOneBy({ id });
+    if (note) {
+      return note;
     }
     throw new NotFoundException('Заметка не найдена');
   }
