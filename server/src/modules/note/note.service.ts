@@ -5,6 +5,7 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { SaveNoteDto } from '@dtos/note/create-note.dto';
 import { dateNow } from '@core/date-now.fn';
+import { UpdateNoteDto } from '@dtos/note/update-note.dto';
 
 @Injectable()
 export class NoteService {
@@ -34,7 +35,7 @@ export class NoteService {
     return id;
   }
 
-  async updateNote(noteId: number, dto: SaveNoteDto) {
+  async updateNote(noteId: number, dto: UpdateNoteDto) {
     await NoteEntity.update({ id: noteId }, { ...dto });
   }
 
