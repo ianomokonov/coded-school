@@ -35,4 +35,8 @@ export const translation: Translation = {
     today: 'Сегодня',
     weekHeader: 'Нед',
     firstDayOfWeek: 1,
+    passwordPrompt: 'Начните вводить пароль',
+    weak: 'Простой пароль',
+    medium: 'Удовлетворительный пароль',
+    strong: 'Сложный пароль',
 };

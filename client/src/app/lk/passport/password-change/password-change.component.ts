@@ -53,14 +53,16 @@ export class PasswordChangeComponent {
 
     checkPassword() {
         const control = this.passwordForm.get('currentPassword');
-        this.userService
-            .isPasswordCorrect({ password: control?.value })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
-                if (!res) {
-                    control?.setErrors({ incorrect: true });
-                }
-            });
+        if (control?.value) {
+            this.userService
+                .isPasswordCorrect({ password: control?.value })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((res) => {
+                    if (!res) {
+                        control?.setErrors({ incorrect: true });
+                    }
+                });
+        }
     }
 
     changePassword(): void {

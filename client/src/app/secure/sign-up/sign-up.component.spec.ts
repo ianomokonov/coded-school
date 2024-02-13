@@ -38,7 +38,7 @@ describe('SignUpComponent', () => {
 
     it('should register user', () => {
         component.userForm.patchValue({
-            name: 'name',
+            firstName: 'name',
             email: 'email',
             password: 'password',
         });
