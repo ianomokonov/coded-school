@@ -21,9 +21,13 @@
             <h3>Заметки</h3>
             <p-button label="Создать" routerLink="create"></p-button>
         </div>
-        @for (note of notes; track note.id) {
+        @for (note of notes; track note.id; let index = $index) {
             <h2 class="cursor-pointer" [routerLink]="[note.id]">{{ note.name }}</h2>
-            <p-button label="Удалить" severity="danger" (onClick)="deleteNote(note.id)"></p-button>
+            <p-button
+                label="Удалить"
+                severity="danger"
+                (onClick)="deleteNote(note.id, index)"
+            ></p-button>
         } @empty {
             <h2>Нет заметок</h2>
         }

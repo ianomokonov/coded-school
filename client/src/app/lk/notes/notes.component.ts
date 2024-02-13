@@ -6,6 +6,7 @@ import { AsyncPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-notes',
@@ -23,6 +24,7 @@ export class NotesComponent implements OnInit {
 
     constructor(
         private notesService: NotesService,
+        private messageService: MessageService,
         private destroy$: DestroyService,
         public readonly route: ActivatedRoute,
     ) {}
@@ -36,10 +38,16 @@ export class NotesComponent implements OnInit {
             });
     }
 
-    deleteNote(noteId: number): void {
+    deleteNote(noteId: number, index: number): void {
         this.notesService
             .deleteNote({ id: noteId })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {});
+            .subscribe(() => {
+                this.notes.splice(index, 1);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Заметка удалена',
+                });
+            });
     }
 }

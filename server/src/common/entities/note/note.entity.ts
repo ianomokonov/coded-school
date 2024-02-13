@@ -1,4 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserEntity } from '@entities/user/user.entity';
+import { AutoMap } from '@automapper/classes';
 
 @Entity('note', {
   schema: 'note',
@@ -6,6 +15,9 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class NoteEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  createDate: Date;
 
   @Column({ nullable: false })
   name: string;
@@ -15,4 +27,12 @@ export class NoteEntity extends BaseEntity {
 
   @Column({ default: false })
   isFavorite: boolean;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.notes)
+  @JoinColumn({ name: 'userId' })
+  @AutoMap(() => UserEntity)
+  user: UserEntity;
 }
