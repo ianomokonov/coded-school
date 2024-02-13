@@ -15,6 +15,7 @@ import { NoteService } from '@modules/note/note.service';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
 import { SaveNoteDto } from '@dtos/note/create-note.dto';
 import { UserId } from '@decorators/author-id.decorator';
+import { UpdateNoteDto } from '@dtos/note/update-note.dto';
 
 @ApiTags('Notes')
 @Controller('note')
@@ -44,7 +45,7 @@ export class NoteController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Изменить заметку' })
-  async updateNote(@Param('id') id: number, @Body() dto: SaveNoteDto) {
+  async updateNote(@Param('id') id: number, @Body() dto: UpdateNoteDto) {
     return this.noteService.updateNote(id, dto);
   }
   @Delete(':id')

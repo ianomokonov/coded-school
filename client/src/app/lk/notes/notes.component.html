@@ -17,12 +17,25 @@
     }
 } @else {
     <div class="container">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
         <div class="flex justify-content-between align-items-center">
             <h3>Заметки</h3>
             <p-button label="Создать" routerLink="create"></p-button>
         </div>
         @for (note of notes; track note.id; let index = $index) {
-            <h2 class="cursor-pointer" [routerLink]="[note.id]">{{ note.name }}</h2>
+            <div class="flex align-items-center">
+                <h2 class="cursor-pointer mr-3" [routerLink]="[note.id]">{{ note.name }}</h2>
+                <i
+                    class="pi pi-star{{ note.isFavorite ? '-fill' : '' }} cursor-pointer"
+                    (click)="changeFavoriteStatus(note)"
+                ></i>
+            </div>
             <p-button
                 label="Удалить"
                 severity="danger"

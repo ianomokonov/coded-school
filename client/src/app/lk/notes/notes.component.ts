@@ -7,11 +7,13 @@ import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
 import { MessageService } from 'primeng/api';
+import { AvatarComponent } from '@shared/components/avatar/avatar.component';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
     selector: 'coded-notes',
     standalone: true,
-    imports: [AsyncPipe, ButtonModule, RouterLink],
+    imports: [AsyncPipe, ButtonModule, RouterLink, AvatarComponent, AvatarModule],
     templateUrl: './notes.component.html',
     styleUrl: './notes.component.scss',
     providers: [DestroyService],
@@ -35,6 +37,15 @@ export class NotesComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((notes) => {
                 this.notes = notes;
+            });
+    }
+
+    changeFavoriteStatus(note: NoteDto): void {
+        this.notesService
+            .updateNote({ id: note.id, body: { isFavorite: !note.isFavorite } })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                note.isFavorite = !note.isFavorite;
             });
     }
 
