@@ -45,7 +45,15 @@ export class SignInComponent {
 
     resetPassword(): void {
         const email = this.userForm.getRawValue().email;
-        if (!email) return;
+        if (!email) {
+            this.userForm.get('email')?.setErrors({ requiredForReset: true });
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Требуются данные',
+                detail: 'Для восстановления пароля требуется Ваш email',
+            });
+            return;
+        }
         this.userService
             .forgotPassword({ email })
             .pipe(takeUntil(this.destroy$))

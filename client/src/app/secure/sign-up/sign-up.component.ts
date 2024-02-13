@@ -32,7 +32,7 @@ export class SignUpComponent {
             this.referralCode = params['ref'];
         });
         this.userForm = this.fb.group({
-            name: ['', Validators.required],
+            firstName: ['', Validators.required],
             email: ['', Validators.required],
             password: ['', Validators.required],
         });

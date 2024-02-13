@@ -9,7 +9,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req).pipe(
         retry({
             delay: (httpError) => {
-                const error: ErrorModel = httpError.error;
+                const error: ErrorModel = JSON.parse(httpError.error);
                 switch (error.statusCode) {
                     case 401:
                         throw httpError;

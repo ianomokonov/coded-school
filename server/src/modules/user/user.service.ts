@@ -85,7 +85,7 @@ export class UserService {
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await UserEntity.findOneBy({ email: email });
+    const user = await this.findUserByEmail(email);
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
     }

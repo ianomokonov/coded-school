@@ -115,6 +115,10 @@ export class UserController {
 
   @Get('/forgot-password')
   @ApiOperation({ summary: 'Отправка ссылки для нового пароля' })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Пользователь не найден',
+  })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   async forgotPassword(@Query('email') email: string): Promise<void> {
     return this.authService.forgotPassword(email);
