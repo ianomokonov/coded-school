@@ -42,7 +42,9 @@ export class UserProfile extends AutomapperProfile {
         extend(UserEntity, UserShortDto),
         forMember(
           (destination) => destination.birthDate,
-          mapFrom((source) => new Date(source.birthDate)),
+          mapFrom((source) =>
+            source.birthDate ? new Date(source.birthDate) : null,
+          ),
         ),
       );
       createMap(
