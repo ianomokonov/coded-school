@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface SaveAchievementDto {
+export interface SaveTopicDto {
   moduleId?: number;
   name?: string;
-  points?: number;
 }

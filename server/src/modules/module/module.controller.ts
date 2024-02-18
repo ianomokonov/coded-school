@@ -54,9 +54,10 @@ export class ModuleController {
   }
   @Get(':id')
   @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить модуль' })
-  async readUserModule(@Param('id') id: number) {
-    return this.moduleService.readModule(id);
+  async readUserModule(@UserId() userId: number, @Param('id') id: number) {
+    return this.moduleService.readUserModule(id, userId);
   }
   @Post(':id/start')
   @ApiBearerAuth('JWT')

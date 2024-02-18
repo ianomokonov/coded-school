@@ -1,0 +1,24 @@
+@if (module) {
+    <div class="container pt-5">
+        <p-card [header]="module.name" class="mb-3">
+            <p-progressBar [value]="(module.completedTopicsCount / module.topics.length) * 100">
+                <ng-template pTemplate="content" let-value>
+                    <span>{{ value }}/100</span>
+                </ng-template>
+            </p-progressBar>
+        </p-card>
+        <h3>Темы модуля</h3>
+        <div>
+            @for (topic of module.topics; track topic.id; let last = $last) {
+                <div
+                    class="border-200 py-3"
+                    [ngClass]="{ 'border-none': last, 'border-bottom-1': !last }"
+                >
+                    <a [routerLink]="['/topic', topic.id]">{{ topic.name }}</a>
+                </div>
+            } @empty {
+                <h3>Нет активных тем</h3>
+            }
+        </div>
+    </div>
+}

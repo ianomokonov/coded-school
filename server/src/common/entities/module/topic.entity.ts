@@ -1,5 +1,3 @@
-import { AutoMap } from '@automapper/classes';
-import { ModuleEntity } from '@entities/module/module.entity';
 import {
   BaseEntity,
   Column,
@@ -8,11 +6,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ModuleEntity } from './module.entity';
+import { AutoMap } from '@automapper/classes';
 
-@Entity('achievement', {
-  schema: 'ach',
+@Entity('topic', {
+  schema: 'mod',
 })
-export class AchievementEntity extends BaseEntity {
+export class TopicEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,10 +21,7 @@ export class AchievementEntity extends BaseEntity {
   })
   name: string;
 
-  @Column({ nullable: false })
-  points: number;
-
-  @Column({ nullable: true })
+  @Column()
   moduleId: number;
 
   @ManyToOne(() => ModuleEntity)

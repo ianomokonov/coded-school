@@ -33,6 +33,11 @@ export const APP_ROUTES: Routes = [
         canActivate: [jwtGuard],
     },
     {
+        path: 'module',
+        loadChildren: () => import('./module/module.routes').then((m) => m.MODULE_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
         path: 'error/404',
         loadComponent: () =>
             import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),

@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ModuleEntity } from './module.entity';
 import { AutoMap } from '@automapper/classes';
+import { UserModuleTopicEntity } from './user-module-topic.entity';
 
 @Entity('user_module', {
   schema: 'mod',
@@ -38,4 +40,9 @@ export class UserModuleEntity extends BaseEntity {
   @JoinColumn({ name: 'moduleId' })
   @AutoMap(() => ModuleEntity)
   module: ModuleEntity;
+
+  @OneToMany(() => UserModuleTopicEntity, (topic) => topic.userModule)
+  @JoinColumn({ name: 'id' })
+  @AutoMap(() => [UserModuleTopicEntity])
+  topics: UserModuleTopicEntity[];
 }

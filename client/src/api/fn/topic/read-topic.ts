@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { UserModuleDto } from '../../models/user-module-dto';
+import { TopicDto } from '../../models/topic-dto';
 
-export interface ReadUserModule$Params {
+export interface ReadTopic$Params {
   id: number;
 }
 
-export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<UserModuleDto>> {
-  const rb = new RequestBuilder(rootUrl, readUserModule.PATH, 'get');
+export function readTopic(http: HttpClient, rootUrl: string, params: ReadTopic$Params, context?: HttpContext): Observable<BaseResponse<TopicDto>> {
+  const rb = new RequestBuilder(rootUrl, readTopic.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -23,9 +23,9 @@ export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUs
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<UserModuleDto>;
+      return r as BaseResponse<TopicDto>;
     })
   );
 }
 
-readUserModule.PATH = '/api/module/{id}';
+readTopic.PATH = '/api/topic/{id}';
