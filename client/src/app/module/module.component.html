@@ -6,6 +6,23 @@
                     <span>{{ value }}/100</span>
                 </ng-template>
             </p-progressBar>
+
+            <h4>Достижения</h4>
+            <div class="flex gap-1">
+                @for (achivement of module.achievements; track achivement.id) {
+                    <div
+                        class="border-1 p-3 border-round"
+                        [ngClass]="{
+                            'border-primary': achivement.isCompleted,
+                            'opacity-50': !achivement.isCompleted
+                        }"
+                    >
+                        {{ achivement.name }}
+                    </div>
+                } @empty {
+                    <h5>У модуля нет достижений</h5>
+                }
+            </div>
         </p-card>
         <h3>Темы модуля</h3>
         <div>

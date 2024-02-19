@@ -5,9 +5,9 @@ export class AchievementDto {
   name: string;
   points: number;
 
-  constructor(entity: AchievementEntity) {
-    this.id = entity.id;
-    this.name = entity.name;
-    this.points = entity.points;
+  constructor(entity?: AchievementEntity) {
+    this.id = entity?.id;
+    this.name = entity?.name;
+    this.points = entity?.points;
   }
 }
