@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserModuleEntity } from './user-module.entity';
-import { TopicEntity } from './topic.entity';
+import { TopicEntity } from '../topic/topic.entity';
 
 @Entity('user_module_topic', {
   schema: 'mod',

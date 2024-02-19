@@ -122,6 +122,14 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) => source.module.name),
         ),
         forMember(
+          (dest) => dest.id,
+          mapFrom((source) => source.module.id),
+        ),
+        forMember(
+          (dest) => dest.userModuleId,
+          mapFrom((source) => source.id),
+        ),
+        forMember(
           (destination) => destination.topics,
           mapFrom((source) =>
             source.module.topics.map((t) => {

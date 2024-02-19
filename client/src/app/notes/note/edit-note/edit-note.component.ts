@@ -78,10 +78,10 @@ export class EditNoteComponent implements OnInit {
     }
 
     private redirectToNotes(): void {
-        this.router.navigate(['/lk/notes']);
+        this.router.navigate(['/notes']);
     }
 
     private redirectToNote(): void {
-        this.router.navigate(['/lk/notes', this.noteId]);
+        this.router.navigate(['/notes', this.noteId]);
     }
 }

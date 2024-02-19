@@ -5,11 +5,12 @@ import { ModuleService } from '@api/services';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
     selector: 'coded-module',
     standalone: true,
-    imports: [ProgressBarModule, CardModule, RouterModule, CommonModule],
+    imports: [ProgressBarModule, CardModule, RouterModule, CommonModule, AvatarModule],
     templateUrl: './module.component.html',
     styleUrl: './module.component.scss',
 })

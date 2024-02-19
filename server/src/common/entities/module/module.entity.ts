@@ -7,8 +7,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { TopicEntity } from './topic.entity';
+import { TopicEntity } from '../topic/topic.entity';
 import { AchievementEntity } from '@entities/achievement/achievement.entity';
+import { NoteEntity } from '@entities/note/note.entity';
 
 @Entity('module', {
   schema: 'mod',
@@ -31,4 +32,9 @@ export class ModuleEntity extends BaseEntity {
   @JoinColumn({ name: 'id' })
   @AutoMap(() => [AchievementEntity])
   achievements: AchievementEntity[];
+
+  @OneToMany(() => NoteEntity, (note) => note.module)
+  @JoinColumn({ name: 'id' })
+  @AutoMap(() => [NoteEntity])
+  notes: NoteEntity[];
 }

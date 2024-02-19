@@ -40,7 +40,7 @@ export class NotesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getAllNotes$Response(params: GetAllNotes$Params, context?: HttpContext): Observable<BaseResponse<Array<NoteDto>>> {
+  getAllNotes$Response(params?: GetAllNotes$Params, context?: HttpContext): Observable<BaseResponse<Array<NoteDto>>> {
     return getAllNotes(this.http, this.rootUrl, params, context);
   }
 
@@ -54,7 +54,7 @@ export class NotesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getAllNotes(params: GetAllNotes$Params, context?: HttpContext): Observable<Array<NoteDto>> {
+  getAllNotes(params?: GetAllNotes$Params, context?: HttpContext): Observable<Array<NoteDto>> {
     return this.getAllNotes$Response(params, context).pipe(
       map((r: BaseResponse<Array<NoteDto>>): Array<NoteDto> => r.body)
     );

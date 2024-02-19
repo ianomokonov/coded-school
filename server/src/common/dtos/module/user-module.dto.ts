@@ -5,6 +5,7 @@ import { UserModuleAchievementDto } from '@dtos/user/user-achievement.dto';
 
 export class UserModuleDto extends ModuleDto {
   completedTopicsCount: number;
+  userModuleId: number;
 
   @AutoMap(() => [UserTopicDto])
   topics: UserTopicDto[];

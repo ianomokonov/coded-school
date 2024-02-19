@@ -1,9 +1,26 @@
 @if (module) {
     <div class="container pt-5">
-        <p-card [header]="module.name" class="mb-3">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ module.name }}</h2>
+                <a
+                    [routerLink]="['/notes']"
+                    [queryParams]="{ moduleId: module.id }"
+                    rel="noopener noreferrer"
+                    class="p-button font-bold"
+                    >Заметки модуля</a
+                >
+            </div>
             <p-progressBar [value]="(module.completedTopicsCount / module.topics.length) * 100">
-                <ng-template pTemplate="content" let-value>
-                    <span>{{ value }}/100</span>
+                <ng-template #progress pTemplate="content" let-value>
+                    <span>{{ module.completedTopicsCount }}/{{ module.topics.length }}</span>
                 </ng-template>
             </p-progressBar>
 
@@ -20,7 +37,7 @@
                         {{ achivement.name }}
                     </div>
                 } @empty {
-                    <h5>У модуля нет достижений</h5>
+                    <span>У модуля нет достижений</span>
                 }
             </div>
         </p-card>
@@ -34,7 +51,7 @@
                     <a [routerLink]="['/topic', topic.id]">{{ topic.name }}</a>
                 </div>
             } @empty {
-                <h3>Нет активных тем</h3>
+                <span>Нет активных тем</span>
             }
         </div>
     </div>

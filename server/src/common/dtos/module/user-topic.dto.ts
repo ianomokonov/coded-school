@@ -1,4 +1,4 @@
-import { TopicEntity } from '@entities/module/topic.entity';
+import { TopicEntity } from '@entities/topic/topic.entity';
 import { TopicDto } from '../topic/topic.dto';
 
 export class UserTopicDto extends TopicDto {

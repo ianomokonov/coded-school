@@ -6,20 +6,24 @@ import { InjectMapper } from '@automapper/nestjs';
 import { SaveNoteDto } from '@dtos/note/create-note.dto';
 import { dateNow } from '@core/date-now.fn';
 import { UpdateNoteDto } from '@dtos/note/update-note.dto';
+import { GetAllNotesDto } from '@dtos/note/get-all-notes.dto';
 
 @Injectable()
 export class NoteService {
   constructor(@InjectMapper() private mapper: Mapper) {}
 
-  async getNotes(userId: number, isFavorite: boolean): Promise<NoteDto[]> {
-    const notes = isFavorite
+  async getNotes(userId: number, query: GetAllNotesDto): Promise<NoteDto[]> {
+    const notes = query.isFavorite
       ? await this.getFavoriteNotes(userId)
-      : await this.getAllNotes(userId);
+      : await this.getAllNotes(userId, query.moduleId);
     return notes.map((note) => this.mapper.map(note, NoteEntity, NoteDto));
   }
 
-  private async getAllNotes(userId: number): Promise<NoteEntity[]> {
-    return await NoteEntity.find({ where: { userId } });
+  private async getAllNotes(
+    userId: number,
+    moduleId?: number,
+  ): Promise<NoteEntity[]> {
+    return await NoteEntity.find({ where: { userId, moduleId } });
   }
 
   private async getFavoriteNotes(userId: number): Promise<NoteEntity[]> {

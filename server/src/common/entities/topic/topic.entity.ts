@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ModuleEntity } from './module.entity';
+import { ModuleEntity } from '../module/module.entity';
 import { AutoMap } from '@automapper/classes';
 
 @Entity('topic', {

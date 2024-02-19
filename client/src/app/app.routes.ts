@@ -33,6 +33,11 @@ export const APP_ROUTES: Routes = [
         canActivate: [jwtGuard],
     },
     {
+        path: 'notes',
+        loadChildren: () => import('./notes/notes.routes').then((m) => m.NOTES_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
         path: 'module',
         loadChildren: () => import('./module/module.routes').then((m) => m.MODULE_ROUTES),
         canActivate: [jwtGuard],

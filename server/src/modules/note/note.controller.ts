@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseBoolPipe,
   Post,
   Put,
   Query,
@@ -16,6 +15,7 @@ import { JwtAuthGuard } from '@guards/user/jwt.guard';
 import { SaveNoteDto } from '@dtos/note/create-note.dto';
 import { UserId } from '@decorators/author-id.decorator';
 import { UpdateNoteDto } from '@dtos/note/update-note.dto';
+import { GetAllNotesDto } from '@dtos/note/get-all-notes.dto';
 
 @ApiTags('Notes')
 @Controller('note')
@@ -26,11 +26,8 @@ export class NoteController {
   @UseGuards(JwtAuthGuard)
   @Get('all')
   @ApiOperation({ summary: 'Получить список заметок' })
-  async getAllNotes(
-    @UserId() userId: number,
-    @Query('isFavorite', ParseBoolPipe) isFavorite: boolean,
-  ) {
-    return this.noteService.getNotes(userId, isFavorite);
+  async getAllNotes(@UserId() userId: number, @Query() query: GetAllNotesDto) {
+    return this.noteService.getNotes(userId, query);
   }
 
   @Post()

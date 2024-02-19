@@ -8,4 +8,5 @@ export interface UserModuleDto {
   id: number;
   name: string;
   topics: Array<UserTopicDto>;
+  userModuleId: number;
 }

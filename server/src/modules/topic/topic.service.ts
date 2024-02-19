@@ -1,6 +1,6 @@
 import { SaveTopicDto } from '@dtos/topic/save-topic.dto';
 import { TopicDto } from '@dtos/topic/topic.dto';
-import { TopicEntity } from '@entities/module/topic.entity';
+import { TopicEntity } from '@entities/topic/topic.entity';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

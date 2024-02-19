@@ -1,4 +1,4 @@
-import { TopicEntity } from '@entities/module/topic.entity';
+import { TopicEntity } from '@entities/topic/topic.entity';
 
 export class TopicDto {
   id: number;

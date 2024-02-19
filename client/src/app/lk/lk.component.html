@@ -78,7 +78,7 @@
             <p-card header="Архивные модули">
                 @for (module of user.completedModules; track module.id) {
                     <div class="border-bottom">
-                        {{ module.name }}
+                        <a [routerLink]="['/module', module.id]">{{ module.name }}</a>
                     </div>
                 } @empty {
                     <h3>Нет архивных модулей</h3>
