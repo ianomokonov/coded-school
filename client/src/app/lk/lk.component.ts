@@ -13,9 +13,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ClipboardService } from 'ngx-clipboard';
-import { NotesComponent } from './notes/notes.component';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { NotesComponent } from '../notes/notes.component';
 
 export enum SideBarBlockDisplayed {
     PERSONAL_CABINET_MENU = 'PERSONAL_CABINET_MENU',

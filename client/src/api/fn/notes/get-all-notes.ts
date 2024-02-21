@@ -9,13 +9,15 @@ import { RequestBuilder } from '../../request-builder';
 import { NoteDto } from '../../models/note-dto';
 
 export interface GetAllNotes$Params {
-  isFavorite: boolean;
+  isFavorite?: boolean;
+  moduleId?: number;
 }
 
-export function getAllNotes(http: HttpClient, rootUrl: string, params: GetAllNotes$Params, context?: HttpContext): Observable<BaseResponse<Array<NoteDto>>> {
+export function getAllNotes(http: HttpClient, rootUrl: string, params?: GetAllNotes$Params, context?: HttpContext): Observable<BaseResponse<Array<NoteDto>>> {
   const rb = new RequestBuilder(rootUrl, getAllNotes.PATH, 'get');
   if (params) {
     rb.query('isFavorite', params.isFavorite, {});
+    rb.query('moduleId', params.moduleId, {});
   }
 
   return http.request(

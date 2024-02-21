@@ -2,7 +2,7 @@
 @import 'primeng/resources/themes/lara-light-blue/theme.css';
 @import 'primeng/resources/primeng.css';
 @import 'primeflex/primeflex.scss';
-@import "primeicons/primeicons.css";
+@import 'primeicons/primeicons.css';
 
 body {
     margin: 0;
@@ -25,7 +25,8 @@ body {
 .p-inputtext {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    &:focus, &.p-filled {
+    &:focus,
+    &.p-filled {
         padding-top: 1.5rem;
         padding-bottom: 0.5rem;
         transition-duration: 0.2s;
@@ -49,4 +50,8 @@ p-calendar.p-inputwrapper-filled {
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+a.p-button {
+    text-decoration: none;
 }

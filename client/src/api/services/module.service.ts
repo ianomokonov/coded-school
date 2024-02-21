@@ -24,6 +24,7 @@ import { startUserModule } from '../fn/module/start-user-module';
 import { StartUserModule$Params } from '../fn/module/start-user-module';
 import { updateUserModule } from '../fn/module/update-user-module';
 import { UpdateUserModule$Params } from '../fn/module/update-user-module';
+import { UserModuleDto } from '../models/user-module-dto';
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService extends BaseService {
@@ -110,7 +111,7 @@ export class ModuleService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  readUserModule$Response(params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
+  readUserModule$Response(params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<UserModuleDto>> {
     return readUserModule(this.http, this.rootUrl, params, context);
   }
 
@@ -124,9 +125,9 @@ export class ModuleService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  readUserModule(params: ReadUserModule$Params, context?: HttpContext): Observable<ModuleDto> {
+  readUserModule(params: ReadUserModule$Params, context?: HttpContext): Observable<UserModuleDto> {
     return this.readUserModule$Response(params, context).pipe(
-      map((r: BaseResponse<ModuleDto>): ModuleDto => r.body)
+      map((r: BaseResponse<UserModuleDto>): UserModuleDto => r.body)
     );
   }
 

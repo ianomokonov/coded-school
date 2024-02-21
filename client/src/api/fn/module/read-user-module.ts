@@ -6,13 +6,13 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { ModuleDto } from '../../models/module-dto';
+import { UserModuleDto } from '../../models/user-module-dto';
 
 export interface ReadUserModule$Params {
   id: number;
 }
 
-export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
+export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<UserModuleDto>> {
   const rb = new RequestBuilder(rootUrl, readUserModule.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
@@ -23,7 +23,7 @@ export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUs
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<ModuleDto>;
+      return r as BaseResponse<UserModuleDto>;
     })
   );
 }

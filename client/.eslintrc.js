@@ -40,7 +40,10 @@ module.exports = {
                 'plugin:@angular-eslint/template/recommended',
                 'plugin:@angular-eslint/template/accessibility',
             ],
-            rules: {},
+            rules: {
+                '@angular-eslint/template/interactive-supports-focus': 'off',
+                '@angular-eslint/template/click-events-have-key-events': 'off',
+            },
         },
         {
             files: ['src/**/*.spec.ts', 'src/**/*.d.ts'],

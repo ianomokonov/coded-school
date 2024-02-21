@@ -28,16 +28,19 @@ export class NotesComponent implements OnInit {
         private notesService: NotesService,
         private messageService: MessageService,
         private destroy$: DestroyService,
+        private activeRoute: ActivatedRoute,
         public readonly route: ActivatedRoute,
     ) {}
 
     ngOnInit(): void {
-        this.notesService
-            .getAllNotes({ isFavorite: this.isSidebar })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((notes) => {
-                this.notes = notes;
-            });
+        this.activeRoute.queryParams.subscribe(({ moduleId }) => {
+            this.notesService
+                .getAllNotes({ isFavorite: this.isSidebar, moduleId })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((notes) => {
+                    this.notes = notes;
+                });
+        });
     }
 
     changeFavoriteStatus(note: NoteDto): void {

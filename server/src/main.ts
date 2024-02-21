@@ -6,6 +6,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { exec } from 'child_process';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,6 +25,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config, documentOptions);
   SwaggerModule.setup('api', app, document);
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(3000);
 
   if (!process.env.GEN_API) {

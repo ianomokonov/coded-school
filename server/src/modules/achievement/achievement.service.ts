@@ -9,17 +9,13 @@ import { UserEntity } from '@entities/user/user.entity';
 export class AchievementService {
   async createAchievement(dto: SaveAchievementDto) {
     const { id } = await AchievementEntity.create({
-      name: dto.name,
-      points: dto.points,
+      ...dto,
     }).save();
     return id;
   }
 
   async updateAchievement(achievementId: number, dto: SaveAchievementDto) {
-    await AchievementEntity.update(
-      { id: achievementId },
-      { name: dto.name, points: dto.points },
-    );
+    await AchievementEntity.update({ id: achievementId }, { ...dto });
   }
 
   async deleteAchievement(achievementId: number) {

@@ -21,6 +21,10 @@ import { PassportUserDto } from '@dtos/user/passport.user.dto';
 import { NoteEntity } from '@entities/note/note.entity';
 import { NoteDto } from '@dtos/note/note.dto';
 import * as process from 'process';
+import { UserModuleEntity } from '@entities/module/user-module.entity';
+import { UserModuleDto } from '@dtos/module/user-module.dto';
+import { UserTopicDto } from '@dtos/module/user-topic.dto';
+import { UserModuleAchievementDto } from '@dtos/user/user-achievement.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -97,6 +101,56 @@ export class UserProfile extends AutomapperProfile {
           mapFrom(
             (source) =>
               `${process.env.FRONT_URL}sign-up?ref=${source.referralCode}`,
+          ),
+        ),
+      );
+
+      createMap(
+        mapper,
+        UserModuleEntity,
+        UserModuleDto,
+        extend(ModuleEntity, ModuleDto),
+        extend(AchievementEntity, AchievementDto),
+        forMember(
+          (destination) => destination.completedTopicsCount,
+          mapFrom(
+            (source) => source.topics.filter((t) => t.isCompleted).length,
+          ),
+        ),
+        forMember(
+          (dest) => dest.name,
+          mapFrom((source) => source.module.name),
+        ),
+        forMember(
+          (dest) => dest.id,
+          mapFrom((source) => source.module.id),
+        ),
+        forMember(
+          (dest) => dest.userModuleId,
+          mapFrom((source) => source.id),
+        ),
+        forMember(
+          (destination) => destination.topics,
+          mapFrom((source) =>
+            source.module.topics.map((t) => {
+              const result = new UserTopicDto(t);
+              result.isCompleted = !!source.topics.find(
+                (ut) => ut.topicId === t.id && ut.isCompleted,
+              );
+              return result;
+            }),
+          ),
+        ),
+        forMember(
+          (destination) => destination.achievements,
+          mapFrom((source) =>
+            source.module.achievements.map((a) => {
+              const result = new UserModuleAchievementDto(a);
+              result.isCompleted = !!source.user.achievements.find(
+                (ua) => ua.achievementId === a.id,
+              );
+              return result;
+            }),
           ),
         ),
       );

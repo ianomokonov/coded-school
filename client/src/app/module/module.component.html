@@ -1,0 +1,58 @@
+@if (module) {
+    <div class="container pt-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ module.name }}</h2>
+                <a
+                    [routerLink]="['/notes']"
+                    [queryParams]="{ moduleId: module.id }"
+                    rel="noopener noreferrer"
+                    class="p-button font-bold"
+                    >Заметки модуля</a
+                >
+            </div>
+            <p-progressBar [value]="(module.completedTopicsCount / module.topics.length) * 100">
+                <ng-template #progress pTemplate="content" let-value>
+                    <span>{{ module.completedTopicsCount }}/{{ module.topics.length }}</span>
+                </ng-template>
+            </p-progressBar>
+
+            <h4>Достижения</h4>
+            <div class="flex gap-1">
+                @for (achivement of module.achievements; track achivement.id) {
+                    <div
+                        class="border-1 p-3 border-round"
+                        [ngClass]="{
+                            'border-primary': achivement.isCompleted,
+                            'opacity-50': !achivement.isCompleted
+                        }"
+                    >
+                        {{ achivement.name }}
+                    </div>
+                } @empty {
+                    <span>У модуля нет достижений</span>
+                }
+            </div>
+        </p-card>
+        <h3>Темы модуля</h3>
+        <div>
+            @for (topic of module.topics; track topic.id; let last = $last) {
+                <div
+                    class="border-200 py-3"
+                    [ngClass]="{ 'border-none': last, 'border-bottom-1': !last }"
+                >
+                    <a [routerLink]="['/topic', topic.id]">{{ topic.name }}</a>
+                </div>
+            } @empty {
+                <span>Нет активных тем</span>
+            }
+        </div>
+    </div>
+}
