@@ -31,7 +31,13 @@
             </div>
         </p-sidebar>
         <div class="mb-3">
-            <p-card header="Реферальная программа">
+            <p-card styleClass="no-header">
+                <div class="flex justify-content-between align-items-center pb-3">
+                    <h2 class="m-0">Реферальная программа</h2>
+                    <div class="border-1 p-1 border-round border-primary">
+                        Накопленно боунсов: {{ user.points }}
+                    </div>
+                </div>
                 <span class="p-float-label p-input-icon-right">
                     <i
                         class="pi pi-copy"
@@ -89,7 +95,7 @@
             <p-card header="Активные марафоны">
                 @for (marathon of user.activeMarathons; track marathon.id) {
                     <div class="border-bottom">
-                        {{ marathon.name }}
+                        <a [routerLink]="['/marathon', marathon.id]">{{ marathon.name }}</a>
                     </div>
                 } @empty {
                     <h3>Нет активных марафонов</h3>
@@ -100,7 +106,7 @@
             <p-card header="Архивные марафоны">
                 @for (marathon of user.completedMarathons; track marathon.id) {
                     <div class="border-bottom">
-                        {{ marathon.name }}
+                        <a [routerLink]="['/marathon', marathon.id]">{{ marathon.name }}</a>
                     </div>
                 } @empty {
                     <h3>Нет архивных марафонов</h3>

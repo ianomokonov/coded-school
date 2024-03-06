@@ -1,0 +1,23 @@
+@if (marathon) {
+    <div class="container pt-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ marathon.name }}</h2>
+                <div class="border-1 p-1 border-round border-primary">
+                    {{ marathon.difficulty }}
+                </div>
+            </div>
+            <p class="font-semibold">За прохождение вы получите {{ marathon.points }} бонусов</p>
+            <ng-template pTemplate="footer">
+                <p-button label="Поехали" icon="pi pi-check" (onClick)="onSuccess()"></p-button>
+            </ng-template>
+        </p-card>
+    </div>
+}

@@ -3,9 +3,17 @@ import { SaveMarathonDto } from '@dtos/marathon/save-marathon.dto';
 import { MarathonEntity } from '@entities/marathon/marathon.entity';
 import { MarathonDto } from '@dtos/marathon/marathon.dto';
 import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { AchievementService } from '@modules/achievement/achievement.service';
 
 @Injectable()
 export class MarathonService {
+  constructor(
+    @InjectMapper() private mapper: Mapper,
+    private achievementService: AchievementService,
+  ) {}
+
   async createMarathon(dto: SaveMarathonDto) {
     const { id } = await MarathonEntity.create({ name: dto.name }).save();
     return id;
@@ -20,12 +28,19 @@ export class MarathonService {
   }
 
   async readMarathon(marathonId: number): Promise<MarathonDto> {
-    return await MarathonEntity.findOne({ where: { id: marathonId } });
+    const marathon = await MarathonEntity.findOne({
+      where: { id: marathonId },
+    });
+
+    if (!marathon) {
+      throw new NotFoundException('Марафон не найден');
+    }
+    return this.mapper.map(marathon, MarathonEntity, MarathonDto);
   }
 
   async getAllMarathons(): Promise<MarathonDto[]> {
     const modules = await MarathonEntity.find();
-    return modules.map((m) => ({ id: m.id, name: m.name }));
+    return modules.map((m) => this.mapper.map(m, MarathonEntity, MarathonDto));
   }
 
   async startMarathon(marathonId: number, userId: number) {
@@ -41,5 +56,18 @@ export class MarathonService {
     if (!result.affected) {
       throw new NotFoundException('Марафон пользователя не найден');
     }
+
+    const marathon = await MarathonEntity.findOne({
+      where: { id: marathonId },
+    });
+
+    if (!marathon) {
+      return;
+    }
+
+    await this.achievementService.setUserPoints(
+      userId,
+      (points) => points + marathon.points,
+    );
   }
 }
