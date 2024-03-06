@@ -34,7 +34,7 @@ export class MarathonComponent implements OnInit {
         if (!this.marathon) {
             return;
         }
-        this.marathonService.completeUserMarathon({ id: this.marathon.id }).subscribe(() => {
+        this.marathonService.completeUserMarathon({ id: this.marathon.info.id }).subscribe(() => {
             this.router.navigate(['success'], { relativeTo: this.activeRoute });
         });
     }

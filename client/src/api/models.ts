@@ -3,6 +3,7 @@
 export { AchievementDto } from './models/achievement-dto';
 export { JwtDto } from './models/jwt-dto';
 export { MarathonDto } from './models/marathon-dto';
+export { MarathonInfoDto } from './models/marathon-info-dto';
 export { ModuleDto } from './models/module-dto';
 export { NoteDto } from './models/note-dto';
 export { PassportUserDto } from './models/passport-user-dto';

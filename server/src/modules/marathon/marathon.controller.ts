@@ -53,8 +53,8 @@ export class MarathonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить марафон' })
-  async readUserMarathon(@Param('id') id: number) {
-    return this.marathonService.readMarathon(id);
+  async readUserMarathon(@UserId() userId: number, @Param('id') id: number) {
+    return this.marathonService.readUserMarathon(id, userId);
   }
   @Post(':id/start')
   @ApiBearerAuth('JWT')

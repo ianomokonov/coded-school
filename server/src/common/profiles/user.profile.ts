@@ -25,6 +25,7 @@ import { UserModuleEntity } from '@entities/module/user-module.entity';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
 import { UserTopicDto } from '@dtos/module/user-topic.dto';
 import { UserModuleAchievementDto } from '@dtos/user/user-achievement.dto';
+import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -39,6 +40,19 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
       createMap(mapper, AchievementEntity, AchievementDto);
+      createMap(
+        mapper,
+        UserMarathonEntity,
+        MarathonDto,
+        forMember(
+          (dest) => dest.isCompleted,
+          mapFrom((source) => source.isCompleted),
+        ),
+        forMember(
+          (dest) => dest.info,
+          mapFrom((source) => source.marathon),
+        ),
+      );
       createMap(
         mapper,
         UserEntity,
@@ -77,7 +91,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => !m.isCompleted)
-              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
@@ -85,7 +99,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
           ),
         ),
         forMember(

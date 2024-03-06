@@ -9,9 +9,9 @@
         ></p-avatar>
         <p-card class="mb-3">
             <div class="flex justify-content-between align-items-center pb-3">
-                <h2 class="m-0">Вы успешно прошли марафон "{{ marathon.name }}"</h2>
+                <h2 class="m-0">Вы успешно прошли марафон "{{ marathon.info.name }}"</h2>
             </div>
-            <p class="font-semibold">За прохождение вам начислено {{ marathon.points }} бонусов</p>
+            <p class="font-semibold">За прохождение вам начислено {{ marathon.info.points }} бонусов</p>
             <ng-template pTemplate="footer">
                 <p-button
                     label="В личный кабинет"

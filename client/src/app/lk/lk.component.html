@@ -93,9 +93,9 @@
         </div>
         <div class="mb-3">
             <p-card header="Активные марафоны">
-                @for (marathon of user.activeMarathons; track marathon.id) {
+                @for (marathon of user.activeMarathons; track marathon.info.id) {
                     <div class="border-bottom">
-                        <a [routerLink]="['/marathon', marathon.id]">{{ marathon.name }}</a>
+                        <a [routerLink]="['/marathon', marathon.info.id]">{{ marathon.info.name }}</a>
                     </div>
                 } @empty {
                     <h3>Нет активных марафонов</h3>
@@ -104,9 +104,9 @@
         </div>
         <div class="mb-3">
             <p-card header="Архивные марафоны">
-                @for (marathon of user.completedMarathons; track marathon.id) {
+                @for (marathon of user.completedMarathons; track marathon.info.id) {
                     <div class="border-bottom">
-                        <a [routerLink]="['/marathon', marathon.id]">{{ marathon.name }}</a>
+                        <a [routerLink]="['/marathon', marathon.info.id]">{{ marathon.info.name }}</a>
                     </div>
                 } @empty {
                     <h3>Нет архивных марафонов</h3>

@@ -38,6 +38,21 @@ export class MarathonService {
     return this.mapper.map(marathon, MarathonEntity, MarathonDto);
   }
 
+  async readUserMarathon(
+    marathonId: number,
+    userId: number,
+  ): Promise<MarathonDto> {
+    const marathon = await UserMarathonEntity.findOne({
+      where: { marathonId, userId },
+      relations: { marathon: true },
+    });
+
+    if (!marathon) {
+      throw new NotFoundException('Марафон не найден');
+    }
+    return this.mapper.map(marathon, UserMarathonEntity, MarathonDto);
+  }
+
   async getAllMarathons(): Promise<MarathonDto[]> {
     const modules = await MarathonEntity.find();
     return modules.map((m) => this.mapper.map(m, MarathonEntity, MarathonDto));

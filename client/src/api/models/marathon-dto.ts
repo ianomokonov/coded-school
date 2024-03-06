@@ -1,8 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
+import { MarathonInfoDto } from '../models/marathon-info-dto';
 export interface MarathonDto {
-  difficulty: 'junior' | 'middle' | 'senior';
-  id: number;
-  name: string;
-  points: number;
+  info: MarathonInfoDto;
+  isCompleted?: boolean;
 }

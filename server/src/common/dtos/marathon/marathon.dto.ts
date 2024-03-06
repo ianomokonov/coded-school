@@ -1,8 +1,8 @@
-import { MarathonDifficulty } from '@entities/marathon/marathon-difficulty';
+import { AutoMap } from '@automapper/classes';
+import { MarathonInfoDto } from './marathon-info.dto';
 
 export class MarathonDto {
-  id: number;
-  name: string;
-  difficulty: MarathonDifficulty;
-  points: number;
+  @AutoMap(() => MarathonInfoDto)
+  info: MarathonInfoDto;
+  isCompleted?: boolean;
 }
