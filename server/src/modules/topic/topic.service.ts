@@ -4,6 +4,7 @@ import { SaveTopicDto } from '@dtos/topic/save-topic.dto';
 import { TopicDto } from '@dtos/topic/topic.dto';
 import { TopicEntity } from '@entities/topic/topic.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserLessonEntity } from './lesson/entity/user-lesson.entity';
 
 @Injectable()
 export class TopicService {
@@ -21,7 +22,7 @@ export class TopicService {
     await TopicEntity.delete({ id });
   }
 
-  async read(id: number): Promise<TopicDto> {
+  async read(id: number, userId?: number): Promise<TopicDto> {
     const topic = await TopicEntity.findOne({
       where: { id },
       relations: { lessons: true },
@@ -31,6 +32,18 @@ export class TopicService {
       throw new NotFoundException('Тема не найдена');
     }
 
-    return this.mapper.map(topic, TopicEntity, TopicDto);
+    const userLessons = userId
+      ? await UserLessonEntity.find({
+          where: { userId, lesson: { topicId: id } },
+          relations: { lesson: true },
+        })
+      : [];
+
+    const dto = this.mapper.map(topic, TopicEntity, TopicDto);
+    dto.isCompleted =
+      topic.lessons.length === userLessons?.length &&
+      userLessons.every((l) => l.isCompleted);
+
+    return dto;
   }
 }

@@ -1,1 +1,16 @@
-<div>Lesson</div>
+@if (lesson) {
+    <div class="container pt-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ lesson.name }}</h2>
+            </div>
+        </p-card>
+    </div>
+}

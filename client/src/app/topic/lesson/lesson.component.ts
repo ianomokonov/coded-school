@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { UserModuleDto } from '@api/index';
-import { ModuleService } from '@api/services';
+import { LessonDto } from '@api/index';
+import { LessonService } from '@api/services';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
@@ -14,16 +14,16 @@ import { AvatarModule } from 'primeng/avatar';
     templateUrl: './lesson.component.html',
 })
 export class LessonComponent implements OnInit {
-    module: UserModuleDto | undefined;
+    lesson: LessonDto | undefined;
 
     constructor(
-        private moduleService: ModuleService,
+        private lessonService: LessonService,
         private activeRoute: ActivatedRoute,
     ) {}
     ngOnInit(): void {
         this.activeRoute.params.subscribe(({ id }) => {
-            this.moduleService.readUserModule({ id }).subscribe((m) => {
-                this.module = m;
+            this.lessonService.readLesson({ id }).subscribe((m) => {
+                this.lesson = m;
             });
         });
     }

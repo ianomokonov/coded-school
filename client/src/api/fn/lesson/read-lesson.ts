@@ -6,16 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveLessonDto } from '../../models/save-lesson-dto';
+import { LessonDto } from '../../models/lesson-dto';
 
-export interface CreateTopic_1$Params {
-      body: SaveLessonDto
+export interface ReadLesson$Params {
+  id: number;
 }
 
-export function createTopic_1(http: HttpClient, rootUrl: string, params: CreateTopic_1$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-  const rb = new RequestBuilder(rootUrl, createTopic_1.PATH, 'post');
+export function readLesson(http: HttpClient, rootUrl: string, params: ReadLesson$Params, context?: HttpContext): Observable<BaseResponse<LessonDto>> {
+  const rb = new RequestBuilder(rootUrl, readLesson.PATH, 'get');
   if (params) {
-    rb.body(params.body, 'application/json');
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -23,9 +23,9 @@ export function createTopic_1(http: HttpClient, rootUrl: string, params: CreateT
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as BaseResponse<number>;
+      return r as BaseResponse<LessonDto>;
     })
   );
 }
 
-createTopic_1.PATH = '/api/lesson';
+readLesson.PATH = '/api/lesson/{id}';

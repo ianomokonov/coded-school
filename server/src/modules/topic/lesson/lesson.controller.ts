@@ -21,7 +21,7 @@ export class LessonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Создать урок' })
-  async createTopic(@Body() dto: SaveLessonDto) {
+  async createLesson(@Body() dto: SaveLessonDto) {
     return this.lessonService.create(dto);
   }
 
@@ -29,21 +29,21 @@ export class LessonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Изменить урок' })
-  async updateTopic(@Param('id') id: number, @Body() dto: SaveLessonDto) {
+  async updateLesson(@Param('id') id: number, @Body() dto: SaveLessonDto) {
     return this.lessonService.update(id, dto);
   }
   @Delete(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Удалить урок' })
-  async deleteTopic(@Param('id') id: number) {
+  async deleteLesson(@Param('id') id: number) {
     return this.lessonService.delete(id);
   }
   @Get(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить урок' })
-  async readTopic(@Param('id') id: number) {
+  async readLesson(@Param('id') id: number) {
     return this.lessonService.read(id);
   }
 }

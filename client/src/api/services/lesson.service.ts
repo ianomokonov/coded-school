@@ -9,15 +9,15 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
-import { createTopic_1 } from '../fn/lesson/create-topic-1';
-import { CreateTopic_1$Params } from '../fn/lesson/create-topic-1';
-import { deleteTopic_1 } from '../fn/lesson/delete-topic-1';
-import { DeleteTopic_1$Params } from '../fn/lesson/delete-topic-1';
+import { createLesson } from '../fn/lesson/create-lesson';
+import { CreateLesson$Params } from '../fn/lesson/create-lesson';
+import { deleteLesson } from '../fn/lesson/delete-lesson';
+import { DeleteLesson$Params } from '../fn/lesson/delete-lesson';
 import { LessonDto } from '../models/lesson-dto';
-import { readTopic_1 } from '../fn/lesson/read-topic-1';
-import { ReadTopic_1$Params } from '../fn/lesson/read-topic-1';
-import { updateTopic_1 } from '../fn/lesson/update-topic-1';
-import { UpdateTopic_1$Params } from '../fn/lesson/update-topic-1';
+import { readLesson } from '../fn/lesson/read-lesson';
+import { ReadLesson$Params } from '../fn/lesson/read-lesson';
+import { updateLesson } from '../fn/lesson/update-lesson';
+import { UpdateLesson$Params } from '../fn/lesson/update-lesson';
 
 @Injectable({ providedIn: 'root' })
 export class LessonService extends BaseService {
@@ -25,8 +25,8 @@ export class LessonService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `createTopic_1()` */
-  static readonly CreateTopic_1Path = '/api/lesson';
+  /** Path part for operation `createLesson()` */
+  static readonly CreateLessonPath = '/api/lesson';
 
   /**
    * Создать урок.
@@ -34,12 +34,12 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `createTopic_1()` instead.
+   * To access only the response body, use `createLesson()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createTopic_1$Response(params: CreateTopic_1$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-    return createTopic_1(this.http, this.rootUrl, params, context);
+  createLesson$Response(params: CreateLesson$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+    return createLesson(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -48,18 +48,18 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `createTopic_1$Response()` instead.
+   * To access the full response (for headers, for example), `createLesson$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createTopic_1(params: CreateTopic_1$Params, context?: HttpContext): Observable<number> {
-    return this.createTopic_1$Response(params, context).pipe(
+  createLesson(params: CreateLesson$Params, context?: HttpContext): Observable<number> {
+    return this.createLesson$Response(params, context).pipe(
       map((r: BaseResponse<number>): number => r.body)
     );
   }
 
-  /** Path part for operation `readTopic_1()` */
-  static readonly ReadTopic_1Path = '/api/lesson/{id}';
+  /** Path part for operation `readLesson()` */
+  static readonly ReadLessonPath = '/api/lesson/{id}';
 
   /**
    * Получить урок.
@@ -67,12 +67,12 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `readTopic_1()` instead.
+   * To access only the response body, use `readLesson()` instead.
    *
    * This method doesn't expect any request body.
    */
-  readTopic_1$Response(params: ReadTopic_1$Params, context?: HttpContext): Observable<BaseResponse<LessonDto>> {
-    return readTopic_1(this.http, this.rootUrl, params, context);
+  readLesson$Response(params: ReadLesson$Params, context?: HttpContext): Observable<BaseResponse<LessonDto>> {
+    return readLesson(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -81,18 +81,18 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `readTopic_1$Response()` instead.
+   * To access the full response (for headers, for example), `readLesson$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  readTopic_1(params: ReadTopic_1$Params, context?: HttpContext): Observable<LessonDto> {
-    return this.readTopic_1$Response(params, context).pipe(
+  readLesson(params: ReadLesson$Params, context?: HttpContext): Observable<LessonDto> {
+    return this.readLesson$Response(params, context).pipe(
       map((r: BaseResponse<LessonDto>): LessonDto => r.body)
     );
   }
 
-  /** Path part for operation `updateTopic_1()` */
-  static readonly UpdateTopic_1Path = '/api/lesson/{id}';
+  /** Path part for operation `updateLesson()` */
+  static readonly UpdateLessonPath = '/api/lesson/{id}';
 
   /**
    * Изменить урок.
@@ -100,12 +100,12 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `updateTopic_1()` instead.
+   * To access only the response body, use `updateLesson()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  updateTopic_1$Response(params: UpdateTopic_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return updateTopic_1(this.http, this.rootUrl, params, context);
+  updateLesson$Response(params: UpdateLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return updateLesson(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -114,18 +114,18 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `updateTopic_1$Response()` instead.
+   * To access the full response (for headers, for example), `updateLesson$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  updateTopic_1(params: UpdateTopic_1$Params, context?: HttpContext): Observable<void> {
-    return this.updateTopic_1$Response(params, context).pipe(
+  updateLesson(params: UpdateLesson$Params, context?: HttpContext): Observable<void> {
+    return this.updateLesson$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
 
-  /** Path part for operation `deleteTopic_1()` */
-  static readonly DeleteTopic_1Path = '/api/lesson/{id}';
+  /** Path part for operation `deleteLesson()` */
+  static readonly DeleteLessonPath = '/api/lesson/{id}';
 
   /**
    * Удалить урок.
@@ -133,12 +133,12 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `deleteTopic_1()` instead.
+   * To access only the response body, use `deleteLesson()` instead.
    *
    * This method doesn't expect any request body.
    */
-  deleteTopic_1$Response(params: DeleteTopic_1$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return deleteTopic_1(this.http, this.rootUrl, params, context);
+  deleteLesson$Response(params: DeleteLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return deleteLesson(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -147,12 +147,12 @@ export class LessonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `deleteTopic_1$Response()` instead.
+   * To access the full response (for headers, for example), `deleteLesson$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  deleteTopic_1(params: DeleteTopic_1$Params, context?: HttpContext): Observable<void> {
-    return this.deleteTopic_1$Response(params, context).pipe(
+  deleteLesson(params: DeleteLesson$Params, context?: HttpContext): Observable<void> {
+    return this.deleteLesson$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }
