@@ -27,7 +27,6 @@ export { UserFullInfoDto } from './models/user-full-info-dto';
 export { UserModuleAchievementDto } from './models/user-module-achievement-dto';
 export { UserModuleDto } from './models/user-module-dto';
 export { UserShortDto } from './models/user-short-dto';
-export { UserTopicDto } from './models/user-topic-dto';
 export { UserService } from './services/user.service';
 export { ModuleService } from './services/module.service';
 export { MarathonService } from './services/marathon.service';

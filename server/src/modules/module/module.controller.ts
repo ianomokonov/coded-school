@@ -27,6 +27,12 @@ export class ModuleController {
     return this.moduleService.getAllModules();
   }
 
+  @Get('tree')
+  @ApiOperation({ summary: 'Получить дерево модулей' })
+  async getModulesTree() {
+    return this.moduleService.getModulesTree();
+  }
+
   @Post()
   @ApiBearerAuth('JWT')
   @Roles(Role.Admin)

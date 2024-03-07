@@ -24,4 +24,3 @@ export { UserFullInfoDto } from './models/user-full-info-dto';
 export { UserModuleAchievementDto } from './models/user-module-achievement-dto';
 export { UserModuleDto } from './models/user-module-dto';
 export { UserShortDto } from './models/user-short-dto';
-export { UserTopicDto } from './models/user-topic-dto';

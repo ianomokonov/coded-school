@@ -58,6 +58,11 @@ export const APP_ROUTES: Routes = [
         canActivate: [jwtGuard],
     },
     {
+        path: 'admin',
+        loadChildren: () => import('./admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
         path: 'error/404',
         loadComponent: () =>
             import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),

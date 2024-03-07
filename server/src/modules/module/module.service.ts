@@ -61,6 +61,13 @@ export class ModuleService {
     return modules.map((m) => ({ id: m.id, name: m.name }));
   }
 
+  async getModulesTree(): Promise<ModuleDto[]> {
+    const modules = await ModuleEntity.find({
+      relations: { topics: { lessons: true } },
+    });
+    return modules.map((m) => this.mapper.map(m, ModuleEntity, ModuleDto));
+  }
+
   async startModule(moduleId: number, userId: number) {
     await UserModuleEntity.create({ userId, moduleId }).save();
   }

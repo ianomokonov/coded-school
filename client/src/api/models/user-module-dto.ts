@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
+import { TopicDto } from '../models/topic-dto';
 import { UserModuleAchievementDto } from '../models/user-module-achievement-dto';
-import { UserTopicDto } from '../models/user-topic-dto';
 export interface UserModuleDto {
   achievements: Array<UserModuleAchievementDto>;
   completedTopicsCount: number;
   id: number;
   name: string;
-  topics: Array<UserTopicDto>;
+  topics?: Array<TopicDto>;
   userModuleId: number;
 }

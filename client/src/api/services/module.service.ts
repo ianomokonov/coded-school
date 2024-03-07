@@ -17,6 +17,8 @@ import { deleteUserModule } from '../fn/module/delete-user-module';
 import { DeleteUserModule$Params } from '../fn/module/delete-user-module';
 import { getAllModules } from '../fn/module/get-all-modules';
 import { GetAllModules$Params } from '../fn/module/get-all-modules';
+import { getModulesTree } from '../fn/module/get-modules-tree';
+import { GetModulesTree$Params } from '../fn/module/get-modules-tree';
 import { ModuleDto } from '../models/module-dto';
 import { readUserModule } from '../fn/module/read-user-module';
 import { ReadUserModule$Params } from '../fn/module/read-user-module';
@@ -61,6 +63,39 @@ export class ModuleService extends BaseService {
    */
   getAllModules(params?: GetAllModules$Params, context?: HttpContext): Observable<Array<ModuleDto>> {
     return this.getAllModules$Response(params, context).pipe(
+      map((r: BaseResponse<Array<ModuleDto>>): Array<ModuleDto> => r.body)
+    );
+  }
+
+  /** Path part for operation `getModulesTree()` */
+  static readonly GetModulesTreePath = '/api/module/tree';
+
+  /**
+   * Получить дерево модулей.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getModulesTree()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getModulesTree$Response(params?: GetModulesTree$Params, context?: HttpContext): Observable<BaseResponse<Array<ModuleDto>>> {
+    return getModulesTree(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получить дерево модулей.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getModulesTree$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getModulesTree(params?: GetModulesTree$Params, context?: HttpContext): Observable<Array<ModuleDto>> {
+    return this.getModulesTree$Response(params, context).pipe(
       map((r: BaseResponse<Array<ModuleDto>>): Array<ModuleDto> => r.body)
     );
   }
