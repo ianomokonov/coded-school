@@ -9,6 +9,8 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
+import { completeLesson } from '../fn/lesson/complete-lesson';
+import { CompleteLesson$Params } from '../fn/lesson/complete-lesson';
 import { createLesson } from '../fn/lesson/create-lesson';
 import { CreateLesson$Params } from '../fn/lesson/create-lesson';
 import { deleteLesson } from '../fn/lesson/delete-lesson';
@@ -153,6 +155,39 @@ export class LessonService extends BaseService {
    */
   deleteLesson(params: DeleteLesson$Params, context?: HttpContext): Observable<void> {
     return this.deleteLesson$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `completeLesson()` */
+  static readonly CompleteLessonPath = '/api/lesson/{id}/complete';
+
+  /**
+   * Завершить урок.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `completeLesson()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  completeLesson$Response(params: CompleteLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return completeLesson(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Завершить урок.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `completeLesson$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  completeLesson(params: CompleteLesson$Params, context?: HttpContext): Observable<void> {
+    return this.completeLesson$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }

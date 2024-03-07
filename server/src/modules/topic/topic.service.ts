@@ -44,6 +44,12 @@ export class TopicService {
       topic.lessons.length === userLessons?.length &&
       userLessons.every((l) => l.isCompleted);
 
+    dto.lessons.forEach((l) => {
+      l.isCompleted = !!userLessons.find(
+        (ul) => ul.lessonId === l.id && ul.isCompleted,
+      );
+    });
+
     return dto;
   }
 }

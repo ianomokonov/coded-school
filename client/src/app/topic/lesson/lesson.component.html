@@ -12,5 +12,28 @@
                 <h2 class="m-0">{{ lesson.name }}</h2>
             </div>
         </p-card>
+        <p>{{ lesson.content }}</p>
+        @if (lesson.nextLessonId) {
+            <p-button
+                (onClick)="completeLesson()"
+                label="К следующему уроку"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        } @else if (lesson.nextTaskId) {
+            <p-button
+                [routerLink]="['/task', lesson.nextTaskId]"
+                label="К заданию"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        } @else {
+            <p-button
+                (onClick)="completeLesson()"
+                label="Следующая тема"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        }
     </div>
 }

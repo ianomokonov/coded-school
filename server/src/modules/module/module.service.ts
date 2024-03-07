@@ -6,6 +6,7 @@ import { ModuleDto } from '@dtos/module/module.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
+import { UserLessonEntity } from '@modules/topic/lesson/entity/user-lesson.entity';
 
 @Injectable()
 export class ModuleService {
@@ -31,13 +32,28 @@ export class ModuleService {
     const userModule = await UserModuleEntity.findOne({
       where: { moduleId, userId },
       relations: {
-        module: { topics: true, achievements: true },
+        module: { topics: { lessons: true }, achievements: true },
         user: { achievements: true },
         topics: true,
       },
     });
 
-    return this.mapper.map(userModule, UserModuleEntity, UserModuleDto);
+    const dto = this.mapper.map(userModule, UserModuleEntity, UserModuleDto);
+
+    dto.topics = await Promise.all(
+      dto.topics.map(async (t) => {
+        const completedLessonsCount = await UserLessonEntity.count({
+          where: { userId, lesson: { topicId: t.id }, isCompleted: true },
+          relations: { lesson: true },
+        });
+        t.isCompleted = completedLessonsCount === t.lessonIds.length;
+        return t;
+      }),
+    );
+
+    dto.completedTopicsCount = dto.topics.filter((t) => t.isCompleted).length;
+
+    return dto;
   }
 
   async getAllModules(): Promise<ModuleDto[]> {

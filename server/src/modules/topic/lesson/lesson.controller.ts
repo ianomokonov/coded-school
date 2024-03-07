@@ -12,6 +12,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LessonService } from './lesson.service';
 import { SaveLessonDto } from './dto/save-lesson.dto';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
+import { UserId } from '@decorators/author-id.decorator';
 
 @ApiTags('Lesson')
 @Controller('lesson')
@@ -32,6 +33,13 @@ export class LessonController {
   async updateLesson(@Param('id') id: number, @Body() dto: SaveLessonDto) {
     return this.lessonService.update(id, dto);
   }
+  @Put(':id/complete')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Завершить урок' })
+  async completeLesson(@Param('id') id: number, @UserId() userId: number) {
+    return this.lessonService.completeLesson(id, userId);
+  }
   @Delete(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
@@ -43,7 +51,7 @@ export class LessonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить урок' })
-  async readLesson(@Param('id') id: number) {
-    return this.lessonService.read(id);
+  async readLesson(@Param('id') id: number, @UserId() userId: number) {
+    return this.lessonService.read(id, userId);
   }
 }

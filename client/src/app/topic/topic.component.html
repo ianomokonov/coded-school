@@ -18,10 +18,13 @@
         <div>
             @for (lesson of topic.lessons; track lesson.id; let last = $last) {
                 <div
-                    class="border-200 py-3"
+                    class="border-200 py-3 flex align-items-center"
                     [ngClass]="{ 'border-none': last, 'border-bottom-1': !last }"
                 >
-                    <a [routerLink]="['/lesson', lesson.id]">{{ lesson.name }}</a>
+                    <a [routerLink]="['/lesson', lesson.id]" class="mr-2">{{ lesson.name }}</a>
+                    @if (lesson.isCompleted) {
+                        <i class="pi pi-check-circle text-green-400"></i>
+                    }
                 </div>
             } @empty {
                 <span>Нет уроков</span>

@@ -21,6 +21,15 @@ export class LessonEntity extends BaseEntity {
   })
   name: string;
 
+  @Column('text', { default: '' })
+  content: string;
+
+  @Column({ nullable: true })
+  nextLessonId: number;
+
+  @Column({ nullable: true })
+  nextTaskId: number;
+
   @Column({ nullable: false })
   topicId: number;
 

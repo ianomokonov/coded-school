@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LessonDto } from '@api/index';
 import { LessonService } from '@api/services';
-import { ProgressBarModule } from 'primeng/progressbar';
 import { CardModule } from 'primeng/card';
-import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'coded-lesson',
     standalone: true,
-    imports: [ProgressBarModule, CardModule, RouterModule, CommonModule, AvatarModule],
+    imports: [ButtonModule, CardModule, RouterModule, AvatarModule],
     templateUrl: './lesson.component.html',
 })
 export class LessonComponent implements OnInit {
@@ -19,12 +18,26 @@ export class LessonComponent implements OnInit {
     constructor(
         private lessonService: LessonService,
         private activeRoute: ActivatedRoute,
+        private router: Router,
     ) {}
     ngOnInit(): void {
         this.activeRoute.params.subscribe(({ id }) => {
             this.lessonService.readLesson({ id }).subscribe((m) => {
                 this.lesson = m;
             });
+        });
+    }
+
+    completeLesson(): void {
+        if (!this.lesson) {
+            return;
+        }
+        this.lessonService.completeLesson({ id: this.lesson?.id }).subscribe(() => {
+            if (this.lesson?.nextLessonId) {
+                this.router.navigate(['/lesson', this.lesson.nextLessonId]);
+                return;
+            }
+            this.router.navigate(['/module', this.lesson?.moduleId]);
         });
     }
 }

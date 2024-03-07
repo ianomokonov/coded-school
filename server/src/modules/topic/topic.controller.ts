@@ -12,6 +12,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TopicService } from './topic.service';
 import { SaveTopicDto } from '@dtos/topic/save-topic.dto';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
+import { UserId } from '@decorators/author-id.decorator';
 
 @ApiTags('Topic')
 @Controller('topic')
@@ -43,7 +44,7 @@ export class TopicController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить тему' })
-  async readTopic(@Param('id') id: number) {
-    return this.topicService.read(id);
+  async readTopic(@Param('id') id: number, @UserId() userId: number) {
+    return this.topicService.read(id, userId);
   }
 }

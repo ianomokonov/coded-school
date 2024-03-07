@@ -19,12 +19,23 @@ export class LessonService {
     await LessonEntity.update({ id }, { ...dto });
   }
 
+  async completeLesson(id: number, userId: number) {
+    await UserLessonEntity.create({
+      lessonId: id,
+      userId,
+      isCompleted: true,
+    }).save();
+  }
+
   async delete(id: number) {
     await LessonEntity.delete({ id });
   }
 
   async read(id: number, userId?: number): Promise<LessonDto> {
-    const lesson = await LessonEntity.findOne({ where: { id } });
+    const lesson = await LessonEntity.findOne({
+      where: { id },
+      relations: { topic: true },
+    });
     if (!lesson) {
       throw new NotFoundException('Урок не найден');
     }
@@ -36,6 +47,8 @@ export class LessonService {
     const dto = this.mapper.map(lesson, LessonEntity, LessonDto);
 
     dto.isCompleted = userLesson?.isCompleted;
+    dto.moduleId = lesson.topic.moduleId;
+    dto.topicId = lesson.topicId;
 
     return dto;
   }

@@ -132,12 +132,6 @@ export class UserProfile extends AutomapperProfile {
         extend(ModuleEntity, ModuleDto),
         extend(AchievementEntity, AchievementDto),
         forMember(
-          (destination) => destination.completedTopicsCount,
-          mapFrom(
-            (source) => source.topics.filter((t) => t.isCompleted).length,
-          ),
-        ),
-        forMember(
           (dest) => dest.name,
           mapFrom((source) => source.module.name),
         ),
@@ -154,9 +148,6 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.module.topics.map((t) => {
               const result = new UserTopicDto(t);
-              result.isCompleted = !!source.topics.find(
-                (ut) => ut.topicId === t.id && ut.isCompleted,
-              );
               return result;
             }),
           ),
