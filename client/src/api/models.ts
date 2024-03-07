@@ -2,6 +2,7 @@
 /* eslint-disable */
 export { AchievementDto } from './models/achievement-dto';
 export { JwtDto } from './models/jwt-dto';
+export { LessonDto } from './models/lesson-dto';
 export { MarathonDto } from './models/marathon-dto';
 export { MarathonInfoDto } from './models/marathon-info-dto';
 export { ModuleDto } from './models/module-dto';
@@ -9,6 +10,7 @@ export { NoteDto } from './models/note-dto';
 export { PassportUserDto } from './models/passport-user-dto';
 export { PasswordDto } from './models/password-dto';
 export { SaveAchievementDto } from './models/save-achievement-dto';
+export { SaveLessonDto } from './models/save-lesson-dto';
 export { SaveMarathonDto } from './models/save-marathon-dto';
 export { SaveModuleDto } from './models/save-module-dto';
 export { SaveNoteDto } from './models/save-note-dto';

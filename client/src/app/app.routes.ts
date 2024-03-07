@@ -48,6 +48,16 @@ export const APP_ROUTES: Routes = [
         canActivate: [jwtGuard],
     },
     {
+        path: 'topic',
+        loadChildren: () => import('./topic/topic.routes').then((m) => m.TOPIC_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
+        path: 'lesson',
+        loadChildren: () => import('./topic/lesson/lesson.routes').then((m) => m.LESSON_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
         path: 'error/404',
         loadComponent: () =>
             import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),

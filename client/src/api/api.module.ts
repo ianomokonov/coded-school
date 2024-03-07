@@ -10,6 +10,7 @@ import { MarathonService } from './services/marathon.service';
 import { AchievementService } from './services/achievement.service';
 import { NotesService } from './services/notes.service';
 import { TopicService } from './services/topic.service';
+import { LessonService } from './services/lesson.service';
 
 /**
  * Module that provides all services and configuration.
@@ -25,6 +26,7 @@ import { TopicService } from './services/topic.service';
     AchievementService,
     NotesService,
     TopicService,
+    LessonService,
     ApiConfiguration
   ],
 })

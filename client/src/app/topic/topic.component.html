@@ -1,0 +1,29 @@
+@if (topic) {
+    <div class="container pt-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ topic.name }}</h2>
+            </div>
+        </p-card>
+        <h3>Уроки темы</h3>
+        <div>
+            @for (lesson of topic.lessons; track lesson.id; let last = $last) {
+                <div
+                    class="border-200 py-3"
+                    [ngClass]="{ 'border-none': last, 'border-bottom-1': !last }"
+                >
+                    <a [routerLink]="['/lesson', lesson.id]">{{ lesson.name }}</a>
+                </div>
+            } @empty {
+                <span>Нет уроков</span>
+            }
+        </div>
+    </div>
+}

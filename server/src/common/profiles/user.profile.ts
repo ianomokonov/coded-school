@@ -26,6 +26,10 @@ import { UserModuleDto } from '@dtos/module/user-module.dto';
 import { UserTopicDto } from '@dtos/module/user-topic.dto';
 import { UserModuleAchievementDto } from '@dtos/user/user-achievement.dto';
 import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
+import { TopicEntity } from '@entities/topic/topic.entity';
+import { TopicDto } from '@dtos/topic/topic.dto';
+import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
+import { LessonDto } from '@modules/topic/lesson/dto/lesson.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -40,6 +44,8 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
       createMap(mapper, AchievementEntity, AchievementDto);
+      createMap(mapper, TopicEntity, TopicDto);
+      createMap(mapper, LessonEntity, LessonDto);
       createMap(
         mapper,
         UserMarathonEntity,
