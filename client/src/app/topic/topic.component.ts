@@ -27,4 +27,11 @@ export class TopicComponent implements OnInit {
             });
         });
     }
+
+    getCompletedCount(): number {
+        if (!this.topic || !this.topic.lessons.length) {
+            return 0;
+        }
+        return this.topic.lessons.filter((l) => l.isCompleted).length;
+    }
 }

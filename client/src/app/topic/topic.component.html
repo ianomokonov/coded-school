@@ -7,10 +7,12 @@
             size="large"
             routerLink="/lk"
         ></p-avatar>
-        <p-card class="mb-3">
-            <div class="flex justify-content-between align-items-center pb-3">
-                <h2 class="m-0">{{ topic.name }}</h2>
-            </div>
+        <p-card class="mb-3" [header]="topic.name">
+            <p-progressBar [value]="(getCompletedCount() / (topic.lessons.length || 1)) * 100">
+                <ng-template #progress pTemplate="content" let-value>
+                    <span>{{ getCompletedCount() }}/{{ topic.lessons.length }}</span>
+                </ng-template>
+            </p-progressBar>
         </p-card>
         <h3>Уроки темы</h3>
         <div>
