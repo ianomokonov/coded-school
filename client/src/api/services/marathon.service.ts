@@ -11,6 +11,8 @@ import { BaseResponse } from '../base-response';
 
 import { completeUserMarathon } from '../fn/marathon/complete-user-marathon';
 import { CompleteUserMarathon$Params } from '../fn/marathon/complete-user-marathon';
+import { createMarathon } from '../fn/marathon/create-marathon';
+import { CreateMarathon$Params } from '../fn/marathon/create-marathon';
 import { createUserMarathon } from '../fn/marathon/create-user-marathon';
 import { CreateUserMarathon$Params } from '../fn/marathon/create-user-marathon';
 import { deleteUserMarathon } from '../fn/marathon/delete-user-marathon';
@@ -64,8 +66,8 @@ export class MarathonService extends BaseService {
     );
   }
 
-  /** Path part for operation `createUserMarathon()` */
-  static readonly CreateUserMarathonPath = '/api/marathon';
+  /** Path part for operation `createMarathon()` */
+  static readonly CreateMarathonPath = '/api/marathon';
 
   /**
    * Создать марафон.
@@ -73,12 +75,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `createUserMarathon()` instead.
+   * To access only the response body, use `createMarathon()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createUserMarathon$Response(params: CreateUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-    return createUserMarathon(this.http, this.rootUrl, params, context);
+  createMarathon$Response(params: CreateMarathon$Params, context?: HttpContext): Observable<BaseResponse<number>> {
+    return createMarathon(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -87,12 +89,12 @@ export class MarathonService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `createUserMarathon$Response()` instead.
+   * To access the full response (for headers, for example), `createMarathon$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  createUserMarathon(params: CreateUserMarathon$Params, context?: HttpContext): Observable<number> {
-    return this.createUserMarathon$Response(params, context).pipe(
+  createMarathon(params: CreateMarathon$Params, context?: HttpContext): Observable<number> {
+    return this.createMarathon$Response(params, context).pipe(
       map((r: BaseResponse<number>): number => r.body)
     );
   }
@@ -225,6 +227,39 @@ export class MarathonService extends BaseService {
    */
   startUserMarathon(params: StartUserMarathon$Params, context?: HttpContext): Observable<void> {
     return this.startUserMarathon$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `createUserMarathon()` */
+  static readonly CreateUserMarathonPath = '/api/marathon/{id}/create';
+
+  /**
+   * Создать марафон для текущего пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `createUserMarathon()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  createUserMarathon$Response(params: CreateUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return createUserMarathon(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Создать марафон для текущего пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `createUserMarathon$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  createUserMarathon(params: CreateUserMarathon$Params, context?: HttpContext): Observable<void> {
+    return this.createUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
     );
   }

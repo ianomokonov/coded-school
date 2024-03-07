@@ -22,4 +22,8 @@ export class MarathonEntity extends BaseEntity {
 
   @Column({ nullable: false })
   points: number;
+
+  /** Ограничение времени в минутах */
+  @Column({ nullable: true })
+  time: number;
 }

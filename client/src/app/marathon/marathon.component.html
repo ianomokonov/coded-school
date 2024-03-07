@@ -17,11 +17,16 @@
             <p class="font-semibold">
                 За прохождение вы получите {{ marathon.info.points }} бонусов
             </p>
-            @if (!marathon.isCompleted) {
-                <ng-template pTemplate="footer">
+            <ng-template pTemplate="footer">
+                @if (!marathon.isCompleted) {
                     <p-button label="Поехали" icon="pi pi-check" (onClick)="onSuccess()"></p-button>
-                </ng-template>
-            }
+                } @else {
+                    <div class="border-1 p-2 border-round border-green-400 text-green-400 inline">
+                        <i class="pi pi-check"></i>
+                        Марафон пройден
+                    </div>
+                }
+            </ng-template>
         </p-card>
     </div>
 }

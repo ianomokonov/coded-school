@@ -5,4 +5,5 @@ export class MarathonInfoDto {
   name: string;
   difficulty: MarathonDifficulty;
   points: number;
+  time?: number;
 }

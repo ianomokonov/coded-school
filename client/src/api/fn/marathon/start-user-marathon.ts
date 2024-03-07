@@ -12,7 +12,7 @@ export interface StartUserMarathon$Params {
 }
 
 export function startUserMarathon(http: HttpClient, rootUrl: string, params: StartUserMarathon$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, startUserMarathon.PATH, 'post');
+  const rb = new RequestBuilder(rootUrl, startUserMarathon.PATH, 'put');
   if (params) {
     rb.path('id', params.id, {});
   }

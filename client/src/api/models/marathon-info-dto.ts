@@ -5,4 +5,5 @@ export interface MarathonInfoDto {
   id: number;
   name: string;
   points: number;
+  time?: number;
 }

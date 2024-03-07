@@ -6,6 +6,7 @@ import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { AchievementService } from '@modules/achievement/achievement.service';
+import { dateTimeNow } from '@core/date-now.fn';
 
 @Injectable()
 export class MarathonService {
@@ -15,12 +16,12 @@ export class MarathonService {
   ) {}
 
   async createMarathon(dto: SaveMarathonDto) {
-    const { id } = await MarathonEntity.create({ name: dto.name }).save();
+    const { id } = await MarathonEntity.create({ ...dto }).save();
     return id;
   }
 
   async updateMarathon(marathonId: number, dto: SaveMarathonDto) {
-    await MarathonEntity.update({ id: marathonId }, { name: dto.name });
+    await MarathonEntity.update({ id: marathonId }, { ...dto });
   }
 
   async deleteMarathon(marathonId: number) {
@@ -58,8 +59,15 @@ export class MarathonService {
     return modules.map((m) => this.mapper.map(m, MarathonEntity, MarathonDto));
   }
 
-  async startMarathon(marathonId: number, userId: number) {
+  async createUserMarathon(marathonId: number, userId: number) {
     await UserMarathonEntity.create({ userId, marathonId }).save();
+  }
+
+  async startMarathon(marathonId: number, userId: number) {
+    await UserMarathonEntity.update(
+      { userId, marathonId },
+      { isStarted: true, startDate: dateTimeNow() },
+    );
   }
 
   async completeMarathon(marathonId: number, userId: number) {

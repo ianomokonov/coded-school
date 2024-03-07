@@ -20,7 +20,10 @@ export class UserMarathonEntity extends BaseEntity {
   @Column({ default: false })
   isCompleted: boolean;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: false })
+  isStarted: boolean;
+
+  @Column({ nullable: true })
   startDate: Date;
 
   @Column()
