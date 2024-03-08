@@ -25,6 +25,15 @@ export class ModuleService {
     await ModuleEntity.delete({ id: moduleId });
   }
 
+  async readModule(moduleId: number): Promise<ModuleDto> {
+    const module = await ModuleEntity.findOne({ where: { id: moduleId } });
+
+    if (!module) {
+      throw new NotFoundException('Модуль не найден');
+    }
+    return this.mapper.map(module, ModuleEntity, ModuleDto);
+  }
+
   async readUserModule(
     moduleId: number,
     userId: number,

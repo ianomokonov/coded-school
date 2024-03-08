@@ -35,7 +35,7 @@ export class ModuleController {
 
   @Post()
   @ApiBearerAuth('JWT')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Создать модуль' })
   async createUserModule(@Body() dto: SaveModuleDto) {
@@ -44,7 +44,7 @@ export class ModuleController {
 
   @Put(':id')
   @ApiBearerAuth('JWT')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Изменить модуль' })
   async updateUserModule(@Param('id') id: number, @Body() dto: SaveModuleDto) {
@@ -58,12 +58,19 @@ export class ModuleController {
   async deleteUserModule(@Param('id') id: number) {
     return this.moduleService.deleteModule(id);
   }
+  @Get(':id/user')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить модуль пользователя' })
+  async readUserModule(@UserId() userId: number, @Param('id') id: number) {
+    return this.moduleService.readUserModule(id, userId);
+  }
   @Get(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить модуль' })
-  async readUserModule(@UserId() userId: number, @Param('id') id: number) {
-    return this.moduleService.readUserModule(id, userId);
+  async readModule(@Param('id') id: number) {
+    return this.moduleService.readModule(id);
   }
   @Post(':id/start')
   @ApiBearerAuth('JWT')

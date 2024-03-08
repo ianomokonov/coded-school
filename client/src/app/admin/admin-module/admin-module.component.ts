@@ -19,7 +19,14 @@ export class AdminModuleComponent {
         private router: Router,
     ) {
         this.modulesService.getModulesTree().subscribe((modules) => {
-            this.modules = modules.map((m) => this.getTree(m));
+            this.modules = [
+                ...modules.map((m) => this.getTree(m)),
+                {
+                    label: 'Создать модуль',
+                    data: `/admin/module/create`,
+                    icon: 'pi pi-plus',
+                },
+            ];
         });
     }
 
@@ -33,7 +40,14 @@ export class AdminModuleComponent {
                 label: module.name,
                 data: `/admin/module/${module.id}`,
                 icon: 'pi pi-server',
-                children: module.topics?.map((t) => this.getTree(t)),
+                children: [
+                    ...(module.topics?.map((t) => this.getTree(t)) || []),
+                    {
+                        label: 'Создать тему',
+                        data: `/admin/topic/create`,
+                        icon: 'pi pi-plus',
+                    },
+                ],
             };
         }
         if ('lessons' in module) {
@@ -41,7 +55,14 @@ export class AdminModuleComponent {
                 label: module.name,
                 icon: `pi pi-sitemap`,
                 data: `/admin/topic/${module.id}`,
-                children: module.lessons?.map((t) => this.getTree(t)),
+                children: [
+                    ...(module.lessons?.map((t) => this.getTree(t)) || []),
+                    {
+                        label: 'Создать урок',
+                        data: `/admin/lesson/create`,
+                        icon: 'pi pi-plus',
+                    },
+                ],
             };
         }
 

@@ -20,6 +20,8 @@ import { GetAllModules$Params } from '../fn/module/get-all-modules';
 import { getModulesTree } from '../fn/module/get-modules-tree';
 import { GetModulesTree$Params } from '../fn/module/get-modules-tree';
 import { ModuleDto } from '../models/module-dto';
+import { readModule } from '../fn/module/read-module';
+import { ReadModule$Params } from '../fn/module/read-module';
 import { readUserModule } from '../fn/module/read-user-module';
 import { ReadUserModule$Params } from '../fn/module/read-user-module';
 import { startUserModule } from '../fn/module/start-user-module';
@@ -133,8 +135,8 @@ export class ModuleService extends BaseService {
     );
   }
 
-  /** Path part for operation `readUserModule()` */
-  static readonly ReadUserModulePath = '/api/module/{id}';
+  /** Path part for operation `readModule()` */
+  static readonly ReadModulePath = '/api/module/{id}';
 
   /**
    * Получить модуль.
@@ -142,12 +144,12 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `readUserModule()` instead.
+   * To access only the response body, use `readModule()` instead.
    *
    * This method doesn't expect any request body.
    */
-  readUserModule$Response(params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<UserModuleDto>> {
-    return readUserModule(this.http, this.rootUrl, params, context);
+  readModule$Response(params: ReadModule$Params, context?: HttpContext): Observable<BaseResponse<ModuleDto>> {
+    return readModule(this.http, this.rootUrl, params, context);
   }
 
   /**
@@ -156,13 +158,13 @@ export class ModuleService extends BaseService {
    *
    *
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `readUserModule$Response()` instead.
+   * To access the full response (for headers, for example), `readModule$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  readUserModule(params: ReadUserModule$Params, context?: HttpContext): Observable<UserModuleDto> {
-    return this.readUserModule$Response(params, context).pipe(
-      map((r: BaseResponse<UserModuleDto>): UserModuleDto => r.body)
+  readModule(params: ReadModule$Params, context?: HttpContext): Observable<ModuleDto> {
+    return this.readModule$Response(params, context).pipe(
+      map((r: BaseResponse<ModuleDto>): ModuleDto => r.body)
     );
   }
 
@@ -229,6 +231,39 @@ export class ModuleService extends BaseService {
   deleteUserModule(params: DeleteUserModule$Params, context?: HttpContext): Observable<void> {
     return this.deleteUserModule$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `readUserModule()` */
+  static readonly ReadUserModulePath = '/api/module/{id}/user';
+
+  /**
+   * Получить модуль пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `readUserModule()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  readUserModule$Response(params: ReadUserModule$Params, context?: HttpContext): Observable<BaseResponse<UserModuleDto>> {
+    return readUserModule(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получить модуль пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `readUserModule$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  readUserModule(params: ReadUserModule$Params, context?: HttpContext): Observable<UserModuleDto> {
+    return this.readUserModule$Response(params, context).pipe(
+      map((r: BaseResponse<UserModuleDto>): UserModuleDto => r.body)
     );
   }
 
