@@ -1,6 +1,15 @@
 <div class="container">
     <div class="flex align-items-center justify-content-between mb-5">
-        <h2 class="mr-5">Панель администратора</h2>
+        <div class="flex align-items-center">
+            <p-avatar
+                styleClass="cursor-pointer my-5 mr-3"
+                shape="circle"
+                icon="pi pi-angle-left"
+                size="large"
+                routerLink="/lk"
+            ></p-avatar>
+            <h2 class="mr-5">Панель администратора</h2>
+        </div>
         <p-tabMenu [model]="menuItems"></p-tabMenu>
     </div>
 
