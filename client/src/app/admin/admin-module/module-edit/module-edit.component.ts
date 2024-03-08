@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { AvatarModule } from 'primeng/avatar';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ModuleDto, ModuleService } from '@api/index';
@@ -10,14 +8,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 @Component({
     selector: 'coded-module-edit',
     standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        InputTextModule,
-        ButtonModule,
-        RouterModule,
-        CommonModule,
-        AvatarModule,
-    ],
+    imports: [ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule],
     templateUrl: './module-edit.component.html',
 })
 export class ModuleEditComponent implements OnInit {
@@ -28,6 +19,7 @@ export class ModuleEditComponent implements OnInit {
         private moduleService: ModuleService,
         private activeRoute: ActivatedRoute,
         private fb: FormBuilder,
+        private router: Router,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -71,7 +63,7 @@ export class ModuleEditComponent implements OnInit {
         }
 
         this.moduleService.createUserModule({ body: { name } }).subscribe((id) => {
-            this.module = { id, name };
+            this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
         });
     }
 }

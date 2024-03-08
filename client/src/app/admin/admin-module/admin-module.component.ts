@@ -31,7 +31,9 @@ export class AdminModuleComponent {
     }
 
     nodeSelect({ node }: { node: TreeNode }) {
-        this.router.navigate([node.data.url]);
+        this.router.navigate([node.data.url], {
+            queryParams: node.data.parentId ? { parentId: node.data.parentId } : {},
+        });
     }
 
     deleteItem(event: MouseEvent, item: TreeNode) {
@@ -85,7 +87,7 @@ export class AdminModuleComponent {
                     ...(module.topics?.map((t) => this.getTree(t)) || []),
                     {
                         label: 'Создать тему',
-                        data: { url: `/admin/topic/create`, type: 'create' },
+                        data: { url: `/admin/topic/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
                     },
                 ],
@@ -100,7 +102,7 @@ export class AdminModuleComponent {
                     ...(module.lessons?.map((t) => this.getTree(t)) || []),
                     {
                         label: 'Создать урок',
-                        data: { url: `/admin/lesson/create`, type: 'create' },
+                        data: { url: `/admin/lesson/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
                     },
                 ],
