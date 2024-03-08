@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { LessonDto, LessonService } from '@api/index';
+import { EditorModule } from 'primeng/editor';
 
 @Component({
     selector: 'coded-lesson-edit',
     standalone: true,
-    imports: [ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule],
+    imports: [EditorModule, ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule],
     templateUrl: './lesson-edit.component.html',
 })
 export class LessonEditComponent implements OnInit {
@@ -23,6 +24,7 @@ export class LessonEditComponent implements OnInit {
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
+            content: [null, Validators.required],
         });
     }
     ngOnInit(): void {
@@ -42,16 +44,17 @@ export class LessonEditComponent implements OnInit {
     onSave(): void {
         if (this.form.invalid) {
             this.form.get('name')?.markAsDirty();
+            this.form.get('content')?.markAsDirty();
             return;
         }
 
-        const { name } = this.form.getRawValue();
+        const { name, content } = this.form.getRawValue();
 
         if (this.lesson) {
             this.lessonService
                 .updateLesson({
                     id: this.lesson.id,
-                    body: { name, topicId: this.lesson.topicId },
+                    body: { name, content, topicId: this.lesson.topicId },
                 })
                 .subscribe(() => {
                     if (!this.lesson) {
@@ -68,7 +71,7 @@ export class LessonEditComponent implements OnInit {
 
         this.lessonService
             .createLesson({
-                body: { name, topicId: this.activeRoute.snapshot.queryParams['parentId'] },
+                body: { name, topicId: this.activeRoute.snapshot.queryParams['parentId'], content },
             })
             .subscribe((id) => {
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });

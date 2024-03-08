@@ -1,5 +1,5 @@
 @if (lesson) {
-    <div class="container pt-5">
+    <div class="container py-5">
         <p-avatar
             styleClass="cursor-pointer mt-5 mb-5"
             shape="circle"
@@ -12,7 +12,10 @@
                 <h2 class="m-0">{{ lesson.name }}</h2>
             </div>
         </p-card>
-        <p>{{ lesson.content }}</p>
+        <div class="ql-snow mb-3">
+            <div class="ql-editor"><div [innerHTML]="content"></div></div>
+        </div>
+
         @if (lesson.nextLessonId) {
             <p-button
                 (onClick)="completeLesson()"

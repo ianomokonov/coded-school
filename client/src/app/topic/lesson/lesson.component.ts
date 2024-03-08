@@ -5,6 +5,7 @@ import { LessonService } from '@api/services';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'coded-lesson',
@@ -14,16 +15,19 @@ import { ButtonModule } from 'primeng/button';
 })
 export class LessonComponent implements OnInit {
     lesson: LessonDto | undefined;
+    content: SafeHtml | undefined;
 
     constructor(
         private lessonService: LessonService,
         private activeRoute: ActivatedRoute,
         private router: Router,
+        private dom: DomSanitizer,
     ) {}
     ngOnInit(): void {
         this.activeRoute.params.subscribe(({ id }) => {
             this.lessonService.readLesson({ id }).subscribe((m) => {
                 this.lesson = m;
+                this.content = this.dom.bypassSecurityTrustHtml(m.content);
             });
         });
     }
