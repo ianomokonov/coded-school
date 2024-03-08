@@ -55,3 +55,10 @@ p-calendar.p-inputwrapper-filled {
 a.p-button {
     text-decoration: none;
 }
+
+.clickable {
+    cursor: pointer;
+    &:hover{
+        color: var(--primary-500);
+    }
+}

@@ -5,7 +5,16 @@
             class="w-full block"
             selectionMode="single"
             (onNodeSelect)="nodeSelect($event)"
-        ></p-tree>
+        >
+            <ng-template let-node pTemplate="default">
+                <div class="flex justify-content-between">
+                    <span class="mr-3">{{ node.label }}</span>
+                    @if (node.data.type !== 'create') {
+                        <i class="pi pi-trash clickable" (click)="deleteItem($event, node)"></i>
+                    }
+                </div>
+            </ng-template>
+        </p-tree>
     </div>
     <div class="col"><router-outlet></router-outlet></div>
 </div>

@@ -35,7 +35,7 @@ export class ModuleController {
 
   @Post()
   @ApiBearerAuth('JWT')
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Создать модуль' })
   async createUserModule(@Body() dto: SaveModuleDto) {
@@ -44,7 +44,7 @@ export class ModuleController {
 
   @Put(':id')
   @ApiBearerAuth('JWT')
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Изменить модуль' })
   async updateUserModule(@Param('id') id: number, @Body() dto: SaveModuleDto) {

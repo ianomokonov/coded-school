@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { LessonDto, ModuleDto, ModuleService, TopicDto } from '@api/index';
+import {
+    LessonDto,
+    LessonService,
+    ModuleDto,
+    ModuleService,
+    TopicDto,
+    TopicService,
+} from '@api/index';
 import { TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { TreeModule } from 'primeng/tree';
@@ -16,35 +23,69 @@ export class AdminModuleComponent {
 
     constructor(
         private modulesService: ModuleService,
+        private lessonsService: LessonService,
+        private topicService: TopicService,
         private router: Router,
     ) {
+        this.updateTree();
+    }
+
+    nodeSelect({ node }: { node: TreeNode }) {
+        this.router.navigate([node.data.url]);
+    }
+
+    deleteItem(event: MouseEvent, item: TreeNode) {
+        event.preventDefault();
+        event.stopPropagation();
+        switch (item.data.type) {
+            case 'module': {
+                this.modulesService
+                    .deleteUserModule({ id: item.data.id })
+                    .subscribe(() => this.updateTree());
+                return;
+            }
+            case 'topic': {
+                this.topicService
+                    .deleteTopic({ id: item.data.id })
+                    .subscribe(() => this.updateTree());
+                return;
+            }
+            case 'lesson': {
+                this.lessonsService
+                    .deleteLesson({ id: item.data.id })
+                    .subscribe(() => this.updateTree());
+                return;
+            }
+            default: {
+                return;
+            }
+        }
+    }
+
+    private updateTree() {
         this.modulesService.getModulesTree().subscribe((modules) => {
             this.modules = [
                 ...modules.map((m) => this.getTree(m)),
                 {
                     label: 'Создать модуль',
-                    data: `/admin/module/create`,
+                    data: { url: `/admin/module/create`, type: 'create' },
                     icon: 'pi pi-plus',
                 },
             ];
         });
     }
 
-    nodeSelect({ node }: { node: TreeNode }) {
-        this.router.navigate([node.data]);
-    }
-
     private getTree(module: ModuleDto | TopicDto | LessonDto): TreeNode {
         if ('topics' in module) {
             return {
                 label: module.name,
-                data: `/admin/module/${module.id}`,
+                data: { url: `/admin/module/${module.id}`, type: 'module', id: module.id },
                 icon: 'pi pi-server',
                 children: [
                     ...(module.topics?.map((t) => this.getTree(t)) || []),
                     {
                         label: 'Создать тему',
-                        data: `/admin/topic/create`,
+                        data: { url: `/admin/topic/create`, type: 'create' },
                         icon: 'pi pi-plus',
                     },
                 ],
@@ -54,12 +95,12 @@ export class AdminModuleComponent {
             return {
                 label: module.name,
                 icon: `pi pi-sitemap`,
-                data: `/admin/topic/${module.id}`,
+                data: { url: `/admin/topic/${module.id}`, type: 'topic', id: module.id },
                 children: [
                     ...(module.lessons?.map((t) => this.getTree(t)) || []),
                     {
                         label: 'Создать урок',
-                        data: `/admin/lesson/create`,
+                        data: { url: `/admin/lesson/create`, type: 'create' },
                         icon: 'pi pi-plus',
                     },
                 ],
@@ -68,7 +109,7 @@ export class AdminModuleComponent {
 
         return {
             label: module.name,
-            data: `/admin/lesson/${module.id}`,
+            data: { url: `/admin/lesson/${module.id}`, type: 'lesson', id: module.id },
             icon: 'pi pi-file',
         };
     }
