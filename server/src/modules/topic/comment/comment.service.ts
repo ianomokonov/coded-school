@@ -26,7 +26,8 @@ export class CommentService {
   async getLessonComments(lessonId: number): Promise<CommentDto[]> {
     const comments = await CommentEntity.find({
       where: { lessonId },
-      relations: { user: true },
+      relations: { user: true, relativeComment: true },
+      order: { createDate: { direction: 'DESC' } },
     });
 
     return this.mapper.mapArray(comments, CommentEntity, CommentDto);

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommentDto } from '@api/index';
 import { CommentService } from '@api/services';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CreateCommentComponent } from './create-comment/create-comment.component';
+import { Comment } from './models/comment';
 
 @Component({
     selector: 'coded-comments',
@@ -15,7 +15,7 @@ import { CreateCommentComponent } from './create-comment/create-comment.componen
 })
 export class CommentsComponent implements OnInit {
     @Input() lessonId!: number;
-    comments: CommentDto[] | undefined;
+    comments: Comment[] | undefined;
 
     constructor(private commentService: CommentService) {}
     ngOnInit(): void {
@@ -24,10 +24,10 @@ export class CommentsComponent implements OnInit {
         });
     }
 
-    createComment(text: string) {
+    createComment(text: string, relativeCommentId?: number) {
         this.commentService
             .createComment({
-                body: { lessonId: this.lessonId, text },
+                body: { lessonId: this.lessonId, text, relativeCommentId },
             })
             .subscribe(() => {
                 this.commentService
@@ -36,5 +36,9 @@ export class CommentsComponent implements OnInit {
                         this.comments = comments;
                     });
             });
+    }
+
+    onAnswer(comment: Comment) {
+        comment.isEditing = !comment.isEditing;
     }
 }
