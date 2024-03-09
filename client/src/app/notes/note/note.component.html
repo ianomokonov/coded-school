@@ -1,9 +1,13 @@
-@if (note$ | async; as note) {
-    <div>
-        {{ note.name }}
-        {{ note.content }}
-        <p-button label="Редактировать" routerLink="edit"></p-button>
-    </div>
-} @else {
-    <h1>Такой заметки не существует</h1>
-}
+<div class="container">
+    @if (note$ | async; as note) {
+        <div>
+            <h3>{{ note.name }}</h3>
+            <div class="ql-snow mb-3">
+                <div class="ql-editor"><div [innerHTML]="content"></div></div>
+            </div>
+            <p-button label="Редактировать" routerLink="edit"></p-button>
+        </div>
+    } @else {
+        <h1>Такой заметки не существует</h1>
+    }
+</div>

@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs';
 import { DestroyService } from '@core/destroy.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { EditorModule } from 'primeng/editor';
 
 @Component({
     selector: 'coded-lesson',
@@ -32,6 +33,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
         AvatarModule,
         CommentsComponent,
         EditNoteComponent,
+        EditorModule,
     ],
     providers: [DestroyService],
     templateUrl: './lesson.component.html',
@@ -76,7 +78,17 @@ export class LessonComponent implements OnInit {
     }
 
     onShowMenu(): void {
-        this.noteForm.patchValue({ content: document.getSelection()?.toString() || '' });
+        const selection = document.getSelection();
+
+        const cloned = document.createElement('div');
+
+        if (selection) {
+            for (let i = 0; i < selection.rangeCount; i++) {
+                cloned.append(selection.getRangeAt(i).cloneContents());
+            }
+        }
+
+        this.noteForm.patchValue({ content: cloned.innerHTML || '' });
     }
 
     completeLesson(): void {
