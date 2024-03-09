@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LessonDto, SaveNoteDto } from '@api/index';
 import { LessonService, NotesService } from '@api/services';
@@ -42,17 +42,33 @@ export class LessonComponent implements OnInit {
     @ViewChild('text') text: ElementRef | undefined;
     lesson: LessonDto | undefined;
     content: SafeHtml | undefined;
+    quote: string | undefined;
     showNoteModal: boolean = false;
     menuItems: MenuItem[] = [
         {
             label: 'Создать заметку',
             command: () => {
+                this.noteForm.patchValue({ content: this.selection || '' });
                 this.showNoteModal = true;
+            },
+        },
+        {
+            label: 'Использовать в комментарии',
+            command: () => {
+                this.quote = this.selection;
+                document
+                    .querySelector('.create-comment-form')
+                    ?.scrollIntoView({ behavior: 'smooth' });
             },
         },
     ];
 
     noteForm: FormGroup;
+    selection: string = '';
+
+    @HostListener('document:selectionchange', ['$event']) documentSelectionEvent() {
+        this.onSelectionChanged();
+    }
 
     constructor(
         private lessonService: LessonService,
@@ -77,7 +93,7 @@ export class LessonComponent implements OnInit {
         });
     }
 
-    onShowMenu(): void {
+    onSelectionChanged(): void {
         const selection = document.getSelection();
 
         const cloned = document.createElement('div');
@@ -88,7 +104,7 @@ export class LessonComponent implements OnInit {
             }
         }
 
-        this.noteForm.patchValue({ content: cloned.innerHTML || '' });
+        this.selection = cloned.innerHTML || '';
     }
 
     completeLesson(): void {

@@ -13,9 +13,11 @@
             </div>
         </p-card>
         <div class="ql-snow mb-3">
-            <div class="ql-editor"><div #text [innerHTML]="content"></div></div>
+            <div class="ql-editor">
+                <div #text [innerHTML]="content" (selectionchange)="onSelectionChanged()"></div>
+            </div>
         </div>
-        <p-contextMenu [target]="text" [model]="menuItems" (onShow)="onShowMenu()"></p-contextMenu>
+        <p-contextMenu [target]="text" [model]="menuItems"></p-contextMenu>
 
         @if (lesson.nextLessonId) {
             <p-button
@@ -40,7 +42,7 @@
             ></p-button>
         }
         <div class="pt-4 mt-5 border-top-1 border-200">
-            <coded-comments [lessonId]="lesson.id"></coded-comments>
+            <coded-comments [quote]="quote" [lessonId]="lesson.id"></coded-comments>
         </div>
     </div>
 }

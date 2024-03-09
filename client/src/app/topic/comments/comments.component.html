@@ -1,7 +1,10 @@
 <div>
     <div class="text-3xl mb-4">Обсуждение</div>
     <div class="mb-3">
-        <coded-create-comment (onSaveComment)="createComment($event)"></coded-create-comment>
+        <coded-create-comment
+            [quote]="quoteHtml"
+            (onSaveComment)="createComment($event)"
+        ></coded-create-comment>
     </div>
     <div class="comments">
         @for (comment of comments; track comment.id) {
@@ -14,6 +17,22 @@
                         class="mb-3 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
                         [innerHTML]="comment.relativeComment.text"
                     ></div>
+                }
+                @if (!!comment.quote) {
+                    <div
+                        class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-indigo-500 bg-indigo-50"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path
+                                d="M448 296c0 66.3-53.7 120-120 120h-8c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H320c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72zm-256 0c0 66.3-53.7 120-120 120H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h8c30.9 0 56-25.1 56-56v-8H64c-35.3 0-64-28.7-64-64V160c0-35.3 28.7-64 64-64h64c35.3 0 64 28.7 64 64v32 32 72z"
+                            />
+                        </svg>
+                        <div class="ql-snow">
+                            <div class="ql-editor">
+                                <div #text [innerHTML]="comment.quoteHtml"></div>
+                            </div>
+                        </div>
+                    </div>
                 }
                 <p [innerHTML]="comment.text"></p>
                 @if (!comment.isEditing) {

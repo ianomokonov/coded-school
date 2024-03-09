@@ -6,6 +6,7 @@ export class CommentDto {
   lessonId: number;
   createDate: Date;
   text: string;
+  quote?: string;
 
   @AutoMap(() => UserShortDto)
   user: UserShortDto;

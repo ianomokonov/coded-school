@@ -23,6 +23,11 @@ export class CommentEntity extends BaseEntity {
   })
   text: string;
 
+  @Column('text', {
+    nullable: true,
+  })
+  quote: string;
+
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createDate: Date;
 
