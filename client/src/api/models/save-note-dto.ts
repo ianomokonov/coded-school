@@ -3,5 +3,6 @@
 export interface SaveNoteDto {
   content?: string;
   isFavorite: boolean;
+  moduleId?: number;
   name: string;
 }
