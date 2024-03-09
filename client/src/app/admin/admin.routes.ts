@@ -4,6 +4,7 @@ import { AdminModuleComponent } from './admin-module/admin-module.component';
 import { ModuleEditComponent } from './admin-module/module-edit/module-edit.component';
 import { TopicEditComponent } from './admin-module/topic-edit/topic-edit.component';
 import { LessonEditComponent } from './admin-module/lesson-edit/lesson-edit.component';
+import { AdminCommentsComponent } from './admin-comments/admin-comments.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -28,6 +29,7 @@ export const ADMIN_ROUTES: Routes = [
                     },
                 ],
             },
+            { path: 'comments', component: AdminCommentsComponent },
         ],
     },
 ];

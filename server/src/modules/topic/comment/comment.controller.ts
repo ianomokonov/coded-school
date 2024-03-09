@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { UserId } from '@decorators/author-id.decorator';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { GetCommentsDto } from './dto/get-comments.dto';
 
 @ApiTags('Comment')
 @Controller('comment')
@@ -41,11 +43,25 @@ export class CommentController {
   async deleteComment(@Param('id') id: number) {
     return this.commentService.delete(id);
   }
-  @Get(':id')
+  @Get('lesson/:id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить комментари урока' })
   async readLessonComments(@Param('id') lessonId: number) {
     return this.commentService.getLessonComments(lessonId);
+  }
+  @Get('all')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить все комментарии' })
+  async readAllComments(@Query() query: GetCommentsDto) {
+    return this.commentService.getComments(query);
+  }
+  @Get(':id')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить комментарий' })
+  async read(@Param('id') id: number) {
+    return this.commentService.read(id);
   }
 }

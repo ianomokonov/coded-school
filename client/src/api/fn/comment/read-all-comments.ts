@@ -7,16 +7,17 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { CommentDto } from '../../models/comment-dto';
-import { CreateCommentDto } from '../../models/create-comment-dto';
 
-export interface CreateComment$Params {
-      body: CreateCommentDto
+export interface ReadAllComments$Params {
+  skip: number;
+  take: number;
 }
 
-export function createComment(http: HttpClient, rootUrl: string, params: CreateComment$Params, context?: HttpContext): Observable<BaseResponse<CommentDto>> {
-  const rb = new RequestBuilder(rootUrl, createComment.PATH, 'post');
+export function readAllComments(http: HttpClient, rootUrl: string, params: ReadAllComments$Params, context?: HttpContext): Observable<BaseResponse<Array<CommentDto>>> {
+  const rb = new RequestBuilder(rootUrl, readAllComments.PATH, 'get');
   if (params) {
-    rb.body(params.body, 'application/json');
+    rb.query('skip', params.skip, {});
+    rb.query('take', params.take, {});
   }
 
   return http.request(
@@ -24,9 +25,9 @@ export function createComment(http: HttpClient, rootUrl: string, params: CreateC
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<CommentDto>;
+      return r as BaseResponse<Array<CommentDto>>;
     })
   );
 }
 
-createComment.PATH = '/api/comment';
+readAllComments.PATH = '/api/comment/all';

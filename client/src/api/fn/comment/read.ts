@@ -7,16 +7,15 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { CommentDto } from '../../models/comment-dto';
-import { CreateCommentDto } from '../../models/create-comment-dto';
 
-export interface CreateComment$Params {
-      body: CreateCommentDto
+export interface Read$Params {
+  id: number;
 }
 
-export function createComment(http: HttpClient, rootUrl: string, params: CreateComment$Params, context?: HttpContext): Observable<BaseResponse<CommentDto>> {
-  const rb = new RequestBuilder(rootUrl, createComment.PATH, 'post');
+export function read(http: HttpClient, rootUrl: string, params: Read$Params, context?: HttpContext): Observable<BaseResponse<CommentDto>> {
+  const rb = new RequestBuilder(rootUrl, read.PATH, 'get');
   if (params) {
-    rb.body(params.body, 'application/json');
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -29,4 +28,4 @@ export function createComment(http: HttpClient, rootUrl: string, params: CreateC
   );
 }
 
-createComment.PATH = '/api/comment';
+read.PATH = '/api/comment/{id}';

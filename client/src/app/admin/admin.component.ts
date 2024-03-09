@@ -16,12 +16,11 @@ export class AdminComponent {
         {
             label: 'Модуль',
             routerLink: ['/admin'],
+            routerLinkActiveOptions: { exact: true },
         },
         {
-            label: 'Марафон',
-        },
-        {
-            label: 'Достижение',
+            label: 'Комментарии',
+            routerLink: ['/admin/comments'],
         },
     ];
 }

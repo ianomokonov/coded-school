@@ -28,4 +28,4 @@ export function readLessonComments(http: HttpClient, rootUrl: string, params: Re
   );
 }
 
-readLessonComments.PATH = '/api/comment/{id}';
+readLessonComments.PATH = '/api/comment/lesson/{id}';
