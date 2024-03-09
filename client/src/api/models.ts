@@ -1,6 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export { AchievementDto } from './models/achievement-dto';
+export { CommentDto } from './models/comment-dto';
+export { CreateCommentDto } from './models/create-comment-dto';
 export { JwtDto } from './models/jwt-dto';
 export { LessonDto } from './models/lesson-dto';
 export { MarathonDto } from './models/marathon-dto';
@@ -18,6 +20,7 @@ export { SaveTopicDto } from './models/save-topic-dto';
 export { SignInDto } from './models/sign-in-dto';
 export { SignUpDto } from './models/sign-up-dto';
 export { TopicDto } from './models/topic-dto';
+export { UpdateCommentDto } from './models/update-comment-dto';
 export { UpdateForgottenPassDto } from './models/update-forgotten-pass-dto';
 export { UpdateNoteDto } from './models/update-note-dto';
 export { UserFullInfoDto } from './models/user-full-info-dto';

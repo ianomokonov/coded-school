@@ -6,11 +6,12 @@ import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CommentsComponent } from '../comments/comments.component';
 
 @Component({
     selector: 'coded-lesson',
     standalone: true,
-    imports: [ButtonModule, CardModule, RouterModule, AvatarModule],
+    imports: [ButtonModule, CardModule, RouterModule, AvatarModule, CommentsComponent],
     templateUrl: './lesson.component.html',
 })
 export class LessonComponent implements OnInit {

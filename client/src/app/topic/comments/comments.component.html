@@ -1,0 +1,18 @@
+<div>
+    <div class="text-3xl mb-4">Обсуждение</div>
+    <div class="mb-3">
+        <coded-create-comment
+            [lessonId]="lessonId"
+            (onSaveComment)="createComment($event)"
+        ></coded-create-comment>
+    </div>
+    <div class="comments">
+        @for (comment of comments; track comment.id) {
+            <p-card [header]="comment.user.firstName + ' ' + comment.user.secondName" class="mb-3">
+                <p [innerHTML]="comment.text"></p>
+            </p-card>
+        } @empty {
+            <p class="text-xl">Комментарии отсутствуют</p>
+        }
+    </div>
+</div>

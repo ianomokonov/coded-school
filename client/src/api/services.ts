@@ -5,3 +5,4 @@ export { AchievementService } from './services/achievement.service';
 export { NotesService } from './services/notes.service';
 export { TopicService } from './services/topic.service';
 export { LessonService } from './services/lesson.service';
+export { CommentService } from './services/comment.service';
