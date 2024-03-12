@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '@api/services';
 import { DestroyService } from '@core/destroy.service';
 import { MessageService } from 'primeng/api';
@@ -25,6 +25,7 @@ export class SignInComponent {
         private userService: UserService,
         private destroy$: DestroyService,
         private messageService: MessageService,
+        private activatedRoute: ActivatedRoute,
         private router: Router,
     ) {
         this.userForm = this.fb.group({
@@ -39,7 +40,9 @@ export class SignInComponent {
             .signIn({ body: this.userForm.getRawValue() })
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
-                this.router.navigate(['/lk']);
+                this.router.navigate([
+                    this.activatedRoute.snapshot.queryParams['returnUrl'] || '/lk',
+                ]);
             });
     }
 
