@@ -14,6 +14,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import * as path from 'path';
 import { NoteModule } from '@modules/note/note.module';
 import { TopicModule } from '@modules/topic/topic.module';
+import { MailService } from '@mail/service';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { TopicModule } from '@modules/topic/topic.module';
         dir: path.join(process.cwd(), 'src/mail/templates'),
         adapter: new PugAdapter(),
         options: {
-          strict: true,
+          // strict: true,
         },
       },
     }),
@@ -52,6 +53,7 @@ import { TopicModule } from '@modules/topic/topic.module';
     NoteModule,
     TopicModule,
   ],
+  providers: [MailService],
 })
 export class AppModule {
   public static getDatabaseConfig(): unknown {

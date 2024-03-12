@@ -126,6 +126,24 @@ export class UserService {
     });
     return this.mapper.map(user, UserEntity, UserShortDto);
   }
+  async getUserWithRoles(
+    id: number,
+  ): Promise<UserShortDto & { roles: string[] }> {
+    const user = await UserEntity.findOne({
+      where: { id },
+      relations: { roles: { role: true } },
+    });
+    const dto = this.mapper.map(user, UserEntity, UserShortDto);
+
+    return { ...dto, roles: user.roles.map((r) => r.role.name) };
+  }
+
+  async getAdmins(): Promise<UserShortDto[]> {
+    const users = await UserEntity.find({
+      where: { roles: { role: { name: 'admin' } } },
+    });
+    return this.mapper.mapArray(users, UserEntity, UserShortDto);
+  }
 
   async getUserFullInfo(id: number): Promise<UserFullInfoDto> {
     const user = await UserEntity.findOne({

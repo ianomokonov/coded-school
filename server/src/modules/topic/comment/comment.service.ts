@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -6,13 +6,45 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CommentDto } from './dto/comment.dto';
 import { CommentEntity } from './entity/comment.entity';
 import { GetCommentsDto } from './dto/get-comments.dto';
+import { UserService } from '@modules/user/user.service';
+import { ISendMailOptions } from '@nestjs-modules/mailer';
+import { MailService } from '@mail/service';
 
 @Injectable()
 export class CommentService {
-  constructor(@InjectMapper() private readonly mapper: Mapper) {}
+  constructor(
+    @InjectMapper() private readonly mapper: Mapper,
+    private userService: UserService,
+    private mailService: MailService,
+  ) {}
 
   async create(userId: number, dto: CreateCommentDto) {
+    const user = await this.userService.getUserWithRoles(userId);
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
     const { id } = await CommentEntity.create({ userId, ...dto }).save();
+    if (true || !user.roles.includes('admin')) {
+      const admins = await this.userService.getAdmins();
+
+      await Promise.all(
+        admins.map(async (a) => {
+          const data: ISendMailOptions = {
+            to: a.email,
+            subject: 'Новый коментарий CodedSchool',
+            template: 'new-comment/template',
+            context: {
+              link: process.env.FRONT_URL + 'lesson/' + dto.lessonId,
+              user,
+              dto,
+            },
+          };
+          await this.mailService.sendMail(data);
+        }),
+      );
+    }
+
     return this.read(id);
   }
 

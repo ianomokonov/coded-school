@@ -26,5 +26,6 @@ import { MailService } from '@mail/service';
     UserProfile,
     MailService,
   ],
+  exports: [UserService],
 })
 export class UserModule {}
