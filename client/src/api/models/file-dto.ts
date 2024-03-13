@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface FilesTreeDto {
+export interface FileDto {
+  content: string;
   label: string;
-  leaf: boolean;
 }

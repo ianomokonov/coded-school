@@ -3,7 +3,7 @@ import { TrainerComponent } from './trainer.component';
 
 export const TRAINER_ROUTES: Routes = [
     {
-        path: '',
+        path: ':id',
         component: TrainerComponent,
     },
 ];

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CodeEditorModule, CodeModel } from '@ngstack/code-editor';
 import { DropdownModule } from 'primeng/dropdown';
 import { LabelValue } from '@shared/models/label.model';
@@ -6,11 +6,10 @@ import { EditorThemes } from './themes.enum';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DestroyService } from '@core/destroy.service';
-import { takeUntil } from 'rxjs';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
 import { fileFormat } from './file-formatter';
-import { TrainerService } from '@api/services';
+import { FileDto, TrainerDto } from '@api/index';
 
 @Component({
     selector: 'coded-editor',
@@ -19,7 +18,7 @@ import { TrainerService } from '@api/services';
     templateUrl: './code-editor.component.html',
     providers: [DestroyService],
 })
-export class CodedEditorComponent implements OnInit {
+export class CodedEditorComponent implements OnChanges {
     loading: boolean = false;
     readonly themeValues: LabelValue[] = [
         {
@@ -46,61 +45,52 @@ export class CodedEditorComponent implements OnInit {
     options = {
         contextmenu: true,
         minimap: {
-            enabled: true,
+            enabled: false,
         },
     };
 
+    @Input() trainer!: TrainerDto;
     files: TreeNode[] = [];
+    selectedFile: FileDto | undefined;
 
-    trainerDir = 'test-trainer';
+    @Output() onCode: EventEmitter<{ html: string; css: string }> = new EventEmitter();
 
-    constructor(
-        private trainerService: TrainerService,
-        private cdr: ChangeDetectorRef,
-        private destroy$: DestroyService,
-    ) {}
-
-    ngOnInit(): void {
-        this.trainerService
-            .getFiles({ dir: this.trainerDir })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
-                res.map((el) => this.files.push(el));
-            });
-    }
-
-    getFiles(node: TreeNode): void {
-        if (!node.children?.length) {
-            this.trainerService
-                .getFiles({ dir: node.label! })
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((res) => {
-                    node.children = res;
-                    node.expanded = true;
-                    this.cdr.detectChanges();
-                });
-        } else {
-            node.expanded = !node.expanded;
+    constructor() {}
+    ngOnChanges(changes: SimpleChanges): void {
+        if (!changes['trainer']) {
+            return;
         }
+        this.trainer.files?.map((el) => {
+            this.files.push({ label: el.label, data: el });
+        });
+        if (!this.files.length) {
+            return;
+        }
+        this.selectFile(this.files[0]);
+        if (!this.selectedFile) {
+            return;
+        }
+        this.onCodeChanged(this.selectedFile?.content);
     }
 
-    getCode(fileName: string): void {
-        this.trainerService
-            .getEditorCode({ name: fileName })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((code) => {
-                this.model = {
-                    uri: fileName,
-                    language: fileFormat(fileName),
-                    value: code as unknown as string,
-                };
-            });
+    selectFile(node: TreeNode): void {
+        this.selectedFile = this.trainer?.files?.find((f) => f.label === node.data.label);
+        this.model = {
+            uri: node.data.label,
+            language: fileFormat(node.data.label),
+            value: node.data.content,
+        };
     }
 
-    onCodeChanged(value: string) {}
+    onCodeChanged(value: string) {
+        if (!this.selectedFile) {
+            return;
+        }
+        this.selectedFile.content = value;
 
-    isDir(fileName: string): boolean {
-        const fileNameArr = fileName.split('.');
-        return !(fileNameArr.length > 1);
+        this.onCode.emit({
+            html: this.trainer?.files?.find((f) => f.label.includes('html'))?.content || '',
+            css: this.trainer?.files?.find((f) => f.label.includes('css'))?.content || '',
+        });
     }
 }

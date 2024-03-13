@@ -9,13 +9,11 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
-import { FilesTreeDto } from '../models/files-tree-dto';
-import { getEditorCode } from '../fn/trainer/get-editor-code';
-import { GetEditorCode$Params } from '../fn/trainer/get-editor-code';
-import { getFiles } from '../fn/trainer/get-files';
-import { GetFiles$Params } from '../fn/trainer/get-files';
-import { runEditor } from '../fn/trainer/run-editor';
-import { RunEditor$Params } from '../fn/trainer/run-editor';
+import { checkTrainer } from '../fn/trainer/check-trainer';
+import { CheckTrainer$Params } from '../fn/trainer/check-trainer';
+import { getTrainer } from '../fn/trainer/get-trainer';
+import { GetTrainer$Params } from '../fn/trainer/get-trainer';
+import { TrainerDto } from '../models/trainer-dto';
 
 @Injectable({ providedIn: 'root' })
 export class TrainerService extends BaseService {
@@ -23,78 +21,53 @@ export class TrainerService extends BaseService {
     super(config, http);
   }
 
-  /** Path part for operation `getFiles()` */
-  static readonly GetFilesPath = '/api/trainer';
+  /** Path part for operation `getTrainer()` */
+  static readonly GetTrainerPath = '/api/trainer/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getFiles()` instead.
+   * To access only the response body, use `getTrainer()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getFiles$Response(params: GetFiles$Params, context?: HttpContext): Observable<BaseResponse<Array<FilesTreeDto>>> {
-    return getFiles(this.http, this.rootUrl, params, context);
+  getTrainer$Response(params: GetTrainer$Params, context?: HttpContext): Observable<BaseResponse<TrainerDto>> {
+    return getTrainer(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getFiles$Response()` instead.
+   * To access the full response (for headers, for example), `getTrainer$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getFiles(params: GetFiles$Params, context?: HttpContext): Observable<Array<FilesTreeDto>> {
-    return this.getFiles$Response(params, context).pipe(
-      map((r: BaseResponse<Array<FilesTreeDto>>): Array<FilesTreeDto> => r.body)
+  getTrainer(params: GetTrainer$Params, context?: HttpContext): Observable<TrainerDto> {
+    return this.getTrainer$Response(params, context).pipe(
+      map((r: BaseResponse<TrainerDto>): TrainerDto => r.body)
     );
   }
 
-  /** Path part for operation `runEditor()` */
-  static readonly RunEditorPath = '/api/trainer';
+  /** Path part for operation `checkTrainer()` */
+  static readonly CheckTrainerPath = '/api/trainer/{id}/check';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `runEditor()` instead.
+   * To access only the response body, use `checkTrainer()` instead.
    *
    * This method doesn't expect any request body.
    */
-  runEditor$Response(params?: RunEditor$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return runEditor(this.http, this.rootUrl, params, context);
+  checkTrainer$Response(params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
+    return checkTrainer(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `runEditor$Response()` instead.
+   * To access the full response (for headers, for example), `checkTrainer$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  runEditor(params?: RunEditor$Params, context?: HttpContext): Observable<void> {
-    return this.runEditor$Response(params, context).pipe(
-      map((r: BaseResponse<void>): void => r.body)
-    );
-  }
-
-  /** Path part for operation `getEditorCode()` */
-  static readonly GetEditorCodePath = '/api/trainer/{name}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getEditorCode()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getEditorCode$Response(params: GetEditorCode$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-    return getEditorCode(this.http, this.rootUrl, params, context);
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `getEditorCode$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getEditorCode(params: GetEditorCode$Params, context?: HttpContext): Observable<void> {
-    return this.getEditorCode$Response(params, context).pipe(
-      map((r: BaseResponse<void>): void => r.body)
+  checkTrainer(params: CheckTrainer$Params, context?: HttpContext): Observable<boolean> {
+    return this.checkTrainer$Response(params, context).pipe(
+      map((r: BaseResponse<boolean>): boolean => r.body)
     );
   }
 

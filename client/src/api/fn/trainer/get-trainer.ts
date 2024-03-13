@@ -6,16 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { FilesTreeDto } from '../../models/files-tree-dto';
+import { TrainerDto } from '../../models/trainer-dto';
 
-export interface GetFiles$Params {
-  dir: string;
+export interface GetTrainer$Params {
+  id: number;
 }
 
-export function getFiles(http: HttpClient, rootUrl: string, params: GetFiles$Params, context?: HttpContext): Observable<BaseResponse<Array<FilesTreeDto>>> {
-  const rb = new RequestBuilder(rootUrl, getFiles.PATH, 'get');
+export function getTrainer(http: HttpClient, rootUrl: string, params: GetTrainer$Params, context?: HttpContext): Observable<BaseResponse<TrainerDto>> {
+  const rb = new RequestBuilder(rootUrl, getTrainer.PATH, 'get');
   if (params) {
-    rb.query('dir', params.dir, {});
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -23,9 +23,9 @@ export function getFiles(http: HttpClient, rootUrl: string, params: GetFiles$Par
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<Array<FilesTreeDto>>;
+      return r as BaseResponse<TrainerDto>;
     })
   );
 }
 
-getFiles.PATH = '/api/trainer';
+getTrainer.PATH = '/api/trainer/{id}';

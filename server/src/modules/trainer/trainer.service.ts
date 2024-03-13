@@ -1,47 +1,77 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
-import { spawn } from 'child_process';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as files from 'fs';
 import * as process from 'process';
 import * as path from 'path';
-import { FilesTreeDto } from './dto/files-tree.dto';
+import { TrainerDto } from './dto/trainer.dto';
+import { TrainerEntity } from './entity/trainer.entity';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
 
 @Injectable()
 export class TrainerService {
-  currPath: string = process.env.BASE_TASKS_URL;
-  async runEditor(): Promise<void> {
-    const ng = spawn('npm', ['start'], { cwd: './front/app', shell: true });
-    ng.stdout.on('data', (data) => {
-      console.log(data.toString());
-    });
-    ng.stderr.on('data', (data) => {
-      console.error(data);
-    });
+  constructor(@InjectMapper() private mapper: Mapper) {}
 
-    ng.stdout.on('end', () => {
-      console.log('end');
-    });
+  async getTrainer(id: number): Promise<TrainerDto> {
+    const trainer = await TrainerEntity.findOne({ where: { id } });
+    if (!trainer) {
+      throw new NotFoundException('Тренажер не найден');
+    }
 
-    ng.on('close', (code) => {
-      console.log('code ' + code);
-    });
+    const fileNames = await this.getFiles(trainer.templatesDir);
+
+    const dto = this.mapper.map(trainer, TrainerEntity, TrainerDto);
+
+    dto.files = await Promise.all(
+      fileNames.map(async (fn) => {
+        const fileContent = await this.readFile(
+          path.join(
+            process.cwd(),
+            'dist',
+            'src',
+            'tasks',
+            trainer.templatesDir,
+            fn,
+          ),
+        );
+
+        return {
+          label: fn,
+          content: fileContent,
+        };
+      }),
+    );
+
+    return dto;
   }
 
-  async getPackageData(fileName: string): Promise<StreamableFile> {
-    const file = files.createReadStream(path.join(this.currPath, fileName));
-    return new StreamableFile(file);
+  async checkTrainer(id: number): Promise<boolean> {
+    return !!id;
   }
 
-  async getFiles(dir: string): Promise<FilesTreeDto[]> {
-    this.currPath = path.join(__dirname, '..', '..', 'tasks', dir);
-    const dirFiles = [];
-    files.readdirSync(this.currPath).forEach((el) => {
+  private async getFiles(dir: string): Promise<string[]> {
+    const currPath = path.join(process.cwd(), 'dist', 'src', 'tasks', dir);
+    const resultFiles = [];
+    files.readdirSync(currPath).forEach((el) => {
       if (el[0] === '.' || el === 'node_modules') return;
       const isDir = el.split('.').length === 1;
-      dirFiles.push({
-        label: el,
-        leaf: !isDir,
+      if (isDir) {
+        return;
+      }
+
+      resultFiles.push(el);
+    });
+    return resultFiles;
+  }
+
+  private async readFile(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      files.readFile(filePath, 'utf8', (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
       });
     });
-    return dirFiles;
   }
 }

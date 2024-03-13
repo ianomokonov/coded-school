@@ -1,4 +1,4 @@
-export class FilesTreeDto {
+export class FileDto {
   label: string;
-  leaf: boolean;
+  content: string;
 }

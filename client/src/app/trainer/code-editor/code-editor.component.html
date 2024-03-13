@@ -1,12 +1,10 @@
-<p-dropdown [options]="themeValues" [(ngModel)]="theme"></p-dropdown>
-<div class="flex">
+<!-- <p-dropdown [options]="themeValues" [(ngModel)]="theme"></p-dropdown> -->
+<div class="flex h-30rem">
     <p-tree
         [value]="files"
         selectionMode="single"
-        styleClass="w-15rem h-30rem overflow-scroll"
-        (onNodeSelect)="
-            isDir($event.node.label!) ? getFiles($event.node) : getCode($event.node.label!)
-        "
+        styleClass="w-12rem h-full overflow-auto"
+        (onNodeSelect)="selectFile($event.node)"
     ></p-tree>
     <ngs-code-editor
         [theme]="theme"
