@@ -6,8 +6,8 @@ import { jwtGuard } from '@jwt/guard';
 export const APP_ROUTES: Routes = [
     {
         path: '',
-        redirectTo: '/lk',
-        pathMatch: 'full',
+        loadChildren: () => import('./pages/pages.routes').then((m) => m.PAGES),
+        canActivate: [jwtGuard],
     },
     {
         path: 'sign-in',

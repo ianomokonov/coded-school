@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { AchievementDto } from './models/achievement-dto';
+export { FilesTreeDto } from './models/files-tree-dto';
 export { JwtDto } from './models/jwt-dto';
 export { MarathonDto } from './models/marathon-dto';
 export { ModuleDto } from './models/module-dto';

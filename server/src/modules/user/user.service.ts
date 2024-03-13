@@ -23,6 +23,7 @@ import { ISendMailOptions } from '@nestjs-modules/mailer';
 import * as process from 'process';
 import { MailService } from '@mail/service';
 import { UpdateForgottenPassDto } from '@dtos/user/update-forgotten-pass.dto';
+import * as path from 'path';
 
 @Injectable()
 export class UserService {
@@ -92,7 +93,7 @@ export class UserService {
     const data: ISendMailOptions = {
       to: email,
       subject: 'Сброс пароля',
-      template: 'reset-password/template',
+      template: path.join('reset-password', 'template'),
       context: {
         link:
           process.env.RESET_PASSWORD_URL +

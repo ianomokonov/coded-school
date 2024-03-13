@@ -13,6 +13,7 @@ import * as process from 'process';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import * as path from 'path';
 import { NoteModule } from '@modules/note/note.module';
+import { EditorModule } from '@modules/editor/editor.module';
 
 @Module({
   imports: [
@@ -35,8 +36,7 @@ import { NoteModule } from '@modules/note/note.module';
         },
       },
       template: {
-        // TODO[volik25 | 09.02.2024 ]: настроить корректный join
-        dir: path.join(process.cwd(), 'src/mail/templates'),
+        dir: path.resolve(__dirname, 'mail', 'templates'),
         adapter: new PugAdapter(),
         options: {
           strict: true,
@@ -49,6 +49,7 @@ import { NoteModule } from '@modules/note/note.module';
     MarathonModule,
     AchievementModule,
     NoteModule,
+    EditorModule,
   ],
 })
 export class AppModule {
