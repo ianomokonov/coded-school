@@ -21,6 +21,7 @@ import { SignInDto } from '@dtos/user/sign-in.dto';
 import { dateNow } from '@core/date-now.fn';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import * as process from 'process';
+import * as path from 'path';
 import { MailService } from '@mail/service';
 import { UpdateForgottenPassDto } from '@dtos/user/update-forgotten-pass.dto';
 
@@ -92,7 +93,7 @@ export class UserService {
     const data: ISendMailOptions = {
       to: email,
       subject: 'Сброс пароля',
-      template: 'reset-password/template',
+      template: path.join('reset-password', 'template'),
       context: {
         link:
           process.env.RESET_PASSWORD_URL +

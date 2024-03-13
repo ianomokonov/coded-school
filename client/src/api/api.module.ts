@@ -12,6 +12,7 @@ import { NotesService } from './services/notes.service';
 import { TopicService } from './services/topic.service';
 import { LessonService } from './services/lesson.service';
 import { CommentService } from './services/comment.service';
+import { TrainerService } from './services/trainer.service';
 
 /**
  * Module that provides all services and configuration.
@@ -29,6 +30,7 @@ import { CommentService } from './services/comment.service';
     TopicService,
     LessonService,
     CommentService,
+    TrainerService,
     ApiConfiguration
   ],
 })

@@ -3,6 +3,7 @@
 export { AchievementDto } from './models/achievement-dto';
 export { CommentDto } from './models/comment-dto';
 export { CreateCommentDto } from './models/create-comment-dto';
+export { FilesTreeDto } from './models/files-tree-dto';
 export { JwtDto } from './models/jwt-dto';
 export { LessonDto } from './models/lesson-dto';
 export { MarathonDto } from './models/marathon-dto';

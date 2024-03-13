@@ -15,6 +15,7 @@ import * as path from 'path';
 import { NoteModule } from '@modules/note/note.module';
 import { TopicModule } from '@modules/topic/topic.module';
 import { MailService } from '@mail/service';
+import { TrainerModule } from '@modules/trainer/trainer.module';
 
 @Module({
   imports: [
@@ -37,11 +38,10 @@ import { MailService } from '@mail/service';
         },
       },
       template: {
-        // TODO[volik25 | 09.02.2024 ]: настроить корректный join
-        dir: path.join(process.cwd(), 'src/mail/templates'),
+        dir: path.resolve(__dirname, 'mail', 'templates'),
         adapter: new PugAdapter(),
         options: {
-          // strict: true,
+          strict: true,
         },
       },
     }),
@@ -52,6 +52,7 @@ import { MailService } from '@mail/service';
     AchievementModule,
     NoteModule,
     TopicModule,
+    TrainerModule,
   ],
   providers: [MailService],
 })
