@@ -23,7 +23,7 @@ import { WithFileUploadService } from '@app/services/file-upload.service';
     templateUrl: './trainer-edit.component.html',
 })
 export class TrainerEditComponent implements OnInit {
-    lesson: TrainerDto | undefined;
+    trainer: TrainerDto | undefined;
     form: FormGroup;
 
     constructor(
@@ -44,17 +44,15 @@ export class TrainerEditComponent implements OnInit {
         this.activeRoute.params.subscribe(({ id }) => {
             if (id === 'create') {
                 this.form.patchValue({ name: null, task: null, files: null });
-                this.lesson = undefined;
+                this.form.get('files')?.setValidators(Validators.required);
+                this.trainer = undefined;
                 return;
             }
+            this.form.get('files')?.setValidators([]);
             this.trainerService.getTrainer({ id }).subscribe((m) => {
-                this.lesson = m;
-                this.form.patchValue(m);
+                this.trainer = m;
+                this.form.patchValue({ ...m, files: null });
             });
-        });
-
-        this.form.valueChanges.subscribe((v) => {
-            console.log(v);
         });
     }
 
@@ -69,27 +67,24 @@ export class TrainerEditComponent implements OnInit {
         }
 
         const formValue = this.form.getRawValue();
+        const formData = new FormData();
 
-        if (this.lesson) {
-            // this.trainerService
-            //     .updateTopic({
-            //         id: this.lesson.id,
-            //         body: { name },
-            //     })
-            //     .subscribe(() => {
-            //         if (!this.lesson) {
-            //             return;
-            //         }
-            //         this.lesson.name = name;
-            //     });
+        if (this.trainer) {
+            formData.append('name', formValue.name);
+            formData.append('task', formValue.task);
+            formData.append('templatesDir', formValue.templatesDir);
+            if (formValue.files?.length) {
+                formValue.files.forEach((f: File) => {
+                    formData.append('files', f);
+                });
+            }
+            this.withUploadService.updateTrainer(this.trainer.id, formData).subscribe(() => {});
             return;
         }
 
         if (!this.activeRoute.snapshot.queryParams['parentId']) {
             return;
         }
-
-        const formData = new FormData();
 
         formData.append('name', formValue.name);
         formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
@@ -100,9 +95,7 @@ export class TrainerEditComponent implements OnInit {
         });
 
         this.withUploadService.createTrainer(formData).subscribe((id) => {
-            console.log(id);
-
-            // this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
         });
     }
 }

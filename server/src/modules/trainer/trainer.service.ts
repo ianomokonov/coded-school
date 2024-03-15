@@ -97,17 +97,11 @@ export class TrainerService {
       throw new NotFoundException('Тренажер не найден');
     }
     await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
-    await ensureDir(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+    await ensureDir(path.join(rootPath, 'src', 'tasks', dto.templatesDir));
     await Promise.all(
       files.map(async (f) => {
         await writeFile(
-          path.join(
-            rootPath,
-            'src',
-            'tasks',
-            trainer.templatesDir,
-            f.originalname,
-          ),
+          path.join(rootPath, 'src', 'tasks', dto.templatesDir, f.originalname),
           f.buffer,
         );
       }),

@@ -19,11 +19,13 @@
             [showUploadButton]="false"
         >
             <ng-template pTemplate="content">
-                <!-- <ul *ngIf="uploadedFiles.length">
-                    <li *ngFor="let file of uploadedFiles">
-                        {{ file.name }} - {{ file.size }} bytes
-                    </li>
-                </ul> -->
+                @if (trainer?.files?.length && !form.get('files')?.value?.length) {
+                    <ul>
+                        @for (file of trainer?.files; track file.label) {
+                            <li>{{ file.label }}</li>
+                        }
+                    </ul>
+                }
             </ng-template>
         </p-fileUpload>
     </div>

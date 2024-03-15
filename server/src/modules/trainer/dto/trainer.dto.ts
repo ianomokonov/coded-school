@@ -5,8 +5,9 @@ export class TrainerDto {
   id: number;
   name: string;
   task: string;
+  templatesDir: string;
   nextLessonId?: number;
   nextTaskId?: number;
   @AutoMap(() => [FileDto])
-  files?: FileDto[];
+  files: FileDto[];
 }

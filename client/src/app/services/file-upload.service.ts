@@ -11,9 +11,10 @@ export class WithFileUploadService extends BaseService {
     }
 
     createTrainer(formData: FormData) {
-        // const rb = new RequestBuilder(this.rootUrl, '/api/trainer', 'post');
-        // rb.body(formData, 'multipart/form-data');
-
         return this.http.post(this.rootUrl + '/api/trainer', formData);
+    }
+
+    updateTrainer(id: number, formData: FormData) {
+        return this.http.post(this.rootUrl + '/api/trainer/' + id, formData);
     }
 }
