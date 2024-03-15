@@ -92,6 +92,7 @@ export class TrainerEditComponent implements OnInit {
         const formData = new FormData();
 
         formData.append('name', formValue.name);
+        formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
         formData.append('task', formValue.task);
         formData.append('templatesDir', formValue.templatesDir);
         formValue.files.forEach((f: File) => {

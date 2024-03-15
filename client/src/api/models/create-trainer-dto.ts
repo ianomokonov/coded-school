@@ -6,4 +6,5 @@ export interface CreateTrainerDto {
   name: string;
   task: string;
   templatesDir: string;
+  topicId: number;
 }
