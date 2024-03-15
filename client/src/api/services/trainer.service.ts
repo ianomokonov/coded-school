@@ -13,9 +13,13 @@ import { checkTrainer } from '../fn/trainer/check-trainer';
 import { CheckTrainer$Params } from '../fn/trainer/check-trainer';
 import { createTrainer } from '../fn/trainer/create-trainer';
 import { CreateTrainer$Params } from '../fn/trainer/create-trainer';
+import { deleteTrainer } from '../fn/trainer/delete-trainer';
+import { DeleteTrainer$Params } from '../fn/trainer/delete-trainer';
 import { getTrainer } from '../fn/trainer/get-trainer';
 import { GetTrainer$Params } from '../fn/trainer/get-trainer';
 import { TrainerDto } from '../models/trainer-dto';
+import { updateTrainer } from '../fn/trainer/update-trainer';
+import { UpdateTrainer$Params } from '../fn/trainer/update-trainer';
 
 @Injectable({ providedIn: 'root' })
 export class TrainerService extends BaseService {
@@ -45,6 +49,56 @@ export class TrainerService extends BaseService {
   getTrainer(params: GetTrainer$Params, context?: HttpContext): Observable<TrainerDto> {
     return this.getTrainer$Response(params, context).pipe(
       map((r: BaseResponse<TrainerDto>): TrainerDto => r.body)
+    );
+  }
+
+  /** Path part for operation `updateTrainer()` */
+  static readonly UpdateTrainerPath = '/api/trainer/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `updateTrainer()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateTrainer$Response(params: UpdateTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return updateTrainer(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `updateTrainer$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateTrainer(params: UpdateTrainer$Params, context?: HttpContext): Observable<void> {
+    return this.updateTrainer$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `deleteTrainer()` */
+  static readonly DeleteTrainerPath = '/api/trainer/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `deleteTrainer()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deleteTrainer$Response(params: DeleteTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return deleteTrainer(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `deleteTrainer$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deleteTrainer(params: DeleteTrainer$Params, context?: HttpContext): Observable<void> {
+    return this.deleteTrainer$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
     );
   }
 

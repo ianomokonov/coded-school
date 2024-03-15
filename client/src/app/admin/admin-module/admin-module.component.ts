@@ -7,6 +7,7 @@ import {
     TopicChildDto,
     TopicService,
     TopicTreeDto,
+    TrainerService,
 } from '@api/index';
 import { TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
@@ -25,6 +26,7 @@ export class AdminModuleComponent {
         private modulesService: ModuleService,
         private lessonsService: LessonService,
         private topicService: TopicService,
+        private trainerService: TrainerService,
         private router: Router,
     ) {
         this.updateTree();
@@ -55,6 +57,12 @@ export class AdminModuleComponent {
             case 'lesson': {
                 this.lessonsService
                     .deleteLesson({ id: item.data.id })
+                    .subscribe(() => this.updateTree());
+                return;
+            }
+            case 'trainer': {
+                this.trainerService
+                    .deleteTrainer({ id: item.data.id })
                     .subscribe(() => this.updateTree());
                 return;
             }

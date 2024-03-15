@@ -6,15 +6,15 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { CreateLessonDto } from '../../models/create-lesson-dto';
+import { UpdateTrainerDto } from '../../models/update-trainer-dto';
 
-export interface UpdateLesson$Params {
+export interface UpdateTrainer$Params {
   id: number;
-      body: CreateLessonDto
+      body: UpdateTrainerDto
 }
 
-export function updateLesson(http: HttpClient, rootUrl: string, params: UpdateLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, updateLesson.PATH, 'put');
+export function updateTrainer(http: HttpClient, rootUrl: string, params: UpdateTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, updateTrainer.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');
@@ -30,4 +30,4 @@ export function updateLesson(http: HttpClient, rootUrl: string, params: UpdateLe
   );
 }
 
-updateLesson.PATH = '/api/lesson/{id}';
+updateTrainer.PATH = '/api/trainer/{id}';

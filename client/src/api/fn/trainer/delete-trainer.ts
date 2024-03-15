@@ -6,18 +6,15 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { CreateLessonDto } from '../../models/create-lesson-dto';
 
-export interface UpdateLesson$Params {
+export interface DeleteTrainer$Params {
   id: number;
-      body: CreateLessonDto
 }
 
-export function updateLesson(http: HttpClient, rootUrl: string, params: UpdateLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, updateLesson.PATH, 'put');
+export function deleteTrainer(http: HttpClient, rootUrl: string, params: DeleteTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, deleteTrainer.PATH, 'delete');
   if (params) {
     rb.path('id', params.id, {});
-    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -30,4 +27,4 @@ export function updateLesson(http: HttpClient, rootUrl: string, params: UpdateLe
   );
 }
 
-updateLesson.PATH = '/api/lesson/{id}';
+deleteTrainer.PATH = '/api/trainer/{id}';

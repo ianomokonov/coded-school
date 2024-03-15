@@ -6,10 +6,10 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { SaveLessonDto } from '../../models/save-lesson-dto';
+import { CreateLessonDto } from '../../models/create-lesson-dto';
 
 export interface CreateLesson$Params {
-      body: SaveLessonDto
+      body: CreateLessonDto
 }
 
 export function createLesson(http: HttpClient, rootUrl: string, params: CreateLesson$Params, context?: HttpContext): Observable<BaseResponse<number>> {

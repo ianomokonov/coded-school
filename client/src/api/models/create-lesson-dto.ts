@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface SaveLessonDto {
+export interface CreateLessonDto {
   content: string;
   name: string;
   topicId: number;

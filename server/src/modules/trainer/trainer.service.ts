@@ -6,14 +6,21 @@ import { TrainerEntity } from './entity/trainer.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
-import { ensureDir, writeFile } from 'fs-extra';
+import { ensureDir, writeFile, remove } from 'fs-extra';
 import { path as rootPath } from 'app-root-path';
+import { UpdateTrainerDto } from './dto/update-trainer.dto';
+import { IsNull, Not } from 'typeorm';
+import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
+import { LessonService } from '@modules/topic/lesson/lesson.service';
 
 @Injectable()
 export class TrainerService {
-  constructor(@InjectMapper() private mapper: Mapper) {}
+  constructor(
+    @InjectMapper() private mapper: Mapper,
+    private lessonService: LessonService,
+  ) {}
 
-  async getTrainer(id: number): Promise<TrainerDto> {
+  async read(id: number): Promise<TrainerDto> {
     const trainer = await TrainerEntity.findOne({ where: { id } });
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
@@ -43,7 +50,7 @@ export class TrainerService {
     return !!id;
   }
 
-  async createTrainer(dto: CreateTrainerDto): Promise<number> {
+  async create(dto: CreateTrainerDto): Promise<number> {
     const uploadFolder = path.join(rootPath, 'src', 'tasks', dto.templatesDir);
     await ensureDir(uploadFolder);
     await Promise.all(
@@ -55,8 +62,73 @@ export class TrainerService {
       name: dto.name,
       templatesDir: dto.templatesDir,
       task: dto.task,
+      topicId: dto.topicId,
     }).save();
+
+    await TrainerEntity.update(
+      {
+        id: Not(id),
+        topicId: dto.topicId,
+        nextLessonId: IsNull(),
+        nextTaskId: IsNull(),
+      },
+      { nextTaskId: id },
+    );
+    await LessonEntity.update(
+      { topicId: dto.topicId, nextLessonId: IsNull(), nextTaskId: IsNull() },
+      { nextTaskId: id },
+    );
+
     return id;
+  }
+
+  async update(
+    trainerId: number,
+    dto: UpdateTrainerDto,
+    files?: Express.Multer.File[],
+  ): Promise<void> {
+    await TrainerEntity.update({ id: trainerId }, { ...dto });
+
+    if (!files?.length) {
+      return;
+    }
+    const trainer = await TrainerEntity.findOne({ where: { id: trainerId } });
+    if (!trainer) {
+      throw new NotFoundException('Тренажер не найден');
+    }
+    await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+    await ensureDir(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+    await Promise.all(
+      files.map(async (f) => {
+        await writeFile(
+          path.join(
+            rootPath,
+            'src',
+            'tasks',
+            trainer.templatesDir,
+            f.originalname,
+          ),
+          f.buffer,
+        );
+      }),
+    );
+  }
+
+  async delete(id: number) {
+    const trainer = await TrainerEntity.findOne({ where: { id } });
+    if (!trainer) {
+      throw new NotFoundException('Тренажер не найден');
+    }
+    await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+    await LessonEntity.update(
+      { nextTaskId: id },
+      { nextLessonId: trainer.nextLessonId, nextTaskId: trainer.nextTaskId },
+    );
+    await TrainerEntity.update(
+      { nextTaskId: id },
+      { nextLessonId: trainer.nextLessonId, nextTaskId: trainer.nextTaskId },
+    );
+    await TrainerEntity.delete({ id });
   }
 
   private async getFiles(dir: string): Promise<string[]> {
