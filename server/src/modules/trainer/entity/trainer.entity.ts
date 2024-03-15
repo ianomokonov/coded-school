@@ -35,7 +35,7 @@ export class TrainerEntity extends BaseEntity {
   @Column({ nullable: true })
   nextTaskId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   topicId: number;
 
   @ManyToOne(() => TopicEntity)

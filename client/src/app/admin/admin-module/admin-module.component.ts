@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
-    LessonDto,
     LessonService,
-    ModuleDto,
     ModuleService,
-    TopicDto,
+    ModuleTreeDto,
+    TopicChildDto,
     TopicService,
+    TopicTreeDto,
 } from '@api/index';
 import { TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
@@ -77,7 +77,7 @@ export class AdminModuleComponent {
         });
     }
 
-    private getTree(module: ModuleDto | TopicDto | LessonDto): TreeNode {
+    private getTree(module: ModuleTreeDto | TopicTreeDto | TopicChildDto): TreeNode {
         if ('topics' in module) {
             return {
                 label: module.name,
@@ -93,16 +93,21 @@ export class AdminModuleComponent {
                 ],
             };
         }
-        if ('lessons' in module) {
+        if ('children' in module) {
             return {
                 label: module.name,
                 icon: `pi pi-sitemap`,
                 data: { url: `/admin/topic/${module.id}`, type: 'topic', id: module.id },
                 children: [
-                    ...(module.lessons?.map((t) => this.getTree(t)) || []),
+                    ...(module.children?.map((t) => this.getTree(t)) || []),
                     {
                         label: 'Создать урок',
                         data: { url: `/admin/lesson/create`, type: 'create', parentId: module.id },
+                        icon: 'pi pi-plus',
+                    },
+                    {
+                        label: 'Создать тренажер',
+                        data: { url: `/admin/trainer/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
                     },
                 ],
@@ -111,7 +116,7 @@ export class AdminModuleComponent {
 
         return {
             label: module.name,
-            data: { url: `/admin/lesson/${module.id}`, type: 'lesson', id: module.id },
+            data: { url: `/admin/${module.type}/${module.id}`, type: module.type, id: module.id },
             icon: 'pi pi-file',
         };
     }

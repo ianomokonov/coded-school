@@ -5,6 +5,7 @@ import { ModuleEditComponent } from './admin-module/module-edit/module-edit.comp
 import { TopicEditComponent } from './admin-module/topic-edit/topic-edit.component';
 import { LessonEditComponent } from './admin-module/lesson-edit/lesson-edit.component';
 import { AdminCommentsComponent } from './admin-comments/admin-comments.component';
+import { TrainerEditComponent } from './admin-module/trainer-edit/trainer-edit.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -26,6 +27,10 @@ export const ADMIN_ROUTES: Routes = [
                     {
                         path: 'lesson/:id',
                         component: LessonEditComponent,
+                    },
+                    {
+                        path: 'trainer/:id',
+                        component: TrainerEditComponent,
                     },
                 ],
             },

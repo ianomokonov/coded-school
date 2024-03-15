@@ -1,7 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TrainerService } from './trainer.service';
 import { TrainerDto } from './dto/trainer.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreateTrainerDto } from './dto/create-trainer.dto';
 
 @ApiTags('Trainer')
 @Controller('trainer')
@@ -23,5 +33,15 @@ export class TrainerController {
   @Get(':id/check')
   async checkTrainer(@Param('id') id: number): Promise<boolean> {
     return this.editorService.checkTrainer(id);
+  }
+
+  @Post()
+  @UseInterceptors(FilesInterceptor('files'))
+  createTrainer(
+    @Body() body: CreateTrainerDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    body.files = files;
+    return this.editorService.createTrainer(body);
   }
 }

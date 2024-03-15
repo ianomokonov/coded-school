@@ -7,6 +7,7 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
 import { UserLessonEntity } from '@modules/topic/lesson/entity/user-lesson.entity';
+import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
 
 @Injectable()
 export class ModuleService {
@@ -70,11 +71,11 @@ export class ModuleService {
     return modules.map((m) => ({ id: m.id, name: m.name }));
   }
 
-  async getModulesTree(): Promise<ModuleDto[]> {
+  async getModulesTree(): Promise<ModuleTreeDto[]> {
     const modules = await ModuleEntity.find({
-      relations: { topics: { lessons: true } },
+      relations: { topics: { lessons: true, trainers: true } },
     });
-    return modules.map((m) => this.mapper.map(m, ModuleEntity, ModuleDto));
+    return modules.map((m) => this.mapper.map(m, ModuleEntity, ModuleTreeDto));
   }
 
   async startModule(moduleId: number, userId: number) {

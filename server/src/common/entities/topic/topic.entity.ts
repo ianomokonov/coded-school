@@ -10,6 +10,7 @@ import {
 import { ModuleEntity } from '../module/module.entity';
 import { AutoMap } from '@automapper/classes';
 import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
+import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
 
 @Entity('topic', {
   schema: 'mod',
@@ -35,4 +36,9 @@ export class TopicEntity extends BaseEntity {
   @JoinColumn({ name: 'id' })
   @AutoMap(() => [LessonEntity])
   lessons: LessonEntity[];
+
+  @OneToMany(() => TrainerEntity, (trainer) => trainer.topic)
+  @JoinColumn({ name: 'id' })
+  @AutoMap(() => [TrainerEntity])
+  trainers: TrainerEntity[];
 }

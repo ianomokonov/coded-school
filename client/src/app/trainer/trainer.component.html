@@ -6,7 +6,11 @@
             </div>
             <div class="p-3 flex flex-column h-50">
                 <h3>{{ trainer.name }}</h3>
-                <p class="flex-grow-1">{{ trainer.task }}</p>
+                <div class="ql-snow mb-3 flex-grow-1">
+                    <div class="ql-editor">
+                        <div #text [innerHTML]="trainer.task"></div>
+                    </div>
+                </div>
                 <div class="flex">
                     <p-button
                         class="mr-1"

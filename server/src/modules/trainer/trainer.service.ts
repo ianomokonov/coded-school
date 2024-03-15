@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as files from 'fs';
-import * as process from 'process';
 import * as path from 'path';
 import { TrainerDto } from './dto/trainer.dto';
 import { TrainerEntity } from './entity/trainer.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
+import { CreateTrainerDto } from './dto/create-trainer.dto';
+import { ensureDir, writeFile } from 'fs-extra';
+import { path as rootPath } from 'app-root-path';
 
 @Injectable()
 export class TrainerService {
@@ -24,14 +26,7 @@ export class TrainerService {
     dto.files = await Promise.all(
       fileNames.map(async (fn) => {
         const fileContent = await this.readFile(
-          path.join(
-            process.cwd(),
-            'dist',
-            'src',
-            'tasks',
-            trainer.templatesDir,
-            fn,
-          ),
+          path.join(rootPath, 'src', 'tasks', trainer.templatesDir, fn),
         );
 
         return {
@@ -48,11 +43,26 @@ export class TrainerService {
     return !!id;
   }
 
+  async createTrainer(dto: CreateTrainerDto): Promise<number> {
+    const uploadFolder = path.join(rootPath, 'src', 'tasks', dto.templatesDir);
+    await ensureDir(uploadFolder);
+    await Promise.all(
+      dto.files.map(async (f) => {
+        await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
+      }),
+    );
+    const { id } = await TrainerEntity.create({
+      name: dto.name,
+      templatesDir: dto.templatesDir,
+      task: dto.task,
+    }).save();
+    return id;
+  }
+
   private async getFiles(dir: string): Promise<string[]> {
-    const currPath = path.join(process.cwd(), 'dist', 'src', 'tasks', dir);
+    const currPath = path.join(rootPath, 'src', 'tasks', dir);
     const resultFiles = [];
     files.readdirSync(currPath).forEach((el) => {
-      if (el[0] === '.' || el === 'node_modules') return;
       const isDir = el.split('.').length === 1;
       if (isDir) {
         return;

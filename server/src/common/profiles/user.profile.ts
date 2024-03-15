@@ -34,6 +34,9 @@ import { CommentEntity } from '@modules/topic/comment/entity/comment.entity';
 import { CommentDto } from '@modules/topic/comment/dto/comment.dto';
 import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
 import { TrainerDto } from '@modules/trainer/dto/trainer.dto';
+import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
+import { TopicTreeDto } from '@dtos/topic/topic-tree.dto';
+import { TopicChildDto } from '@dtos/topic/topic-child.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -52,6 +55,66 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, LessonEntity, LessonDto);
       createMap(mapper, CommentEntity, CommentDto);
       createMap(mapper, TrainerEntity, TrainerDto);
+      createMap(mapper, ModuleEntity, ModuleTreeDto);
+      createMap(
+        mapper,
+        LessonEntity,
+        TopicChildDto,
+        forMember(
+          (d) => d.type,
+          mapFrom(() => 'lesson'),
+        ),
+      );
+      createMap(
+        mapper,
+        TrainerEntity,
+        TopicChildDto,
+        forMember(
+          (d) => d.type,
+          mapFrom(() => 'trainer'),
+        ),
+      );
+      createMap(
+        mapper,
+        TopicEntity,
+        TopicTreeDto,
+        forMember(
+          (d) => d.children,
+          mapFrom((source) => {
+            const result: TopicChildDto[] = [];
+            let activeChild: TrainerEntity | LessonEntity = source.lessons.find(
+              (l) =>
+                !source.lessons.some((sl) => sl.nextLessonId === l.id) &&
+                !source.trainers.some((sl) => sl.nextLessonId === l.id),
+            );
+            while (!!activeChild) {
+              result.push(
+                mapper.map(
+                  activeChild,
+                  activeChild instanceof LessonEntity
+                    ? LessonEntity
+                    : TrainerEntity,
+                  TopicChildDto,
+                ),
+              );
+              if (activeChild.nextLessonId) {
+                activeChild = source.lessons.find(
+                  (l) => l.id === activeChild.nextLessonId,
+                );
+                continue;
+              }
+              if (activeChild.nextTaskId) {
+                activeChild = source.trainers.find(
+                  (l) => l.id === activeChild.nextTaskId,
+                );
+                continue;
+              }
+              activeChild = null;
+            }
+            return result;
+          }),
+        ),
+      );
       createMap(
         mapper,
         UserMarathonEntity,
