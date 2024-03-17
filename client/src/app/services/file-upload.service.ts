@@ -5,7 +5,7 @@ import { ApiConfiguration } from '@api/api-configuration';
 import { BaseService } from '@api/base-service';
 
 @Injectable({ providedIn: 'root' })
-export class WithFileUploadService extends BaseService {
+export class FileUploadService extends BaseService {
     constructor(config: ApiConfiguration, http: HttpClient) {
         super(config, http);
     }
@@ -16,5 +16,13 @@ export class WithFileUploadService extends BaseService {
 
     updateTrainer(id: number, formData: FormData) {
         return this.http.post(this.rootUrl + '/api/trainer/' + id, formData);
+    }
+
+    createLesson(formData: FormData) {
+        return this.http.post(this.rootUrl + '/api/lesson', formData);
+    }
+
+    updateLesson(id: number, formData: FormData) {
+        return this.http.post(this.rootUrl + '/api/lesson/' + id, formData);
     }
 }

@@ -8,12 +8,31 @@ import { InjectMapper } from '@automapper/nestjs';
 import { IsNull, Not } from 'typeorm';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
+import * as path from 'path';
+import { path as rootPath } from 'app-root-path';
+import { ensureDir, writeFile, remove } from 'fs-extra';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LessonService {
   constructor(@InjectMapper() private readonly mapper: Mapper) {}
 
-  async create(dto: CreateLessonDto) {
+  async create(dto: CreateLessonDto, files: Express.Multer.File[]) {
+    if (files?.length) {
+      const uploadFolder = path.join(rootPath, 'src', 'static');
+      await ensureDir(uploadFolder);
+      await Promise.all(
+        files.map(async (f, index) => {
+          const [, ext] = f.originalname.split('.');
+          const fileName = `${uuidv4()}.${ext}`;
+          await writeFile(path.join(uploadFolder, fileName), f.buffer);
+          dto.content = dto.content.replace(
+            new RegExp(`src="${index}"`),
+            `src="/static/${fileName}"`,
+          );
+        }),
+      );
+    }
     const lessons = await LessonEntity.find({
       where: { topicId: dto.topicId },
     });
@@ -42,8 +61,32 @@ export class LessonService {
     return id;
   }
 
-  async update(id: number, dto: UpdateLessonDto) {
-    await LessonEntity.update({ id }, { ...dto });
+  async update(id: number, dto: UpdateLessonDto, files: Express.Multer.File[]) {
+    if (dto.filesToDelete?.length) {
+      await Promise.all(
+        dto.filesToDelete.map(async (f) => {
+          await remove(
+            path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
+          );
+        }),
+      );
+    }
+    if (files?.length) {
+      const uploadFolder = path.join(rootPath, 'src', 'static');
+      await ensureDir(uploadFolder);
+      await Promise.all(
+        files.map(async (f, index) => {
+          const [, ext] = f.originalname.split('.');
+          const fileName = `${uuidv4()}.${ext}`;
+          await writeFile(path.join(uploadFolder, fileName), f.buffer);
+          dto.content = dto.content.replace(
+            new RegExp(`src="${index}"`),
+            `src="/static/${fileName}"`,
+          );
+        }),
+      );
+    }
+    await LessonEntity.update({ id }, { name: dto.name, content: dto.content });
   }
 
   async completeLesson(id: number, userId: number) {

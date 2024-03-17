@@ -33,6 +33,7 @@ export { TopicTreeDto } from './models/topic-tree-dto';
 export { TrainerDto } from './models/trainer-dto';
 export { UpdateCommentDto } from './models/update-comment-dto';
 export { UpdateForgottenPassDto } from './models/update-forgotten-pass-dto';
+export { UpdateLessonDto } from './models/update-lesson-dto';
 export { UpdateNoteDto } from './models/update-note-dto';
 export { UpdateTrainerDto } from './models/update-trainer-dto';
 export { UserFullInfoDto } from './models/user-full-info-dto';

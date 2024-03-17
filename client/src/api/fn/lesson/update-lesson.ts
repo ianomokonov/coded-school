@@ -6,15 +6,15 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { CreateLessonDto } from '../../models/create-lesson-dto';
+import { UpdateLessonDto } from '../../models/update-lesson-dto';
 
 export interface UpdateLesson$Params {
   id: number;
-      body: CreateLessonDto
+      body: UpdateLessonDto
 }
 
 export function updateLesson(http: HttpClient, rootUrl: string, params: UpdateLesson$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, updateLesson.PATH, 'put');
+  const rb = new RequestBuilder(rootUrl, updateLesson.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');

@@ -16,6 +16,8 @@ import { NoteModule } from '@modules/note/note.module';
 import { TopicModule } from '@modules/topic/topic.module';
 import { MailService } from '@mail/service';
 import { TrainerModule } from '@modules/trainer/trainer.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { path as rootPath } from 'app-root-path';
 
 @Module({
   imports: [
@@ -45,6 +47,11 @@ import { TrainerModule } from '@modules/trainer/trainer.module';
         },
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(rootPath, 'src', 'static'),
+      serveRoot: '/static',
+    }),
+
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
     UserModule,
     ModuleModule,

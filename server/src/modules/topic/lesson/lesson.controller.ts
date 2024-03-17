@@ -6,13 +6,17 @@ import {
   Param,
   Post,
   Put,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/save-lesson.dto';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
 import { UserId } from '@decorators/author-id.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { UpdateLessonDto } from './dto/update-lesson.dto';
 
 @ApiTags('Lesson')
 @Controller('lesson')
@@ -22,16 +26,25 @@ export class LessonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Создать урок' })
-  async createLesson(@Body() dto: CreateLessonDto) {
-    return this.lessonService.create(dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async createLesson(
+    @Body() dto: CreateLessonDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.lessonService.create(dto, files);
   }
 
-  @Put(':id')
+  @Post(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Изменить урок' })
-  async updateLesson(@Param('id') id: number, @Body() dto: CreateLessonDto) {
-    return this.lessonService.update(id, dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async updateLesson(
+    @Param('id') id: number,
+    @Body() dto: UpdateLessonDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.lessonService.update(id, dto, files);
   }
   @Put(':id/complete')
   @ApiBearerAuth('JWT')

@@ -7,7 +7,7 @@ import { TrainerDto, TrainerService } from '@api/index';
 import { EditorModule } from 'primeng/editor';
 import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
-import { WithFileUploadService } from '@app/services/file-upload.service';
+import { FileUploadService } from '@app/services/file-upload.service';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -28,7 +28,7 @@ export class TrainerEditComponent implements OnInit {
 
     constructor(
         private trainerService: TrainerService,
-        private withUploadService: WithFileUploadService,
+        private withUploadService: FileUploadService,
         private activeRoute: ActivatedRoute,
         private fb: FormBuilder,
         private router: Router,
