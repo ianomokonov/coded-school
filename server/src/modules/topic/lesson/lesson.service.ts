@@ -65,9 +65,13 @@ export class LessonService {
     if (dto.filesToDelete?.length) {
       await Promise.all(
         dto.filesToDelete.map(async (f) => {
-          await remove(
-            path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
-          );
+          try {
+            await remove(
+              path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
+            );
+          } catch {
+            console.log(`Файл ${f} не найден`);
+          }
         }),
       );
     }
