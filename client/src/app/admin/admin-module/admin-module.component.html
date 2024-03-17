@@ -5,6 +5,11 @@
             class="w-full block"
             selectionMode="single"
             (onNodeSelect)="nodeSelect($event)"
+            [draggableNodes]="true"
+            [droppableNodes]="true"
+            draggableScope="self"
+            droppableScope="self"
+            (onNodeDrop)="nodeDrop($event)"
         >
             <ng-template let-node pTemplate="default">
                 <div class="flex justify-content-between">

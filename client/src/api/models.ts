@@ -12,6 +12,8 @@ export { MarathonDto } from './models/marathon-dto';
 export { MarathonInfoDto } from './models/marathon-info-dto';
 export { ModuleDto } from './models/module-dto';
 export { ModuleTreeDto } from './models/module-tree-dto';
+export { MoveChildDto } from './models/move-child-dto';
+export { MoveTopicChildDto } from './models/move-topic-child-dto';
 export { NoteDto } from './models/note-dto';
 export { PassportUserDto } from './models/passport-user-dto';
 export { PasswordDto } from './models/password-dto';

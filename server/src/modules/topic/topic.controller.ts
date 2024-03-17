@@ -13,6 +13,7 @@ import { TopicService } from './topic.service';
 import { SaveTopicDto } from '@dtos/topic/save-topic.dto';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
 import { UserId } from '@decorators/author-id.decorator';
+import { MoveTopicChildDto } from '@dtos/topic/move-topic-child.dto';
 
 @ApiTags('Topic')
 @Controller('topic')
@@ -24,6 +25,14 @@ export class TopicController {
   @ApiOperation({ summary: 'Создать тему' })
   async createTopic(@Body() dto: SaveTopicDto) {
     return this.topicService.create(dto);
+  }
+
+  @Put('move-child')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Изменить сортировку тренажеров и уроков' })
+  async moveChild(@Body() dto: MoveTopicChildDto) {
+    return this.topicService.moveChild(dto);
   }
 
   @Put(':id')

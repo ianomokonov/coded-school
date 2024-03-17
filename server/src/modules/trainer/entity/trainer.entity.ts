@@ -26,6 +26,9 @@ export class TrainerEntity extends BaseEntity {
   })
   templatesDir: string;
 
+  @Column({ default: false })
+  isFirst: boolean;
+
   @Column('text', { default: '' })
   task: string;
 

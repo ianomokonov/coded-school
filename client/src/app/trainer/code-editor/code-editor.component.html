@@ -1,5 +1,5 @@
 <!-- <p-dropdown [options]="themeValues" [(ngModel)]="theme"></p-dropdown> -->
-<div class="flex h-30rem">
+<div class="flex h-50vh">
     <p-tree
         [value]="files"
         selectionMode="single"
@@ -10,7 +10,7 @@
         [theme]="theme"
         [codeModel]="model"
         [options]="options"
-        class="h-30rem w-12"
+        class="h-50vh w-12"
         (valueChanged)="onCodeChanged($event)"
     ></ngs-code-editor>
 </div>

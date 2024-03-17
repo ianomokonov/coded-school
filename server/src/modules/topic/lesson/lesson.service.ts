@@ -14,7 +14,13 @@ export class LessonService {
   constructor(@InjectMapper() private readonly mapper: Mapper) {}
 
   async create(dto: CreateLessonDto) {
-    const { id } = await LessonEntity.create({ ...dto }).save();
+    const lessons = await LessonEntity.find({
+      where: { topicId: dto.topicId },
+    });
+    const { id } = await LessonEntity.create({
+      ...dto,
+      isFirst: !lessons.length,
+    }).save();
     await TrainerEntity.update(
       {
         topicId: dto.topicId,

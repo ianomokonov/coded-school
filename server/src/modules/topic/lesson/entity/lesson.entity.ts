@@ -33,6 +33,9 @@ export class LessonEntity extends BaseEntity {
   @Column({ nullable: false })
   topicId: number;
 
+  @Column({ default: false })
+  isFirst: boolean;
+
   @ManyToOne(() => TopicEntity)
   @JoinColumn({ name: 'topicId' })
   @AutoMap(() => TopicEntity)
