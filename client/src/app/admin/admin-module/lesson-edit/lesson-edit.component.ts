@@ -5,8 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { LessonDto, LessonService } from '@api/index';
 import { EditorModule } from 'primeng/editor';
-import { dataURItoBlob } from '@app/utils/data-to-blob';
 import { FileUploadService } from '@app/services/file-upload.service';
+import { EditorHelper } from '@app/utils/editor-helper';
 
 @Component({
     selector: 'coded-lesson-edit',
@@ -53,36 +53,18 @@ export class LessonEditComponent implements OnInit {
 
         const { name, content } = this.form.getRawValue();
 
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = content;
-
-        const prevWrapper = document.createElement('div');
-        let prevFiles: string[] = [];
-        if (this.lesson) {
-            prevWrapper.innerHTML = this.lesson.content;
-            prevFiles = Array.from(prevWrapper.querySelectorAll('img')).map(
-                (el) => el.getAttribute('src') as string,
-            );
-        }
+        const [prevFiles, newFiles, newContent] = EditorHelper.getFilesDelta(
+            content,
+            (index, ext) => `${this.lesson?.id}_${index}.${ext}`,
+            this.lesson?.content,
+        );
 
         const formData = new FormData();
-        wrapper.querySelectorAll('img').forEach((el, index) => {
-            const src = el.getAttribute('src');
-            if (!src) {
-                return;
-            }
-            if (src?.includes('data:image')) {
-                const blob = dataURItoBlob(src);
-                const [, ext] = blob.type.split('/');
-                formData.append('files', new File([blob], `${this.lesson?.id}_${index}.${ext}`));
-                el.setAttribute('src', index.toString());
-                return;
-            }
-            prevFiles = prevFiles?.filter((p) => p !== src);
-        });
-
         formData.append('name', name);
-        formData.append('content', wrapper.innerHTML);
+        formData.append('content', newContent);
+        newFiles.forEach((f) => {
+            formData.append('files', f);
+        });
 
         if (this.lesson) {
             prevFiles.forEach((p) => {
