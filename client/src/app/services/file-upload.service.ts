@@ -15,7 +15,7 @@ export class FileUploadService extends BaseService {
     }
 
     updateTrainer(id: number, formData: FormData) {
-        return this.http.post(this.rootUrl + '/api/trainer/' + id, formData);
+        return this.http.put(this.rootUrl + '/api/trainer/' + id, formData);
     }
 
     createLesson(formData: FormData) {
@@ -23,10 +23,18 @@ export class FileUploadService extends BaseService {
     }
 
     updateLesson(id: number, formData: FormData) {
-        return this.http.post(this.rootUrl + '/api/lesson/' + id, formData);
+        return this.http.put(this.rootUrl + '/api/lesson/' + id, formData);
     }
 
     createComment(formData: FormData) {
         return this.http.post(this.rootUrl + '/api/comment', formData);
+    }
+
+    createNote(formData: FormData) {
+        return this.http.post(this.rootUrl + '/api/note', formData);
+    }
+
+    updateNote(id: number, formData: FormData) {
+        return this.http.put(this.rootUrl + '/api/note/' + id, formData);
     }
 }

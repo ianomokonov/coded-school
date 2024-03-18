@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -57,7 +58,7 @@ export class TrainerController {
     body.files = files.files;
     return this.editorService.create(body, files.contentFiles);
   }
-  @Post(':id')
+  @Put(':id')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'files' }, { name: 'contentFiles' }]),
   )

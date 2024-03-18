@@ -14,7 +14,7 @@ export interface UpdateTrainer$Params {
 }
 
 export function updateTrainer(http: HttpClient, rootUrl: string, params: UpdateTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, updateTrainer.PATH, 'post');
+  const rb = new RequestBuilder(rootUrl, updateTrainer.PATH, 'put');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');

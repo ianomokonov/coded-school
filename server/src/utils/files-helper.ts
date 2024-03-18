@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { path as rootPath } from 'app-root-path';
-import { ensureDir, writeFile } from 'fs-extra';
+import { ensureDir, writeFile, remove } from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
 export class FilesHelper {
@@ -24,5 +24,19 @@ export class FilesHelper {
     );
 
     return contentToReplace;
+  }
+
+  static async removeFiles(fileNmaes: string[]) {
+    await Promise.all(
+      fileNmaes.map(async (f) => {
+        try {
+          await remove(
+            path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
+          );
+        } catch {
+          console.log(`Файл ${f} не найден`);
+        }
+      }),
+    );
   }
 }

@@ -34,7 +34,7 @@ export class LessonController {
     return this.lessonService.create(dto, files);
   }
 
-  @Post(':id')
+  @Put(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Изменить урок' })

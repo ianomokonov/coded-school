@@ -17,6 +17,9 @@ import { DestroyService } from '@core/destroy.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { EditorModule } from 'primeng/editor';
+import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
+import { EditorHelper } from '@app/utils/editor-helper';
+import { FileUploadService } from '@app/services/file-upload.service';
 
 @Component({
     selector: 'coded-lesson',
@@ -78,6 +81,7 @@ export class LessonComponent implements OnInit {
         private fb: FormBuilder,
         private notesService: NotesService,
         private destroy$: DestroyService,
+        private filesUploadService: FileUploadService,
     ) {
         this.noteForm = this.fb.group({
             name: ['', Validators.required],
@@ -121,11 +125,30 @@ export class LessonComponent implements OnInit {
     }
 
     sendForm(): void {
-        if (this.noteForm.invalid) return;
+        if (this.noteForm.invalid) {
+            markInvalidFields(this.noteForm);
+            return;
+        }
+        if (!this.lesson) {
+            return;
+        }
+
         const note: SaveNoteDto = this.noteForm.getRawValue();
-        note.moduleId = this.lesson?.moduleId;
-        this.notesService
-            .createNote({ body: note })
+
+        const [, newFiles, newContent] = EditorHelper.getFilesDelta(
+            note.content!,
+            (index, ext) => `${index}.${ext}`,
+        );
+
+        const formData = new FormData();
+        formData.append('moduleId', this.lesson.moduleId.toString());
+        formData.append('name', note.name);
+        formData.append('content', newContent);
+        newFiles?.forEach((f) => {
+            formData.append('files', f);
+        });
+        this.filesUploadService
+            .createNote(formData)
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
                 this.showNoteModal = false;
