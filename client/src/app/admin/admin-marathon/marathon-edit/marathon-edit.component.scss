@@ -1,0 +1,12 @@
+::ng-deep {
+    .p-picklist-source-controls,
+    .p-picklist-target-controls {
+        display: none;
+    }
+
+    p-dropdown {
+        .p-inputwrapper {
+            width: 100%;
+        }
+    }
+}

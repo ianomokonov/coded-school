@@ -22,5 +22,9 @@ export class AdminComponent {
             label: 'Комментарии',
             routerLink: ['/admin/comments'],
         },
+        {
+            label: 'Марафон',
+            routerLink: ['/admin/marathons'],
+        },
     ];
 }

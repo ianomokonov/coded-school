@@ -31,6 +31,7 @@ export { TopicChildDto } from './models/topic-child-dto';
 export { TopicDto } from './models/topic-dto';
 export { TopicTreeDto } from './models/topic-tree-dto';
 export { TrainerDto } from './models/trainer-dto';
+export { TrainerShortDto } from './models/trainer-short-dto';
 export { UpdateCommentDto } from './models/update-comment-dto';
 export { UpdateForgottenPassDto } from './models/update-forgotten-pass-dto';
 export { UpdateLessonDto } from './models/update-lesson-dto';

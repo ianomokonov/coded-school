@@ -7,6 +7,8 @@ import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { AchievementService } from '@modules/achievement/achievement.service';
 import { dateTimeNow } from '@core/date-now.fn';
+import { MarathonInfoDto } from '@dtos/marathon/marathon-info.dto';
+import { MarathonTrainerEntity } from './entity/marathon-trainer.entity';
 
 @Injectable()
 export class MarathonService {
@@ -21,6 +23,21 @@ export class MarathonService {
   }
 
   async updateMarathon(marathonId: number, dto: SaveMarathonDto) {
+    await MarathonTrainerEntity.delete({ marathonId });
+    if (dto.trainers?.length) {
+      await Promise.all(
+        dto.trainers.map(async (t, i) => {
+          await MarathonTrainerEntity.create({
+            marathonId,
+            trainerId: t.id,
+            order: i,
+          }).save();
+        }),
+      );
+    }
+
+    delete dto.trainers;
+
     await MarathonEntity.update({ id: marathonId }, { ...dto });
   }
 
@@ -39,6 +56,27 @@ export class MarathonService {
     return this.mapper.map(marathon, MarathonEntity, MarathonDto);
   }
 
+  async readMarathonInfo(marathonId: number): Promise<MarathonInfoDto> {
+    const marathon = await MarathonEntity.findOne({
+      where: { id: marathonId },
+      relations: {
+        trainers: {
+          trainer: true,
+        },
+      },
+      order: {
+        trainers: {
+          order: 'ASC',
+        },
+      },
+    });
+
+    if (!marathon) {
+      throw new NotFoundException('Марафон не найден');
+    }
+    return this.mapper.map(marathon, MarathonEntity, MarathonInfoDto);
+  }
+
   async readUserMarathon(
     marathonId: number,
     userId: number,
@@ -54,9 +92,11 @@ export class MarathonService {
     return this.mapper.map(marathon, UserMarathonEntity, MarathonDto);
   }
 
-  async getAllMarathons(): Promise<MarathonDto[]> {
+  async getAllMarathons(): Promise<MarathonInfoDto[]> {
     const modules = await MarathonEntity.find();
-    return modules.map((m) => this.mapper.map(m, MarathonEntity, MarathonDto));
+    return modules.map((m) =>
+      this.mapper.map(m, MarathonEntity, MarathonInfoDto),
+    );
   }
 
   async createUserMarathon(marathonId: number, userId: number) {

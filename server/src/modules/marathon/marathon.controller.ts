@@ -56,6 +56,13 @@ export class MarathonController {
   async readUserMarathon(@UserId() userId: number, @Param('id') id: number) {
     return this.marathonService.readUserMarathon(id, userId);
   }
+  @Get(':id/info')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить марафон без пользователя' })
+  async readMarathonInfo(@Param('id') id: number) {
+    return this.marathonService.readMarathonInfo(id);
+  }
   @Put(':id/start')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)

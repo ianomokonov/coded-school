@@ -15,6 +15,7 @@ import { TrainerDto } from './dto/trainer.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
+import { TrainerShortDto } from './dto/trainer-short.dto';
 
 @ApiTags('Trainer')
 @Controller('trainer')
@@ -27,6 +28,11 @@ export class TrainerController {
   //   async runEditor(): Promise<void> {
   //     return this.editorService.runEditor();
   //   }
+
+  @Get('all')
+  async getAllTrainers(): Promise<TrainerShortDto[]> {
+    return this.editorService.readAllTrainers();
+  }
 
   @Get(':id')
   async getTrainer(@Param('id') id: number): Promise<TrainerDto> {

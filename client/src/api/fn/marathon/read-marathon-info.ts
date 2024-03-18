@@ -8,12 +8,14 @@ import { RequestBuilder } from '../../request-builder';
 
 import { MarathonInfoDto } from '../../models/marathon-info-dto';
 
-export interface GetAllMarathons$Params {
+export interface ReadMarathonInfo$Params {
+  id: number;
 }
 
-export function getAllMarathons(http: HttpClient, rootUrl: string, params?: GetAllMarathons$Params, context?: HttpContext): Observable<BaseResponse<Array<MarathonInfoDto>>> {
-  const rb = new RequestBuilder(rootUrl, getAllMarathons.PATH, 'get');
+export function readMarathonInfo(http: HttpClient, rootUrl: string, params: ReadMarathonInfo$Params, context?: HttpContext): Observable<BaseResponse<MarathonInfoDto>> {
+  const rb = new RequestBuilder(rootUrl, readMarathonInfo.PATH, 'get');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -21,9 +23,9 @@ export function getAllMarathons(http: HttpClient, rootUrl: string, params?: GetA
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<Array<MarathonInfoDto>>;
+      return r as BaseResponse<MarathonInfoDto>;
     })
   );
 }
 
-getAllMarathons.PATH = '/api/marathon/all';
+readMarathonInfo.PATH = '/api/marathon/{id}/info';

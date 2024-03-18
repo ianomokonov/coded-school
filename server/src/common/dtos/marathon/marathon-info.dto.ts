@@ -1,4 +1,6 @@
+import { AutoMap } from '@automapper/classes';
 import { MarathonDifficulty } from '@entities/marathon/marathon-difficulty';
+import { TrainerShortDto } from '@modules/trainer/dto/trainer-short.dto';
 
 export class MarathonInfoDto {
   id: number;
@@ -6,4 +8,6 @@ export class MarathonInfoDto {
   difficulty: MarathonDifficulty;
   points: number;
   time?: number;
+  @AutoMap(() => [TrainerShortDto])
+  trainers?: TrainerShortDto[];
 }

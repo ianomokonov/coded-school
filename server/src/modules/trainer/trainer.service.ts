@@ -14,6 +14,7 @@ import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 import { LessonService } from '@modules/topic/lesson/lesson.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FilesHelper } from 'src/utils/files-helper';
+import { TrainerShortDto } from './dto/trainer-short.dto';
 
 @Injectable()
 export class TrainerService {
@@ -46,6 +47,12 @@ export class TrainerService {
     );
 
     return dto;
+  }
+
+  async readAllTrainers(): Promise<TrainerShortDto[]> {
+    const trainers = await TrainerEntity.find();
+
+    return this.mapper.mapArray(trainers, TrainerEntity, TrainerShortDto);
   }
 
   async checkTrainer(id: number): Promise<boolean> {

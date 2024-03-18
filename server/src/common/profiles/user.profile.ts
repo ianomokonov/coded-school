@@ -37,6 +37,8 @@ import { TrainerDto } from '@modules/trainer/dto/trainer.dto';
 import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
 import { TopicTreeDto } from '@dtos/topic/topic-tree.dto';
 import { TopicChildDto } from '@dtos/topic/topic-child.dto';
+import { MarathonInfoDto } from '@dtos/marathon/marathon-info.dto';
+import { TrainerShortDto } from '@modules/trainer/dto/trainer-short.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -50,11 +52,21 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, NoteEntity, NoteDto);
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(
+        mapper,
+        MarathonEntity,
+        MarathonInfoDto,
+        forMember(
+          (d) => d.trainers,
+          mapFrom((s) => s.trainers.map((t) => t.trainer)),
+        ),
+      );
       createMap(mapper, AchievementEntity, AchievementDto);
       createMap(mapper, TopicEntity, TopicDto);
       createMap(mapper, LessonEntity, LessonDto);
       createMap(mapper, CommentEntity, CommentDto);
       createMap(mapper, TrainerEntity, TrainerDto);
+      createMap(mapper, TrainerEntity, TrainerShortDto);
       createMap(mapper, ModuleEntity, ModuleTreeDto);
       createMap(
         mapper,
@@ -125,7 +137,9 @@ export class UserProfile extends AutomapperProfile {
         ),
         forMember(
           (dest) => dest.info,
-          mapFrom((source) => source.marathon),
+          mapFrom((source) =>
+            mapper.map(source.marathon, MarathonEntity, MarathonInfoDto),
+          ),
         ),
       );
       createMap(

@@ -20,6 +20,9 @@ import { DeleteUserMarathon$Params } from '../fn/marathon/delete-user-marathon';
 import { getAllMarathons } from '../fn/marathon/get-all-marathons';
 import { GetAllMarathons$Params } from '../fn/marathon/get-all-marathons';
 import { MarathonDto } from '../models/marathon-dto';
+import { MarathonInfoDto } from '../models/marathon-info-dto';
+import { readMarathonInfo } from '../fn/marathon/read-marathon-info';
+import { ReadMarathonInfo$Params } from '../fn/marathon/read-marathon-info';
 import { readUserMarathon } from '../fn/marathon/read-user-marathon';
 import { ReadUserMarathon$Params } from '../fn/marathon/read-user-marathon';
 import { startUserMarathon } from '../fn/marathon/start-user-marathon';
@@ -46,7 +49,7 @@ export class MarathonService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getAllMarathons$Response(params?: GetAllMarathons$Params, context?: HttpContext): Observable<BaseResponse<Array<MarathonDto>>> {
+  getAllMarathons$Response(params?: GetAllMarathons$Params, context?: HttpContext): Observable<BaseResponse<Array<MarathonInfoDto>>> {
     return getAllMarathons(this.http, this.rootUrl, params, context);
   }
 
@@ -60,9 +63,9 @@ export class MarathonService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getAllMarathons(params?: GetAllMarathons$Params, context?: HttpContext): Observable<Array<MarathonDto>> {
+  getAllMarathons(params?: GetAllMarathons$Params, context?: HttpContext): Observable<Array<MarathonInfoDto>> {
     return this.getAllMarathons$Response(params, context).pipe(
-      map((r: BaseResponse<Array<MarathonDto>>): Array<MarathonDto> => r.body)
+      map((r: BaseResponse<Array<MarathonInfoDto>>): Array<MarathonInfoDto> => r.body)
     );
   }
 
@@ -195,6 +198,39 @@ export class MarathonService extends BaseService {
   deleteUserMarathon(params: DeleteUserMarathon$Params, context?: HttpContext): Observable<void> {
     return this.deleteUserMarathon$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `readMarathonInfo()` */
+  static readonly ReadMarathonInfoPath = '/api/marathon/{id}/info';
+
+  /**
+   * Получить марафон без пользователя.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `readMarathonInfo()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  readMarathonInfo$Response(params: ReadMarathonInfo$Params, context?: HttpContext): Observable<BaseResponse<MarathonInfoDto>> {
+    return readMarathonInfo(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Получить марафон без пользователя.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `readMarathonInfo$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  readMarathonInfo(params: ReadMarathonInfo$Params, context?: HttpContext): Observable<MarathonInfoDto> {
+    return this.readMarathonInfo$Response(params, context).pipe(
+      map((r: BaseResponse<MarathonInfoDto>): MarathonInfoDto => r.body)
     );
   }
 
