@@ -99,6 +99,8 @@ export class LessonService {
       { nextLessonId: lesson.nextLessonId, nextTaskId: lesson.nextTaskId },
     );
     await LessonEntity.delete({ id });
+
+    await FilesHelper.removeFilesFromContent(lesson.content);
   }
 
   async read(id: number, userId?: number): Promise<LessonDto> {

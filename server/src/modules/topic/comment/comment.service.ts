@@ -61,7 +61,12 @@ export class CommentService {
   }
 
   async delete(id: number) {
+    const comment = await CommentEntity.findOne({ where: { id } });
+    if (!comment) {
+      throw new NotFoundException('Комментарий не найден');
+    }
     await CommentEntity.delete({ id });
+    await FilesHelper.removeFilesFromContent(comment.text);
   }
 
   async getLessonComments(lessonId: number): Promise<CommentDto[]> {

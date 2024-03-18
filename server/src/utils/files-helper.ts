@@ -26,9 +26,9 @@ export class FilesHelper {
     return contentToReplace;
   }
 
-  static async removeFiles(fileNmaes: string[]) {
+  static async removeFiles(fileNames: string[]) {
     await Promise.all(
-      fileNmaes.map(async (f) => {
+      fileNames.map(async (f) => {
         try {
           await remove(
             path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
@@ -38,5 +38,18 @@ export class FilesHelper {
         }
       }),
     );
+  }
+
+  static async removeFilesFromContent(content: string) {
+    const fileNames = content.match(/img src=".+"/g);
+    if (!fileNames?.length) {
+      return;
+    }
+
+    const clearedFileNames = Array.from(fileNames).map((fn) => {
+      return fn.replace('img src="', '').replace(/"$/, '');
+    });
+
+    await FilesHelper.removeFiles(clearedFileNames);
   }
 }

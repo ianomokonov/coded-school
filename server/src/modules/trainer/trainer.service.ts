@@ -167,6 +167,7 @@ export class TrainerService {
       { nextLessonId: trainer.nextLessonId, nextTaskId: trainer.nextTaskId },
     );
     await TrainerEntity.delete({ id });
+    await FilesHelper.removeFilesFromContent(trainer.task);
   }
 
   private async getFiles(dir: string): Promise<string[]> {

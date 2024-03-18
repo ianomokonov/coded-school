@@ -74,7 +74,12 @@ export class NoteService {
   }
 
   async deleteNote(noteId: number) {
+    const note = await NoteEntity.findOne({ where: { id: noteId } });
+    if (!note) {
+      throw new NotFoundException('Заметка не найдена');
+    }
     await NoteEntity.delete({ id: noteId });
+    await FilesHelper.removeFilesFromContent(note.content);
   }
 
   async readNote(id: number): Promise<NoteDto> {
