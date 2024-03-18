@@ -41,7 +41,12 @@ export class AdminModuleComponent {
     }
 
     nodeDrop(event: TreeNodeDropEvent) {
-        if (event.dragNode?.parent?.children?.[0]?.data.type === 'trainer') {
+        if (
+            !(event.originalEvent?.target as HTMLElement).classList.contains('p-treenode-droppoint')
+        ) {
+            return;
+        }
+        if (!event.index && event.dragNode?.data.type === 'trainer') {
             this.toastService.add({
                 severity: 'error',
                 summary: 'Ошибка сортировки',
@@ -49,6 +54,8 @@ export class AdminModuleComponent {
             });
             return;
         }
+
+        event.accept?.();
 
         const index = event.dragNode?.parent?.children?.findIndex(
             (c) =>
