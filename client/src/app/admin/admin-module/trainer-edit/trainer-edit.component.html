@@ -12,11 +12,15 @@
     </div>
     <div class="mb-3">
         <p-fileUpload
+            #uploader
             name="files[]"
             (onSelect)="onUpload($event)"
+            (onClear)="this.form.patchValue({ files: null })"
             [multiple]="true"
             [maxFileSize]="1000000"
             [showUploadButton]="false"
+            [chooseLabel]="'Выбрать файл'"
+            [cancelLabel]="'Очистить файлы'"
         >
             <ng-template pTemplate="content">
                 @if (trainer?.files?.length && !form.get('files')?.value?.length) {

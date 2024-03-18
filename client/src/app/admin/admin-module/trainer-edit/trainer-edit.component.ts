@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TrainerDto, TrainerService } from '@api/index';
 import { EditorModule } from 'primeng/editor';
-import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
 import { FileUploadService } from '@app/services/file-upload.service';
+import { EditorHelper } from '@app/utils/editor-helper';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -26,6 +27,8 @@ export class TrainerEditComponent implements OnInit {
     trainer: TrainerDto | undefined;
     form: FormGroup;
 
+    @ViewChild('uploader') uploader: FileUpload | undefined;
+
     constructor(
         private trainerService: TrainerService,
         private withUploadService: FileUploadService,
@@ -42,6 +45,7 @@ export class TrainerEditComponent implements OnInit {
     }
     ngOnInit(): void {
         this.activeRoute.params.subscribe(({ id }) => {
+            this.uploader?.clear();
             if (id === 'create') {
                 this.form.patchValue({ name: null, task: null, files: null });
                 this.form.get('files')?.setValidators(Validators.required);
@@ -67,17 +71,30 @@ export class TrainerEditComponent implements OnInit {
         }
 
         const formValue = this.form.getRawValue();
+
+        const [prevFiles, newFiles, newContent] = EditorHelper.getFilesDelta(
+            formValue.task,
+            (index, ext) => `${this.trainer?.id}_${index}.${ext}`,
+            this.trainer?.task,
+        );
         const formData = new FormData();
+        newFiles.forEach((f) => {
+            formData.append('contentFiles', f);
+        });
+
+        formData.append('name', formValue.name);
+        formData.append('task', newContent);
+        formData.append('templatesDir', formValue.templatesDir);
+        if (formValue.files?.length) {
+            formValue.files.forEach((f: File) => {
+                formData.append('files', f);
+            });
+        }
 
         if (this.trainer) {
-            formData.append('name', formValue.name);
-            formData.append('task', formValue.task);
-            formData.append('templatesDir', formValue.templatesDir);
-            if (formValue.files?.length) {
-                formValue.files.forEach((f: File) => {
-                    formData.append('files', f);
-                });
-            }
+            prevFiles.forEach((p) => {
+                formData.append('filesToDelete[]', p);
+            });
             this.withUploadService.updateTrainer(this.trainer.id, formData).subscribe(() => {});
             return;
         }
@@ -86,13 +103,7 @@ export class TrainerEditComponent implements OnInit {
             return;
         }
 
-        formData.append('name', formValue.name);
         formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
-        formData.append('task', formValue.task);
-        formData.append('templatesDir', formValue.templatesDir);
-        formValue.files.forEach((f: File) => {
-            formData.append('files', f);
-        });
 
         this.withUploadService.createTrainer(formData).subscribe((id) => {
             this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });

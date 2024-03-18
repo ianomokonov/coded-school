@@ -12,6 +12,7 @@ import { UpdateTrainerDto } from './dto/update-trainer.dto';
 import { IsNull, Not } from 'typeorm';
 import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 import { LessonService } from '@modules/topic/lesson/lesson.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TrainerService {
@@ -50,7 +51,25 @@ export class TrainerService {
     return !!id;
   }
 
-  async create(dto: CreateTrainerDto): Promise<number> {
+  async create(
+    dto: CreateTrainerDto,
+    contentFiles?: Express.Multer.File[],
+  ): Promise<number> {
+    if (contentFiles?.length) {
+      const uploadFolder = path.join(rootPath, 'src', 'static');
+      await ensureDir(uploadFolder);
+      await Promise.all(
+        contentFiles.map(async (f, index) => {
+          const [, ext] = f.originalname.split('.');
+          const fileName = `${uuidv4()}.${ext}`;
+          await writeFile(path.join(uploadFolder, fileName), f.buffer);
+          dto.task = dto.task.replace(
+            new RegExp(`src="${index}"`),
+            `src="/static/${fileName}"`,
+          );
+        }),
+      );
+    }
     const uploadFolder = path.join(rootPath, 'src', 'tasks', dto.templatesDir);
     await ensureDir(uploadFolder);
     await Promise.all(
@@ -86,8 +105,41 @@ export class TrainerService {
     trainerId: number,
     dto: UpdateTrainerDto,
     files?: Express.Multer.File[],
+    contentFiles?: Express.Multer.File[],
   ): Promise<void> {
-    await TrainerEntity.update({ id: trainerId }, { ...dto });
+    if (dto.filesToDelete?.length) {
+      await Promise.all(
+        dto.filesToDelete.map(async (f) => {
+          try {
+            await remove(
+              path.join(rootPath, 'src', ...f.replace(/^\//, '').split('/')),
+            );
+          } catch {
+            console.log(`Файл ${f} не найден`);
+          }
+        }),
+      );
+    }
+
+    if (contentFiles?.length) {
+      const uploadFolder = path.join(rootPath, 'src', 'static');
+      await ensureDir(uploadFolder);
+      await Promise.all(
+        contentFiles.map(async (f, index) => {
+          const [, ext] = f.originalname.split('.');
+          const fileName = `${uuidv4()}.${ext}`;
+          await writeFile(path.join(uploadFolder, fileName), f.buffer);
+          dto.task = dto.task.replace(
+            new RegExp(`src="${index}"`),
+            `src="/static/${fileName}"`,
+          );
+        }),
+      );
+    }
+    await TrainerEntity.update(
+      { id: trainerId },
+      { name: dto.name, task: dto.task, templatesDir: dto.templatesDir },
+    );
 
     if (!files?.length) {
       return;

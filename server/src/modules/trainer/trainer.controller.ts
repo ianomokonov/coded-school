@@ -11,7 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { TrainerService } from './trainer.service';
 import { TrainerDto } from './dto/trainer.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
 
@@ -43,21 +43,33 @@ export class TrainerController {
   }
 
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'files' }, { name: 'contentFiles' }]),
+  )
   createTrainer(
     @Body() body: CreateTrainerDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles()
+    files: {
+      files: Express.Multer.File[];
+      contentFiles: Express.Multer.File[];
+    },
   ) {
-    body.files = files;
-    return this.editorService.create(body);
+    body.files = files.files;
+    return this.editorService.create(body, files.contentFiles);
   }
   @Post(':id')
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'files' }, { name: 'contentFiles' }]),
+  )
   updateTrainer(
     @Param('id') id: number,
     @Body() body: UpdateTrainerDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles()
+    files: {
+      files: Express.Multer.File[];
+      contentFiles: Express.Multer.File[];
+    },
   ) {
-    return this.editorService.update(id, body, files);
+    return this.editorService.update(id, body, files.files, files.contentFiles);
   }
 }

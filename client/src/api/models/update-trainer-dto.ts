@@ -1,9 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface UpdateTrainerDto {
+  filesToDelete?: Array<string>;
   name?: string;
-  nextLessonId?: number;
-  nextTaskId?: number;
   task?: string;
   templatesDir?: string;
   topicId?: number;
