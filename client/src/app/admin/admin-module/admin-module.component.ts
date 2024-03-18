@@ -104,13 +104,25 @@ export class AdminModuleComponent {
     }
 
     private updateTree() {
-        this.modulesService.getModulesTree().subscribe((modules) => {
+        this.modulesService.getModulesTree().subscribe((dto) => {
             this.modules = [
-                ...modules.map((m) => this.getTree(m)),
+                ...dto.modules.map((m) => this.getTree(m)),
                 {
                     label: 'Создать модуль',
+                    draggable: false,
+                    droppable: false,
                     data: { url: `/admin/module/create`, type: 'create' },
+                    styleClass: 'border-bottom-1 border-200',
                     icon: 'pi pi-plus',
+                },
+                ...dto.trainers.map((t) => this.getTree(t)),
+                {
+                    label: 'Создать тренажер',
+                    data: { url: `/admin/trainer/create`, type: 'create' },
+                    icon: 'pi pi-plus',
+
+                    draggable: false,
+                    droppable: false,
                 },
             ];
         });
@@ -123,6 +135,8 @@ export class AdminModuleComponent {
         if ('topics' in module) {
             return {
                 label: module.name,
+                draggable: false,
+                droppable: false,
                 data: { url: `/admin/module/${module.id}`, type: 'module', id: module.id },
                 icon: 'pi pi-server',
                 children: [
@@ -131,6 +145,8 @@ export class AdminModuleComponent {
                         label: 'Создать тему',
                         data: { url: `/admin/topic/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
+                        draggable: false,
+                        droppable: false,
                     },
                 ],
             };
@@ -139,6 +155,8 @@ export class AdminModuleComponent {
             return {
                 label: module.name,
                 icon: `pi pi-sitemap`,
+                draggable: false,
+                droppable: false,
                 data: { url: `/admin/topic/${module.id}`, type: 'topic', id: module.id, parentId },
                 children: [
                     ...(module.children?.map((t) => this.getTree(t, module.id)) || []),
@@ -146,16 +164,19 @@ export class AdminModuleComponent {
                         label: 'Создать урок',
                         data: { url: `/admin/lesson/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
+                        draggable: false,
+                        droppable: false,
                     },
                     {
                         label: 'Создать тренажер',
                         data: { url: `/admin/trainer/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
+                        draggable: false,
+                        droppable: false,
                     },
                 ],
             };
         }
-
         return {
             label: module.name,
             data: {
@@ -164,7 +185,9 @@ export class AdminModuleComponent {
                 id: module.id,
                 parentId,
             },
-            icon: 'pi pi-file',
+            icon: module.type === 'lesson' ? 'pi pi-file' : 'pi pi-code',
+            draggable: !!parentId,
+            droppable: !!parentId,
         };
     }
 }

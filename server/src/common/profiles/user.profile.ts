@@ -58,7 +58,7 @@ export class UserProfile extends AutomapperProfile {
         MarathonInfoDto,
         forMember(
           (d) => d.trainers,
-          mapFrom((s) => s.trainers.map((t) => t.trainer)),
+          mapFrom((s) => s.trainers?.map((t) => t.trainer)),
         ),
       );
       createMap(mapper, AchievementEntity, AchievementDto);

@@ -9,6 +9,7 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
+import { AdminModuleDto } from '../models/admin-module-dto';
 import { completeUserModule } from '../fn/module/complete-user-module';
 import { CompleteUserModule$Params } from '../fn/module/complete-user-module';
 import { createUserModule } from '../fn/module/create-user-module';
@@ -20,7 +21,6 @@ import { GetAllModules$Params } from '../fn/module/get-all-modules';
 import { getModulesTree } from '../fn/module/get-modules-tree';
 import { GetModulesTree$Params } from '../fn/module/get-modules-tree';
 import { ModuleDto } from '../models/module-dto';
-import { ModuleTreeDto } from '../models/module-tree-dto';
 import { readModule } from '../fn/module/read-module';
 import { ReadModule$Params } from '../fn/module/read-module';
 import { readUserModule } from '../fn/module/read-user-module';
@@ -83,7 +83,7 @@ export class ModuleService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getModulesTree$Response(params?: GetModulesTree$Params, context?: HttpContext): Observable<BaseResponse<Array<ModuleTreeDto>>> {
+  getModulesTree$Response(params?: GetModulesTree$Params, context?: HttpContext): Observable<BaseResponse<AdminModuleDto>> {
     return getModulesTree(this.http, this.rootUrl, params, context);
   }
 
@@ -97,9 +97,9 @@ export class ModuleService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  getModulesTree(params?: GetModulesTree$Params, context?: HttpContext): Observable<Array<ModuleTreeDto>> {
+  getModulesTree(params?: GetModulesTree$Params, context?: HttpContext): Observable<AdminModuleDto> {
     return this.getModulesTree$Response(params, context).pipe(
-      map((r: BaseResponse<Array<ModuleTreeDto>>): Array<ModuleTreeDto> => r.body)
+      map((r: BaseResponse<AdminModuleDto>): AdminModuleDto => r.body)
     );
   }
 

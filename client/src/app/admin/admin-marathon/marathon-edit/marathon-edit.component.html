@@ -19,12 +19,25 @@
         </div>
         <div class="col pr-0">
             <span class="p-float-label mb-3">
-                <p-inputNumber styleClass="w-12" class="w-12" formControlName="points"> </p-inputNumber>
+                <p-inputNumber styleClass="w-12" class="w-12" formControlName="points">
+                </p-inputNumber>
                 <label for="name">Очки</label>
             </span>
         </div>
     </div>
-    <p-button (onClick)="onSave()">Сохранить</p-button>
+    <div class="flex justify-content-between">
+        <div class="flex gap-1">
+            <p-button (onClick)="onSave()">Сохранить</p-button>
+            <p-button [outlined]="true" (onClick)="onDelete()">Удалить</p-button>
+        </div>
+        <p-button
+            [severity]="'success'"
+            [routerLink]="['/admin/trainer/create']"
+            [queryParams]="{ marathonId: marathon?.id }"
+            icon="pi pi-plus"
+            label="Создать тренажер"
+        ></p-button>
+    </div>
 </form>
 <div class="pb-3">
     <p-pickList
@@ -36,7 +49,7 @@
         [responsive]="true"
         [sourceStyle]="{ height: '40rem' }"
         [targetStyle]="{ height: '40rem' }"
-        breakpoint="1400px"
+        breakpoint="900px"
     >
         <ng-template let-trainer pTemplate="item">
             <div class="p-2">

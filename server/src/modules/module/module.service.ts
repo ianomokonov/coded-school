@@ -8,6 +8,10 @@ import { InjectMapper } from '@automapper/nestjs';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
 import { UserLessonEntity } from '@modules/topic/lesson/entity/user-lesson.entity';
 import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
+import { AdminModuleDto } from '@dtos/module/admin-module.dto';
+import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
+import { IsNull } from 'typeorm';
+import { TopicChildDto } from '@dtos/topic/topic-child.dto';
 
 @Injectable()
 export class ModuleService {
@@ -71,11 +75,19 @@ export class ModuleService {
     return modules.map((m) => ({ id: m.id, name: m.name }));
   }
 
-  async getModulesTree(): Promise<ModuleTreeDto[]> {
+  async getModulesTree(): Promise<AdminModuleDto> {
     const modules = await ModuleEntity.find({
       relations: { topics: { lessons: true, trainers: true } },
     });
-    return modules.map((m) => this.mapper.map(m, ModuleEntity, ModuleTreeDto));
+    const trainers = await TrainerEntity.find({ where: { topicId: IsNull() } });
+    const dto: AdminModuleDto = {
+      modules: modules.map((m) =>
+        this.mapper.map(m, ModuleEntity, ModuleTreeDto),
+      ),
+      trainers: this.mapper.mapArray(trainers, TrainerEntity, TopicChildDto),
+    };
+
+    return dto;
   }
 
   async startModule(moduleId: number, userId: number) {

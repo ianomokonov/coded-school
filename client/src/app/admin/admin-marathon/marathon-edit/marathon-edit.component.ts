@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { PickListModule } from 'primeng/picklist';
 import { MarathonInfoDto, TrainerShortDto } from '@api/index';
 import { forkJoin } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
 
@@ -20,6 +20,7 @@ import { DropdownModule } from 'primeng/dropdown';
         PickListModule,
         InputNumberModule,
         DropdownModule,
+        RouterModule,
     ],
     templateUrl: './marathon-edit.component.html',
     styleUrl: './marathon-edit.component.scss',
@@ -47,6 +48,7 @@ export class MarathonEditComponent implements OnInit {
         private trainerService: TrainerService,
         private marathonService: MarathonService,
         private activatedRoute: ActivatedRoute,
+        private router: Router,
         private fb: FormBuilder,
     ) {
         this.marathonForm = this.fb.group({
@@ -93,5 +95,11 @@ export class MarathonEditComponent implements OnInit {
             .subscribe(() => {
                 this.initData(this.marathon!.id);
             });
+    }
+
+    onDelete() {
+        this.marathonService.deleteUserMarathon({ id: this.marathon!.id }).subscribe(() => {
+            this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+        });
     }
 }

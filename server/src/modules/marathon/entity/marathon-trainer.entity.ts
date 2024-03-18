@@ -23,7 +23,9 @@ export class MarathonTrainerEntity extends BaseEntity {
   @Column({ nullable: false })
   trainerId: number;
 
-  @ManyToOne(() => TrainerEntity)
+  @ManyToOne(() => TrainerEntity, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'trainerId' })
   @AutoMap(() => TrainerEntity)
   trainer: TrainerEntity;
@@ -31,7 +33,9 @@ export class MarathonTrainerEntity extends BaseEntity {
   @Column({ nullable: false })
   marathonId: number;
 
-  @ManyToOne(() => MarathonEntity, (marathon) => marathon.trainers)
+  @ManyToOne(() => MarathonEntity, (marathon) => marathon.trainers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'marathonId' })
   @AutoMap(() => MarathonEntity)
   marathon: MarathonEntity;

@@ -47,7 +47,7 @@ export class TrainerEditComponent implements OnInit {
         this.activeRoute.params.subscribe(({ id }) => {
             this.uploader?.clear();
             if (id === 'create') {
-                this.form.patchValue({ name: null, task: null, files: null });
+                this.form.patchValue({ name: null, templatesDir: null, task: null, files: null });
                 this.form.get('files')?.setValidators(Validators.required);
                 this.trainer = undefined;
                 return;
@@ -99,13 +99,19 @@ export class TrainerEditComponent implements OnInit {
             return;
         }
 
-        if (!this.activeRoute.snapshot.queryParams['parentId']) {
-            return;
+        if (this.activeRoute.snapshot.queryParams['parentId']) {
+            formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
         }
 
-        formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
-
         this.withUploadService.createTrainer(formData).subscribe((id) => {
+            if (this.activeRoute.snapshot.queryParams['marathonId']) {
+                this.router.navigate([
+                    `/admin`,
+                    'marathons',
+                    this.activeRoute.snapshot.queryParams['marathonId'],
+                ]);
+                return;
+            }
             this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
         });
     }

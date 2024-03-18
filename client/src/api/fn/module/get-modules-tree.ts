@@ -6,12 +6,12 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { ModuleTreeDto } from '../../models/module-tree-dto';
+import { AdminModuleDto } from '../../models/admin-module-dto';
 
 export interface GetModulesTree$Params {
 }
 
-export function getModulesTree(http: HttpClient, rootUrl: string, params?: GetModulesTree$Params, context?: HttpContext): Observable<BaseResponse<Array<ModuleTreeDto>>> {
+export function getModulesTree(http: HttpClient, rootUrl: string, params?: GetModulesTree$Params, context?: HttpContext): Observable<BaseResponse<AdminModuleDto>> {
   const rb = new RequestBuilder(rootUrl, getModulesTree.PATH, 'get');
   if (params) {
   }
@@ -21,7 +21,7 @@ export function getModulesTree(http: HttpClient, rootUrl: string, params?: GetMo
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<Array<ModuleTreeDto>>;
+      return r as BaseResponse<AdminModuleDto>;
     })
   );
 }
