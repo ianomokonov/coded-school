@@ -46,6 +46,9 @@ export class AdminModuleComponent {
         ) {
             return;
         }
+        if (!event.dropNode?.droppable && !event.dropNode?.data?.droppable) {
+            return;
+        }
         if (!event.index && event.dragNode?.data.type === 'trainer') {
             this.toastService.add({
                 severity: 'error',
@@ -169,7 +172,12 @@ export class AdminModuleComponent {
                     ...(module.children?.map((t) => this.getTree(t, module.id)) || []),
                     {
                         label: 'Создать урок',
-                        data: { url: `/admin/lesson/create`, type: 'create', parentId: module.id },
+                        data: {
+                            url: `/admin/lesson/create`,
+                            type: 'create',
+                            parentId: module.id,
+                            droppable: true,
+                        },
                         icon: 'pi pi-plus',
                         draggable: false,
                         droppable: false,
