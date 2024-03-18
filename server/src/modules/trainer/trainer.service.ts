@@ -13,6 +13,7 @@ import { IsNull, Not } from 'typeorm';
 import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 import { LessonService } from '@modules/topic/lesson/lesson.service';
 import { v4 as uuidv4 } from 'uuid';
+import { FilesHelper } from 'src/utils/files-helper';
 
 @Injectable()
 export class TrainerService {
@@ -122,18 +123,9 @@ export class TrainerService {
     }
 
     if (contentFiles?.length) {
-      const uploadFolder = path.join(rootPath, 'src', 'static');
-      await ensureDir(uploadFolder);
-      await Promise.all(
-        contentFiles.map(async (f, index) => {
-          const [, ext] = f.originalname.split('.');
-          const fileName = `${uuidv4()}.${ext}`;
-          await writeFile(path.join(uploadFolder, fileName), f.buffer);
-          dto.task = dto.task.replace(
-            new RegExp(`src="${index}"`),
-            `src="/static/${fileName}"`,
-          );
-        }),
+      dto.task = await FilesHelper.uploadFilesWithReplace(
+        contentFiles,
+        dto.task,
       );
     }
     await TrainerEntity.update(

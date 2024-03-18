@@ -9,6 +9,7 @@ import { GetCommentsDto } from './dto/get-comments.dto';
 import { UserService } from '@modules/user/user.service';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import { MailService } from '@mail/service';
+import { FilesHelper } from 'src/utils/files-helper';
 
 @Injectable()
 export class CommentService {
@@ -18,12 +19,19 @@ export class CommentService {
     private mailService: MailService,
   ) {}
 
-  async create(userId: number, dto: CreateCommentDto) {
+  async create(
+    userId: number,
+    dto: CreateCommentDto,
+    files: Express.Multer.File[],
+  ) {
     const user = await this.userService.getUserWithRoles(userId);
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
     }
 
+    if (files?.length) {
+      dto.text = await FilesHelper.uploadFilesWithReplace(files, dto.text);
+    }
     const { id } = await CommentEntity.create({ userId, ...dto }).save();
     if (true || !user.roles.includes('admin')) {
       const admins = await this.userService.getAdmins();

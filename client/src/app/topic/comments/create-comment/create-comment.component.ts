@@ -26,8 +26,8 @@ export class CreateCommentComponent {
             return;
         }
 
-        this.textControl.setValue(null);
-
         this.onSaveComment.emit(this.textControl.value);
+
+        this.textControl.setValue(null);
     }
 }

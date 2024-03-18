@@ -30,12 +30,20 @@
                 }
 
                 @if (comment.relativeComment) {
-                    <div
-                        class="mb-3 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
-                        [innerHTML]="comment.relativeComment.text"
-                    ></div>
+                    <div class="ql-snow mb-3">
+                        <div class="ql-editor">
+                            <div
+                                class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
+                                [innerHTML]="comment.relativeComment.text"
+                            ></div>
+                        </div>
+                    </div>
                 }
-                <p [innerHTML]="comment.text"></p>
+                <div class="ql-snow mb-3">
+                    <div class="ql-editor">
+                        <div [innerHTML]="comment.text"></div>
+                    </div>
+                </div>
                 @if (!comment.isEditing) {
                     <p-button
                         label="Ответить"

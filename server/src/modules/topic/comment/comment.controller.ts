@@ -7,7 +7,9 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
@@ -16,6 +18,7 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { GetCommentsDto } from './dto/get-comments.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Comment')
 @Controller('comment')
@@ -25,8 +28,13 @@ export class CommentController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Создать комментарий' })
-  async createComment(@UserId() userId: number, @Body() dto: CreateCommentDto) {
-    return this.commentService.create(userId, dto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async createComment(
+    @UserId() userId: number,
+    @Body() dto: CreateCommentDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.commentService.create(userId, dto, files);
   }
 
   @Put(':id')

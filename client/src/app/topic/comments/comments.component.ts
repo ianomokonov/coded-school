@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { CreateCommentComponent } from './create-comment/create-comment.component';
 import { Comment } from './models/comment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { EditorHelper } from '@app/utils/editor-helper';
+import { FileUploadService } from '@app/services/file-upload.service';
 
 @Component({
     selector: 'coded-comments',
@@ -34,6 +36,7 @@ export class CommentsComponent implements OnInit {
     constructor(
         private commentService: CommentService,
         private dom: DomSanitizer,
+        private fileUploadService: FileUploadService,
     ) {}
     ngOnInit(): void {
         this.getComments();
@@ -49,18 +52,28 @@ export class CommentsComponent implements OnInit {
     }
 
     createComment(text: string, relativeCommentId?: number) {
-        this.commentService
-            .createComment({
-                body: {
-                    lessonId: this.lessonId,
-                    text,
-                    relativeCommentId,
-                    quote: this.quoteString,
-                },
-            })
-            .subscribe(() => {
-                this.getComments();
-            });
+        const [, newFiles, newContent] = EditorHelper.getFilesDelta(
+            text,
+            (index, ext) => `${index}.${ext}`,
+        );
+
+        const formData = new FormData();
+        formData.append('text', newContent);
+        formData.append('lessonId', this.lessonId.toString());
+        if (relativeCommentId) {
+            formData.append('relativeCommentId', relativeCommentId.toString());
+        }
+        if (this.quoteString) {
+            formData.append('quote', this.quoteString);
+        }
+
+        newFiles?.forEach((f) => {
+            formData.append('files', f);
+        });
+
+        this.fileUploadService.createComment(formData).subscribe(() => {
+            this.getComments();
+        });
     }
 
     onAnswer(comment: Comment) {

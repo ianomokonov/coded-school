@@ -10,8 +10,8 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
 import * as path from 'path';
 import { path as rootPath } from 'app-root-path';
-import { ensureDir, writeFile, remove } from 'fs-extra';
-import { v4 as uuidv4 } from 'uuid';
+import { remove } from 'fs-extra';
+import { FilesHelper } from 'src/utils/files-helper';
 
 @Injectable()
 export class LessonService {
@@ -19,18 +19,9 @@ export class LessonService {
 
   async create(dto: CreateLessonDto, files: Express.Multer.File[]) {
     if (files?.length) {
-      const uploadFolder = path.join(rootPath, 'src', 'static');
-      await ensureDir(uploadFolder);
-      await Promise.all(
-        files.map(async (f, index) => {
-          const [, ext] = f.originalname.split('.');
-          const fileName = `${uuidv4()}.${ext}`;
-          await writeFile(path.join(uploadFolder, fileName), f.buffer);
-          dto.content = dto.content.replace(
-            new RegExp(`src="${index}"`),
-            `src="/static/${fileName}"`,
-          );
-        }),
+      dto.content = await FilesHelper.uploadFilesWithReplace(
+        files,
+        dto.content,
       );
     }
     const lessons = await LessonEntity.find({
@@ -76,18 +67,9 @@ export class LessonService {
       );
     }
     if (files?.length) {
-      const uploadFolder = path.join(rootPath, 'src', 'static');
-      await ensureDir(uploadFolder);
-      await Promise.all(
-        files.map(async (f, index) => {
-          const [, ext] = f.originalname.split('.');
-          const fileName = `${uuidv4()}.${ext}`;
-          await writeFile(path.join(uploadFolder, fileName), f.buffer);
-          dto.content = dto.content.replace(
-            new RegExp(`src="${index}"`),
-            `src="/static/${fileName}"`,
-          );
-        }),
+      dto.content = await FilesHelper.uploadFilesWithReplace(
+        files,
+        dto.content,
       );
     }
     await LessonEntity.update({ id }, { name: dto.name, content: dto.content });

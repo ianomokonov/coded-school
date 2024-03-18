@@ -25,4 +25,8 @@ export class FileUploadService extends BaseService {
     updateLesson(id: number, formData: FormData) {
         return this.http.post(this.rootUrl + '/api/lesson/' + id, formData);
     }
+
+    createComment(formData: FormData) {
+        return this.http.post(this.rootUrl + '/api/comment', formData);
+    }
 }
