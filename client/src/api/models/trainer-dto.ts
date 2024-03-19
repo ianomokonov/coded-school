@@ -7,6 +7,7 @@ export interface TrainerDto {
   name: string;
   nextLessonId?: number;
   nextTaskId?: number;
+  resultFiles?: Array<FileDto>;
   task: string;
   templatesDir: string;
 }

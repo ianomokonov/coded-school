@@ -19,6 +19,8 @@ import { getAllTrainers } from '../fn/trainer/get-all-trainers';
 import { GetAllTrainers$Params } from '../fn/trainer/get-all-trainers';
 import { getTrainer } from '../fn/trainer/get-trainer';
 import { GetTrainer$Params } from '../fn/trainer/get-trainer';
+import { getTrainerFull } from '../fn/trainer/get-trainer-full';
+import { GetTrainerFull$Params } from '../fn/trainer/get-trainer-full';
 import { TrainerDto } from '../models/trainer-dto';
 import { TrainerShortDto } from '../models/trainer-short-dto';
 import { updateTrainer } from '../fn/trainer/update-trainer';
@@ -130,6 +132,31 @@ export class TrainerService extends BaseService {
     );
   }
 
+  /** Path part for operation `getTrainerFull()` */
+  static readonly GetTrainerFullPath = '/api/trainer/{id}/full';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getTrainerFull()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTrainerFull$Response(params: GetTrainerFull$Params, context?: HttpContext): Observable<BaseResponse<TrainerDto>> {
+    return getTrainerFull(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getTrainerFull$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTrainerFull(params: GetTrainerFull$Params, context?: HttpContext): Observable<TrainerDto> {
+    return this.getTrainerFull$Response(params, context).pipe(
+      map((r: BaseResponse<TrainerDto>): TrainerDto => r.body)
+    );
+  }
+
   /** Path part for operation `checkTrainer()` */
   static readonly CheckTrainerPath = '/api/trainer/{id}/check';
 
@@ -137,7 +164,7 @@ export class TrainerService extends BaseService {
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
    * To access only the response body, use `checkTrainer()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
   checkTrainer$Response(params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
     return checkTrainer(this.http, this.rootUrl, params, context);
@@ -147,7 +174,7 @@ export class TrainerService extends BaseService {
    * This method provides access only to the response body.
    * To access the full response (for headers, for example), `checkTrainer$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
   checkTrainer(params: CheckTrainer$Params, context?: HttpContext): Observable<boolean> {
     return this.checkTrainer$Response(params, context).pipe(

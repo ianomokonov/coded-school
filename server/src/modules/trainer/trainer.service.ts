@@ -15,6 +15,8 @@ import { LessonService } from '@modules/topic/lesson/lesson.service';
 import { v4 as uuidv4 } from 'uuid';
 import { FilesHelper } from 'src/utils/files-helper';
 import { TrainerShortDto } from './dto/trainer-short.dto';
+import nodeHtmlToImage from 'node-html-to-image';
+import * as looksSame from 'looks-same';
 
 @Injectable()
 export class TrainerService {
@@ -23,7 +25,7 @@ export class TrainerService {
     private lessonService: LessonService,
   ) {}
 
-  async read(id: number): Promise<TrainerDto> {
+  async read(id: number, withResults = false): Promise<TrainerDto> {
     const trainer = await TrainerEntity.findOne({ where: { id } });
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
@@ -46,6 +48,28 @@ export class TrainerService {
       }),
     );
 
+    if (!withResults) {
+      return dto;
+    }
+
+    const resultFileNames = await this.getFiles(
+      trainer.templatesDir,
+      'tasks-results',
+    );
+
+    dto.resultFiles = await Promise.all(
+      resultFileNames.map(async (fn) => {
+        const fileContent = await this.readFile(
+          path.join(rootPath, 'src', 'tasks-results', trainer.templatesDir, fn),
+        );
+
+        return {
+          label: fn,
+          content: fileContent,
+        };
+      }),
+    );
+
     return dto;
   }
 
@@ -55,12 +79,35 @@ export class TrainerService {
     return this.mapper.mapArray(trainers, TrainerEntity, TrainerShortDto);
   }
 
-  async checkTrainer(id: number): Promise<boolean> {
-    return !!id;
+  async checkTrainer(id: number, html: string): Promise<boolean> {
+    const trainer = await TrainerEntity.findOne({ where: { id } });
+    if (!trainer) {
+      throw new NotFoundException('Тренажер не найден');
+    }
+    const imgPath = path.join(rootPath, 'src', 'generated');
+    const imgName = `${uuidv4()}.png`;
+    await ensureDir(imgPath);
+    await nodeHtmlToImage({
+      output: path.join(imgPath, imgName),
+      html,
+    });
+    const { equal } = await looksSame(
+      path.join(imgPath, imgName),
+      path.join(
+        rootPath,
+        'src',
+        'tasks-results',
+        trainer.templatesDir,
+        'image.png',
+      ),
+    );
+    remove(path.join(imgPath, imgName));
+    return equal;
   }
 
   async create(
     dto: CreateTrainerDto,
+    resultFiles: Express.Multer.File[],
     contentFiles?: Express.Multer.File[],
   ): Promise<number> {
     if (contentFiles?.length) {
@@ -78,10 +125,22 @@ export class TrainerService {
         }),
       );
     }
-    const uploadFolder = path.join(rootPath, 'src', 'tasks', dto.templatesDir);
+    let uploadFolder = path.join(rootPath, 'src', 'tasks', dto.templatesDir);
     await ensureDir(uploadFolder);
     await Promise.all(
       dto.files.map(async (f) => {
+        await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
+      }),
+    );
+    uploadFolder = path.join(
+      rootPath,
+      'src',
+      'tasks-results',
+      dto.templatesDir,
+    );
+    await ensureDir(uploadFolder);
+    await Promise.all(
+      resultFiles.map(async (f) => {
         await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
       }),
     );
@@ -113,6 +172,7 @@ export class TrainerService {
     trainerId: number,
     dto: UpdateTrainerDto,
     files?: Express.Multer.File[],
+    resultFiles?: Express.Multer.File[],
     contentFiles?: Express.Multer.File[],
   ): Promise<void> {
     if (dto.filesToDelete?.length) {
@@ -140,23 +200,102 @@ export class TrainerService {
       { name: dto.name, task: dto.task, templatesDir: dto.templatesDir },
     );
 
-    if (!files?.length) {
+    if (!files?.length && !resultFiles?.length) {
       return;
     }
     const trainer = await TrainerEntity.findOne({ where: { id: trainerId } });
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
     }
-    await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
-    await ensureDir(path.join(rootPath, 'src', 'tasks', dto.templatesDir));
-    await Promise.all(
-      files.map(async (f) => {
-        await writeFile(
-          path.join(rootPath, 'src', 'tasks', dto.templatesDir, f.originalname),
-          f.buffer,
-        );
-      }),
-    );
+
+    if (files?.length) {
+      await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+      await ensureDir(path.join(rootPath, 'src', 'tasks', dto.templatesDir));
+      await Promise.all(
+        files.map(async (f) => {
+          await writeFile(
+            path.join(
+              rootPath,
+              'src',
+              'tasks',
+              dto.templatesDir,
+              f.originalname,
+            ),
+            f.buffer,
+          );
+        }),
+      );
+    }
+
+    if (resultFiles?.length) {
+      await remove(
+        path.join(rootPath, 'src', 'tasks-results', trainer.templatesDir),
+      );
+      await ensureDir(
+        path.join(rootPath, 'src', 'tasks-results', dto.templatesDir),
+      );
+      await Promise.all(
+        resultFiles.map(async (f) => {
+          await writeFile(
+            path.join(
+              rootPath,
+              'src',
+              'tasks-results',
+              dto.templatesDir,
+              f.originalname,
+            ),
+            f.buffer,
+          );
+        }),
+      );
+
+      const resultFileNames = await this.getFiles(
+        trainer.templatesDir,
+        'tasks-results',
+      );
+
+      const resultFilesContent = await Promise.all(
+        resultFileNames.map(async (fn) => {
+          const fileContent = await this.readFile(
+            path.join(
+              rootPath,
+              'src',
+              'tasks-results',
+              trainer.templatesDir,
+              fn,
+            ),
+          );
+
+          return {
+            label: fn,
+            content: fileContent,
+          };
+        }),
+      );
+      let html = resultFilesContent.find((f) =>
+        f.label.includes('html'),
+      )?.content;
+      const css = resultFilesContent.find((f) =>
+        f.label.includes('css'),
+      )?.content;
+
+      if (!html) {
+        return;
+      }
+      if (css) {
+        html = html.replace('<head>', `<head><style>${css}</style>`);
+      }
+      await nodeHtmlToImage({
+        output: path.join(
+          rootPath,
+          'src',
+          'tasks-results',
+          trainer.templatesDir,
+          'image.png',
+        ),
+        html,
+      });
+    }
   }
 
   async delete(id: number) {
@@ -177,8 +316,11 @@ export class TrainerService {
     await FilesHelper.removeFilesFromContent(trainer.task);
   }
 
-  private async getFiles(dir: string): Promise<string[]> {
-    const currPath = path.join(rootPath, 'src', 'tasks', dir);
+  private async getFiles(
+    dir: string,
+    parentFolder = 'tasks',
+  ): Promise<string[]> {
+    const currPath = path.join(rootPath, 'src', parentFolder, dir);
     const resultFiles = [];
     files.readdirSync(currPath).forEach((el) => {
       const isDir = el.split('.').length === 1;

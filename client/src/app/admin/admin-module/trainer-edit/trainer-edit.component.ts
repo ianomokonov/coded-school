@@ -41,27 +41,36 @@ export class TrainerEditComponent implements OnInit {
             templatesDir: [null, Validators.required],
             task: [null, Validators.required],
             files: [null, Validators.required],
+            resultFiles: [null, Validators.required],
         });
     }
     ngOnInit(): void {
         this.activeRoute.params.subscribe(({ id }) => {
             this.uploader?.clear();
             if (id === 'create') {
-                this.form.patchValue({ name: null, templatesDir: null, task: null, files: null });
+                this.form.patchValue({
+                    name: null,
+                    templatesDir: null,
+                    task: null,
+                    files: null,
+                    resultFiles: null,
+                });
                 this.form.get('files')?.setValidators(Validators.required);
+                this.form.get('resultFiles')?.setValidators(Validators.required);
                 this.trainer = undefined;
                 return;
             }
             this.form.get('files')?.setValidators([]);
-            this.trainerService.getTrainer({ id }).subscribe((m) => {
+            this.form.get('resultFiles')?.setValidators([]);
+            this.trainerService.getTrainerFull({ id }).subscribe((m) => {
                 this.trainer = m;
-                this.form.patchValue({ ...m, files: null });
+                this.form.patchValue({ ...m, files: null, resultFiles: null });
             });
         });
     }
 
-    onUpload(event: FileSelectEvent) {
-        this.form.patchValue({ files: event.currentFiles });
+    onUpload(event: FileSelectEvent, controlName: string) {
+        this.form.patchValue({ [controlName]: event.currentFiles });
     }
 
     onSave(): void {
@@ -88,6 +97,11 @@ export class TrainerEditComponent implements OnInit {
         if (formValue.files?.length) {
             formValue.files.forEach((f: File) => {
                 formData.append('files', f);
+            });
+        }
+        if (formValue.resultFiles?.length) {
+            formValue.resultFiles.forEach((f: File) => {
+                formData.append('resultFiles', f);
             });
         }
 

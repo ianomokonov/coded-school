@@ -10,4 +10,6 @@ export class TrainerDto {
   nextTaskId?: number;
   @AutoMap(() => [FileDto])
   files: FileDto[];
+  @AutoMap(() => [FileDto])
+  resultFiles?: FileDto[];
 }

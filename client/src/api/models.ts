@@ -2,6 +2,7 @@
 /* eslint-disable */
 export { AchievementDto } from './models/achievement-dto';
 export { AdminModuleDto } from './models/admin-module-dto';
+export { CheckTrainerDto } from './models/check-trainer-dto';
 export { CommentDto } from './models/comment-dto';
 export { CreateCommentDto } from './models/create-comment-dto';
 export { CreateLessonDto } from './models/create-lesson-dto';

@@ -16,6 +16,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class TrainerComponent implements OnInit {
     trainer: (TrainerDto & { isChecked?: boolean }) | undefined;
+    static = { html: '', css: '' };
     constructor(
         private renderer: Renderer2,
         private trainerService: TrainerService,
@@ -36,6 +37,8 @@ export class TrainerComponent implements OnInit {
     }
 
     onCodeChanged(value: { html: string; css: string }) {
+        this.static.html = value.html;
+        this.static.css = value.css;
         const iframe = this.renderer.createElement('iframe');
         iframe.classList.add('iframe');
         const styleWrapper = this.renderer.createElement('div');
@@ -54,8 +57,18 @@ export class TrainerComponent implements OnInit {
         if (!this.trainer) {
             return;
         }
+
+        if (!this.static.html) {
+            return;
+        }
+        let html = this.static.html;
+
+        if (this.static.css) {
+            html = html.replace('<head>', `<head><style>${this.static.css}</style>`);
+        }
+
         this.trainerService
-            .checkTrainer({ id: this.trainer?.id })
+            .checkTrainer({ id: this.trainer?.id, body: { html } })
             .pipe(takeUntil(this.destroy$))
             .subscribe((result) => {
                 if (!this.trainer) {

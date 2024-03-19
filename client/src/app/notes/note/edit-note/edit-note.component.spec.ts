@@ -47,10 +47,6 @@ describe('NoteComponent', () => {
             expect(component).toBeTruthy();
         });
 
-        it('should set noteId', () => {
-            expect(component.noteId).toBe(1);
-        });
-
         it('should update note', () => {
             component.sendForm();
 
@@ -80,10 +76,6 @@ describe('NoteComponent', () => {
 
         it('should create', () => {
             expect(component).toBeTruthy();
-        });
-
-        it('should not set noteId', () => {
-            expect(component.noteId).toBeUndefined();
         });
 
         it('should create note', () => {

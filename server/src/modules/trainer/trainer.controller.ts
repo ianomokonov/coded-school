@@ -16,6 +16,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
 import { TrainerShortDto } from './dto/trainer-short.dto';
+import { CheckTrainerDto } from './dto/check-trainer.dto';
 
 @ApiTags('Trainer')
 @Controller('trainer')
@@ -39,34 +40,55 @@ export class TrainerController {
     return this.editorService.read(id);
   }
 
+  @Get(':id/full')
+  async getTrainerFull(@Param('id') id: number): Promise<TrainerDto> {
+    return this.editorService.read(id, true);
+  }
+
   @Delete(':id')
   async deleteTrainer(@Param('id') id: number): Promise<void> {
     return this.editorService.delete(id);
   }
 
-  @Get(':id/check')
-  async checkTrainer(@Param('id') id: number): Promise<boolean> {
-    return this.editorService.checkTrainer(id);
+  @Post(':id/check')
+  async checkTrainer(
+    @Param('id') id: number,
+    @Body() body: CheckTrainerDto,
+  ): Promise<boolean> {
+    return this.editorService.checkTrainer(id, body.html);
   }
 
   @Post()
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'files' }, { name: 'contentFiles' }]),
+    FileFieldsInterceptor([
+      { name: 'files' },
+      { name: 'resultFiles' },
+      { name: 'contentFiles' },
+    ]),
   )
   createTrainer(
     @Body() body: CreateTrainerDto,
     @UploadedFiles()
     files: {
       files: Express.Multer.File[];
+      resultFiles: Express.Multer.File[];
       contentFiles: Express.Multer.File[];
     },
   ) {
     body.files = files.files;
-    return this.editorService.create(body, files.contentFiles);
+    return this.editorService.create(
+      body,
+      files.resultFiles,
+      files.contentFiles,
+    );
   }
   @Put(':id')
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'files' }, { name: 'contentFiles' }]),
+    FileFieldsInterceptor([
+      { name: 'files' },
+      { name: 'resultFiles' },
+      { name: 'contentFiles' },
+    ]),
   )
   updateTrainer(
     @Param('id') id: number,
@@ -74,9 +96,16 @@ export class TrainerController {
     @UploadedFiles()
     files: {
       files: Express.Multer.File[];
+      resultFiles: Express.Multer.File[];
       contentFiles: Express.Multer.File[];
     },
   ) {
-    return this.editorService.update(id, body, files.files, files.contentFiles);
+    return this.editorService.update(
+      id,
+      body,
+      files.files,
+      files.resultFiles,
+      files.contentFiles,
+    );
   }
 }
