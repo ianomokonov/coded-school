@@ -4,7 +4,7 @@
             <div class="h-50">
                 <coded-editor [trainer]="trainer" (onCode)="onCodeChanged($event)"></coded-editor>
             </div>
-            <div class="p-3 flex flex-column h-50">
+            <div class="p-3 flex flex-column h-50 overflow-auto">
                 <h3>{{ trainer.name }}</h3>
                 <div class="ql-snow mb-3 flex-grow-1">
                     <div class="ql-editor">
