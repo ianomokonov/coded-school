@@ -27,6 +27,12 @@ export class ModuleController {
     return this.moduleService.getAllModules();
   }
 
+  @Get('tree')
+  @ApiOperation({ summary: 'Получить дерево модулей' })
+  async getModulesTree() {
+    return this.moduleService.getModulesTree();
+  }
+
   @Post()
   @ApiBearerAuth('JWT')
   @Roles(Role.Admin)
@@ -52,12 +58,19 @@ export class ModuleController {
   async deleteUserModule(@Param('id') id: number) {
     return this.moduleService.deleteModule(id);
   }
+  @Get(':id/user')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить модуль пользователя' })
+  async readUserModule(@UserId() userId: number, @Param('id') id: number) {
+    return this.moduleService.readUserModule(id, userId);
+  }
   @Get(':id')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить модуль' })
-  async readUserModule(@UserId() userId: number, @Param('id') id: number) {
-    return this.moduleService.readUserModule(id, userId);
+  async readModule(@Param('id') id: number) {
+    return this.moduleService.readModule(id);
   }
   @Post(':id/start')
   @ApiBearerAuth('JWT')

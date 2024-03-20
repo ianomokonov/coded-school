@@ -28,4 +28,4 @@ export function readUserModule(http: HttpClient, rootUrl: string, params: ReadUs
   );
 }
 
-readUserModule.PATH = '/api/module/{id}';
+readUserModule.PATH = '/api/module/{id}/user';

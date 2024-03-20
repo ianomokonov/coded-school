@@ -43,6 +43,31 @@ export const APP_ROUTES: Routes = [
         canActivate: [jwtGuard],
     },
     {
+        path: 'marathon',
+        loadChildren: () => import('./marathon/marathon.routes').then((m) => m.MARATHON_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
+        path: 'topic',
+        loadChildren: () => import('./topic/topic.routes').then((m) => m.TOPIC_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
+        path: 'lesson',
+        loadChildren: () => import('./topic/lesson/lesson.routes').then((m) => m.LESSON_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
+        path: 'admin',
+        loadChildren: () => import('./admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
+        path: 'trainer',
+        loadChildren: () => import('./trainer/trainer.routes').then((m) => m.TRAINER_ROUTES),
+        canActivate: [jwtGuard],
+    },
+    {
         path: 'error/404',
         loadComponent: () =>
             import('./secure/not-found/not-found.component').then((c) => c.NotFoundComponent),

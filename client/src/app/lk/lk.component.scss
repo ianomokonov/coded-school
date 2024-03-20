@@ -9,3 +9,11 @@
 .refer-link-input {
     cursor: default;
 }
+
+::ng-deep {
+    .no-header {
+        .p-card-content {
+            padding-top: 0;
+        }
+    }
+}

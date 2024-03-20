@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { APP_ROUTES } from './app.routes';
@@ -9,6 +9,7 @@ import { ModuleService } from '@api/index';
 import { storeTokensInterceptor, tokenInterceptor } from '@jwt/interceptors';
 import { MessageService } from 'primeng/api';
 import { errorInterceptor } from '@core/error/interceptor';
+import { CodeEditorModule } from '@ngstack/code-editor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -20,5 +21,6 @@ export const appConfig: ApplicationConfig = {
         JwtService,
         ModuleService,
         MessageService,
+        importProvidersFrom(CodeEditorModule.forRoot()),
     ],
 };

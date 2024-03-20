@@ -7,6 +7,7 @@ import { SaveNoteDto } from '@dtos/note/create-note.dto';
 import { dateNow } from '@core/date-now.fn';
 import { UpdateNoteDto } from '@dtos/note/update-note.dto';
 import { GetAllNotesDto } from '@dtos/note/get-all-notes.dto';
+import { FilesHelper } from 'src/utils/files-helper';
 
 @Injectable()
 export class NoteService {
@@ -30,7 +31,17 @@ export class NoteService {
     return await NoteEntity.find({ where: { userId, isFavorite: true } });
   }
 
-  async createNote(userId: number, dto: SaveNoteDto) {
+  async createNote(
+    userId: number,
+    dto: SaveNoteDto,
+    files: Express.Multer.File[],
+  ) {
+    if (files?.length) {
+      dto.content = await FilesHelper.uploadFilesWithReplace(
+        files,
+        dto.content,
+      );
+    }
     const { id } = await NoteEntity.create({
       ...dto,
       createDate: dateNow(),
@@ -39,12 +50,36 @@ export class NoteService {
     return id;
   }
 
-  async updateNote(noteId: number, dto: UpdateNoteDto) {
-    await NoteEntity.update({ id: noteId }, { ...dto });
+  async updateNote(
+    noteId: number,
+    dto: UpdateNoteDto,
+    files: Express.Multer.File[],
+  ) {
+    if (dto.filesToDelete?.length) {
+      await FilesHelper.removeFiles(dto.filesToDelete);
+    }
+    if (files?.length) {
+      dto.content = await FilesHelper.uploadFilesWithReplace(
+        files,
+        dto.content,
+      );
+    }
+    delete dto.filesToDelete;
+    await NoteEntity.update(
+      { id: noteId },
+      {
+        ...dto,
+      },
+    );
   }
 
   async deleteNote(noteId: number) {
+    const note = await NoteEntity.findOne({ where: { id: noteId } });
+    if (!note) {
+      throw new NotFoundException('Заметка не найдена');
+    }
     await NoteEntity.delete({ id: noteId });
+    await FilesHelper.removeFilesFromContent(note.content);
   }
 
   async readNote(id: number): Promise<NoteDto> {

@@ -28,7 +28,7 @@ export class MarathonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Создать марафон' })
-  async createUserMarathon(@Body() dto: SaveMarathonDto) {
+  async createMarathon(@Body() dto: SaveMarathonDto) {
     return this.marathonService.createMarathon(dto);
   }
 
@@ -53,15 +53,29 @@ export class MarathonController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить марафон' })
-  async readUserMarathon(@Param('id') id: number) {
-    return this.marathonService.readMarathon(id);
+  async readUserMarathon(@UserId() userId: number, @Param('id') id: number) {
+    return this.marathonService.readUserMarathon(id, userId);
   }
-  @Post(':id/start')
+  @Get(':id/info')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Получить марафон без пользователя' })
+  async readMarathonInfo(@Param('id') id: number) {
+    return this.marathonService.readMarathonInfo(id);
+  }
+  @Put(':id/start')
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Стартовать марафон для текущего пользователя' })
   async startUserMarathon(@UserId() userId: number, @Param('id') id: number) {
     return this.marathonService.startMarathon(id, userId);
+  }
+  @Post(':id/create')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Создать марафон для текущего пользователя' })
+  async createUserMarathon(@UserId() userId: number, @Param('id') id: number) {
+    return this.marathonService.createUserMarathon(id, userId);
   }
   @Post(':id/complete')
   @ApiBearerAuth('JWT')

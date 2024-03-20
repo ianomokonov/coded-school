@@ -1,0 +1,62 @@
+<form [formGroup]="form" (ngSubmit)="onSave()">
+    <span class="p-float-label mb-3">
+        <input class="w-12" pInputText formControlName="name" />
+        <label for="email">Название тренажера</label>
+    </span>
+    <span class="p-float-label mb-3">
+        <input class="w-12" pInputText formControlName="templatesDir" />
+        <label for="email">Папка для шаблонов (англ)</label>
+    </span>
+    <div class="mb-3">
+        <p-editor formControlName="task" [style]="{ height: '320px' }"></p-editor>
+    </div>
+    <div class="mb-3">
+        <label for="files">Шаблоны задания</label>
+        <p-fileUpload
+            #uploader
+            id="files"
+            (onSelect)="onUpload($event, 'files')"
+            (onClear)="this.form.patchValue({ files: null })"
+            [multiple]="true"
+            [maxFileSize]="1000000"
+            [showUploadButton]="false"
+            [chooseLabel]="'Выбрать файл'"
+            [cancelLabel]="'Очистить файлы'"
+        >
+            <ng-template pTemplate="content">
+                @if (trainer?.files?.length && !form.get('files')?.value?.length) {
+                    <ul>
+                        @for (file of trainer?.files; track file.label) {
+                            <li>{{ file.label }}</li>
+                        }
+                    </ul>
+                }
+            </ng-template>
+        </p-fileUpload>
+    </div>
+    <div class="mb-3">
+        <label for="result">Файлы решения</label>
+        <p-fileUpload
+            #uploader
+            name="result"
+            (onSelect)="onUpload($event, 'resultFiles')"
+            (onClear)="this.form.patchValue({ files: null })"
+            [multiple]="true"
+            [maxFileSize]="1000000"
+            [showUploadButton]="false"
+            [chooseLabel]="'Выбрать файл'"
+            [cancelLabel]="'Очистить файлы'"
+        >
+            <ng-template pTemplate="content">
+                @if (trainer?.resultFiles?.length && !form.get('resultFiles')?.value?.length) {
+                    <ul>
+                        @for (file of trainer?.resultFiles; track file.label) {
+                            <li>{{ file.label }}</li>
+                        }
+                    </ul>
+                }
+            </ng-template>
+        </p-fileUpload>
+    </div>
+    <p-button label="Сохранить" type="submit"></p-button>
+</form>

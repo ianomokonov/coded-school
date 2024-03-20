@@ -3,4 +3,5 @@ export class UpdateNoteDto {
   isFavorite?: boolean;
   name?: string;
   moduleId?: number;
+  filesToDelete?: string[];
 }

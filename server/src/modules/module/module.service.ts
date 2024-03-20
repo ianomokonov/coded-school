@@ -6,6 +6,12 @@ import { ModuleDto } from '@dtos/module/module.dto';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
+import { UserLessonEntity } from '@modules/topic/lesson/entity/user-lesson.entity';
+import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
+import { AdminModuleDto } from '@dtos/module/admin-module.dto';
+import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
+import { IsNull } from 'typeorm';
+import { TopicChildDto } from '@dtos/topic/topic-child.dto';
 
 @Injectable()
 export class ModuleService {
@@ -24,6 +30,15 @@ export class ModuleService {
     await ModuleEntity.delete({ id: moduleId });
   }
 
+  async readModule(moduleId: number): Promise<ModuleDto> {
+    const module = await ModuleEntity.findOne({ where: { id: moduleId } });
+
+    if (!module) {
+      throw new NotFoundException('Модуль не найден');
+    }
+    return this.mapper.map(module, ModuleEntity, ModuleDto);
+  }
+
   async readUserModule(
     moduleId: number,
     userId: number,
@@ -31,18 +46,48 @@ export class ModuleService {
     const userModule = await UserModuleEntity.findOne({
       where: { moduleId, userId },
       relations: {
-        module: { topics: true, achievements: true },
+        module: { topics: { lessons: true }, achievements: true },
         user: { achievements: true },
         topics: true,
       },
     });
 
-    return this.mapper.map(userModule, UserModuleEntity, UserModuleDto);
+    const dto = this.mapper.map(userModule, UserModuleEntity, UserModuleDto);
+
+    dto.topics = await Promise.all(
+      dto.topics.map(async (t) => {
+        const completedLessonsCount = await UserLessonEntity.count({
+          where: { userId, lesson: { topicId: t.id }, isCompleted: true },
+          relations: { lesson: true },
+        });
+        t.isCompleted = completedLessonsCount === t.lessonIds.length;
+        return t;
+      }),
+    );
+
+    dto.completedTopicsCount = dto.topics.filter((t) => t.isCompleted).length;
+
+    return dto;
   }
 
   async getAllModules(): Promise<ModuleDto[]> {
     const modules = await ModuleEntity.find();
     return modules.map((m) => ({ id: m.id, name: m.name }));
+  }
+
+  async getModulesTree(): Promise<AdminModuleDto> {
+    const modules = await ModuleEntity.find({
+      relations: { topics: { lessons: true, trainers: true } },
+    });
+    const trainers = await TrainerEntity.find({ where: { topicId: IsNull() } });
+    const dto: AdminModuleDto = {
+      modules: modules.map((m) =>
+        this.mapper.map(m, ModuleEntity, ModuleTreeDto),
+      ),
+      trainers: this.mapper.mapArray(trainers, TrainerEntity, TopicChildDto),
+    };
+
+    return dto;
   }
 
   async startModule(moduleId: number, userId: number) {

@@ -1,4 +1,8 @@
+import { AutoMap } from '@automapper/classes';
+import { MarathonInfoDto } from './marathon-info.dto';
+
 export class MarathonDto {
-  id: number;
-  name: string;
+  @AutoMap(() => MarathonInfoDto)
+  info: MarathonInfoDto;
+  isCompleted?: boolean;
 }

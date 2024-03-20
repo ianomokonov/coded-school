@@ -4,8 +4,9 @@ import { NoteDto } from '@api/models/note-dto';
 import { NotesService } from '@api/services/notes.service';
 import { DestroyService } from '@core/destroy.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable, takeUntil, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'coded-note',
@@ -18,11 +19,13 @@ import { AsyncPipe } from '@angular/common';
 export class NoteComponent implements OnInit {
     note$!: Observable<NoteDto>;
     noteId!: number;
+    content?: SafeHtml;
 
     constructor(
         private notesService: NotesService,
         private destroy$: DestroyService,
         public readonly route: ActivatedRoute,
+        private dom: DomSanitizer,
     ) {
         this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             this.noteId = params['id'];
@@ -30,6 +33,12 @@ export class NoteComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.note$ = this.notesService.readNote({ id: this.noteId });
+        this.note$ = this.notesService.readNote({ id: this.noteId }).pipe(
+            tap((n) => {
+                if (n.content) {
+                    this.content = this.dom.bypassSecurityTrustHtml(n.content);
+                }
+            }),
+        );
     }
 }

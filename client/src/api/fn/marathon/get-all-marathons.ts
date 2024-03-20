@@ -6,12 +6,12 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { MarathonDto } from '../../models/marathon-dto';
+import { MarathonInfoDto } from '../../models/marathon-info-dto';
 
 export interface GetAllMarathons$Params {
 }
 
-export function getAllMarathons(http: HttpClient, rootUrl: string, params?: GetAllMarathons$Params, context?: HttpContext): Observable<BaseResponse<Array<MarathonDto>>> {
+export function getAllMarathons(http: HttpClient, rootUrl: string, params?: GetAllMarathons$Params, context?: HttpContext): Observable<BaseResponse<Array<MarathonInfoDto>>> {
   const rb = new RequestBuilder(rootUrl, getAllMarathons.PATH, 'get');
   if (params) {
   }
@@ -21,7 +21,7 @@ export function getAllMarathons(http: HttpClient, rootUrl: string, params?: GetA
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<Array<MarathonDto>>;
+      return r as BaseResponse<Array<MarathonInfoDto>>;
     })
   );
 }

@@ -3,9 +3,16 @@
 @import 'primeng/resources/primeng.css';
 @import 'primeflex/primeflex.scss';
 @import 'primeicons/primeicons.css';
+@import 'quill/dist/quill.core.css';
+@import 'quill/dist/quill.snow.css';
 
-body {
+body,
+html,
+coded-root,
+coded-trainer {
     margin: 0;
+    height: 100%;
+    display: block;
 }
 
 .container {
@@ -54,4 +61,19 @@ p-calendar.p-inputwrapper-filled {
 
 a.p-button {
     text-decoration: none;
+}
+
+.clickable {
+    cursor: pointer;
+    &:hover {
+        color: var(--primary-500);
+    }
+}
+
+.h-50 {
+    height: 50%;
+}
+
+.h-50vh {
+    height: 50vh;
 }

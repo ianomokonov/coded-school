@@ -1,0 +1,34 @@
+<div>
+    <div class="text-3xl mb-4">Последние комментарии</div>
+    <div class="comments pb-3">
+        @for (comment of comments; track comment.id) {
+            <p-card
+                [header]="comment.user.firstName + ' ' + comment.user.secondName"
+                styleClass="mb-3"
+            >
+                @if (comment.relativeComment) {
+                    <div
+                        class="mb-3 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
+                        [innerHTML]="comment.relativeComment.text"
+                    ></div>
+                }
+                <p [innerHTML]="comment.text"></p>
+                @if (!comment.isEditing) {
+                    <p-button
+                        label="Ответить"
+                        [outlined]="true"
+                        (onClick)="onAnswer(comment)"
+                    ></p-button>
+                } @else {
+                    <coded-create-comment
+                        (onSaveComment)="createComment($event, comment)"
+                    ></coded-create-comment>
+                }
+            </p-card>
+        } @empty {
+            <p class="text-xl">Комментарии отсутствуют</p>
+        }
+
+        <p-button label="Ещё" (onClick)="getComments()"></p-button>
+    </div>
+</div>

@@ -13,7 +13,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                     typeof httpError.error === 'string'
                         ? JSON.parse(httpError.error)
                         : httpError.error;
-                switch (error.statusCode) {
+                switch (error?.statusCode) {
                     case 401:
                         throw httpError;
                     case 500:
@@ -25,7 +25,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                     default:
                         messageService.add({
                             severity: 'error',
-                            detail: error.message,
+                            detail:
+                                error?.message ||
+                                'Произошла ошибка на сервере, повторите попытку позже',
                         });
                 }
                 throw httpError;

@@ -12,6 +12,8 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TopicService } from './topic.service';
 import { SaveTopicDto } from '@dtos/topic/save-topic.dto';
 import { JwtAuthGuard } from '@guards/user/jwt.guard';
+import { UserId } from '@decorators/author-id.decorator';
+import { MoveTopicChildDto } from '@dtos/topic/move-topic-child.dto';
 
 @ApiTags('Topic')
 @Controller('topic')
@@ -23,6 +25,14 @@ export class TopicController {
   @ApiOperation({ summary: 'Создать тему' })
   async createTopic(@Body() dto: SaveTopicDto) {
     return this.topicService.create(dto);
+  }
+
+  @Put('move-child')
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Изменить сортировку тренажеров и уроков' })
+  async moveChild(@Body() dto: MoveTopicChildDto) {
+    return this.topicService.moveChild(dto);
   }
 
   @Put(':id')
@@ -43,7 +53,7 @@ export class TopicController {
   @ApiBearerAuth('JWT')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Получить тему' })
-  async readTopic(@Param('id') id: number) {
-    return this.topicService.read(id);
+  async readTopic(@Param('id') id: number, @UserId() userId: number) {
+    return this.topicService.read(id, userId);
   }
 }

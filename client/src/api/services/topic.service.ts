@@ -13,6 +13,8 @@ import { createTopic } from '../fn/topic/create-topic';
 import { CreateTopic$Params } from '../fn/topic/create-topic';
 import { deleteTopic } from '../fn/topic/delete-topic';
 import { DeleteTopic$Params } from '../fn/topic/delete-topic';
+import { moveChild } from '../fn/topic/move-child';
+import { MoveChild$Params } from '../fn/topic/move-child';
 import { readTopic } from '../fn/topic/read-topic';
 import { ReadTopic$Params } from '../fn/topic/read-topic';
 import { TopicDto } from '../models/topic-dto';
@@ -55,6 +57,39 @@ export class TopicService extends BaseService {
   createTopic(params: CreateTopic$Params, context?: HttpContext): Observable<number> {
     return this.createTopic$Response(params, context).pipe(
       map((r: BaseResponse<number>): number => r.body)
+    );
+  }
+
+  /** Path part for operation `moveChild()` */
+  static readonly MoveChildPath = '/api/topic/move-child';
+
+  /**
+   * Изменить сортировку тренажеров и уроков.
+   *
+   *
+   *
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `moveChild()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  moveChild$Response(params: MoveChild$Params, context?: HttpContext): Observable<BaseResponse<void>> {
+    return moveChild(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * Изменить сортировку тренажеров и уроков.
+   *
+   *
+   *
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `moveChild$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  moveChild(params: MoveChild$Params, context?: HttpContext): Observable<void> {
+    return this.moveChild$Response(params, context).pipe(
+      map((r: BaseResponse<void>): void => r.body)
     );
   }
 

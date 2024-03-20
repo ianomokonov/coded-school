@@ -14,6 +14,10 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import * as path from 'path';
 import { NoteModule } from '@modules/note/note.module';
 import { TopicModule } from '@modules/topic/topic.module';
+import { MailService } from '@mail/service';
+import { TrainerModule } from '@modules/trainer/trainer.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { path as rootPath } from 'app-root-path';
 
 @Module({
   imports: [
@@ -36,14 +40,18 @@ import { TopicModule } from '@modules/topic/topic.module';
         },
       },
       template: {
-        // TODO[volik25 | 09.02.2024 ]: настроить корректный join
-        dir: path.join(process.cwd(), 'src/mail/templates'),
+        dir: path.resolve(__dirname, 'mail', 'templates'),
         adapter: new PugAdapter(),
         options: {
           strict: true,
         },
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(rootPath, 'src', 'static'),
+      serveRoot: '/static',
+    }),
+
     AutomapperModule.forRoot({ strategyInitializer: classes() }),
     UserModule,
     ModuleModule,
@@ -51,7 +59,9 @@ import { TopicModule } from '@modules/topic/topic.module';
     AchievementModule,
     NoteModule,
     TopicModule,
+    TrainerModule,
   ],
+  providers: [MailService],
 })
 export class AppModule {
   public static getDatabaseConfig(): unknown {

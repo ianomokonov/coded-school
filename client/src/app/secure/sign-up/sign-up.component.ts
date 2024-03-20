@@ -27,6 +27,7 @@ export class SignUpComponent {
         private router: Router,
         private route: ActivatedRoute,
         private destroy$: DestroyService,
+        private activatedRoute: ActivatedRoute,
     ) {
         this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             this.referralCode = params['ref'];
@@ -44,7 +45,9 @@ export class SignUpComponent {
             .signUp({ body: this.userForm.getRawValue() })
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
-                this.router.navigate(['/lk']);
+                this.router.navigate([
+                    this.activatedRoute.snapshot.queryParams['returnUrl'] || '/lk',
+                ]);
             });
     }
 }

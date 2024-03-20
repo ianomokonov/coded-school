@@ -25,6 +25,20 @@ import { UserModuleEntity } from '@entities/module/user-module.entity';
 import { UserModuleDto } from '@dtos/module/user-module.dto';
 import { UserTopicDto } from '@dtos/module/user-topic.dto';
 import { UserModuleAchievementDto } from '@dtos/user/user-achievement.dto';
+import { UserMarathonEntity } from '@entities/marathon/user-marathon.entity';
+import { TopicEntity } from '@entities/topic/topic.entity';
+import { TopicDto } from '@dtos/topic/topic.dto';
+import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
+import { LessonDto } from '@modules/topic/lesson/dto/lesson.dto';
+import { CommentEntity } from '@modules/topic/comment/entity/comment.entity';
+import { CommentDto } from '@modules/topic/comment/dto/comment.dto';
+import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
+import { TrainerDto } from '@modules/trainer/dto/trainer.dto';
+import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
+import { TopicTreeDto } from '@dtos/topic/topic-tree.dto';
+import { TopicChildDto } from '@dtos/topic/topic-child.dto';
+import { MarathonInfoDto } from '@dtos/marathon/marathon-info.dto';
+import { TrainerShortDto } from '@modules/trainer/dto/trainer-short.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -38,7 +52,96 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, NoteEntity, NoteDto);
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(
+        mapper,
+        MarathonEntity,
+        MarathonInfoDto,
+        forMember(
+          (d) => d.trainers,
+          mapFrom((s) => s.trainers?.map((t) => t.trainer)),
+        ),
+      );
       createMap(mapper, AchievementEntity, AchievementDto);
+      createMap(mapper, TopicEntity, TopicDto);
+      createMap(mapper, LessonEntity, LessonDto);
+      createMap(mapper, CommentEntity, CommentDto);
+      createMap(mapper, TrainerEntity, TrainerDto);
+      createMap(mapper, TrainerEntity, TrainerShortDto);
+      createMap(mapper, ModuleEntity, ModuleTreeDto);
+      createMap(
+        mapper,
+        LessonEntity,
+        TopicChildDto,
+        forMember(
+          (d) => d.type,
+          mapFrom(() => 'lesson'),
+        ),
+      );
+      createMap(
+        mapper,
+        TrainerEntity,
+        TopicChildDto,
+        forMember(
+          (d) => d.type,
+          mapFrom(() => 'trainer'),
+        ),
+      );
+      createMap(
+        mapper,
+        TopicEntity,
+        TopicTreeDto,
+        forMember(
+          (d) => d.children,
+          mapFrom((source) => {
+            const result: TopicChildDto[] = [];
+            let activeChild: TrainerEntity | LessonEntity = source.lessons.find(
+              (l) =>
+                !source.lessons.some((sl) => sl.nextLessonId === l.id) &&
+                !source.trainers.some((sl) => sl.nextLessonId === l.id),
+            );
+            while (!!activeChild) {
+              result.push(
+                mapper.map(
+                  activeChild,
+                  activeChild instanceof LessonEntity
+                    ? LessonEntity
+                    : TrainerEntity,
+                  TopicChildDto,
+                ),
+              );
+              if (activeChild.nextLessonId) {
+                activeChild = source.lessons.find(
+                  (l) => l.id === activeChild.nextLessonId,
+                );
+                continue;
+              }
+              if (activeChild.nextTaskId) {
+                activeChild = source.trainers.find(
+                  (l) => l.id === activeChild.nextTaskId,
+                );
+                continue;
+              }
+              activeChild = null;
+            }
+            return result;
+          }),
+        ),
+      );
+      createMap(
+        mapper,
+        UserMarathonEntity,
+        MarathonDto,
+        forMember(
+          (dest) => dest.isCompleted,
+          mapFrom((source) => source.isCompleted),
+        ),
+        forMember(
+          (dest) => dest.info,
+          mapFrom((source) =>
+            mapper.map(source.marathon, MarathonEntity, MarathonInfoDto),
+          ),
+        ),
+      );
       createMap(
         mapper,
         UserEntity,
@@ -77,7 +180,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => !m.isCompleted)
-              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
@@ -85,7 +188,7 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.marathons
               .filter((m) => m.isCompleted)
-              .map((m) => mapper.map(m.marathon, MarathonEntity, MarathonDto)),
+              .map((m) => mapper.map(m, UserMarathonEntity, MarathonDto)),
           ),
         ),
         forMember(
@@ -112,12 +215,6 @@ export class UserProfile extends AutomapperProfile {
         extend(ModuleEntity, ModuleDto),
         extend(AchievementEntity, AchievementDto),
         forMember(
-          (destination) => destination.completedTopicsCount,
-          mapFrom(
-            (source) => source.topics.filter((t) => t.isCompleted).length,
-          ),
-        ),
-        forMember(
           (dest) => dest.name,
           mapFrom((source) => source.module.name),
         ),
@@ -134,9 +231,6 @@ export class UserProfile extends AutomapperProfile {
           mapFrom((source) =>
             source.module.topics.map((t) => {
               const result = new UserTopicDto(t);
-              result.isCompleted = !!source.topics.find(
-                (ut) => ut.topicId === t.id && ut.isCompleted,
-              );
               return result;
             }),
           ),

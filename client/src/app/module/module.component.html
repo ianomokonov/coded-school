@@ -18,9 +18,11 @@
                     >Заметки модуля</a
                 >
             </div>
-            <p-progressBar [value]="(module.completedTopicsCount / module.topics.length) * 100">
+            <p-progressBar
+                [value]="(module.completedTopicsCount / (module.topics?.length || 1)) * 100"
+            >
                 <ng-template #progress pTemplate="content" let-value>
-                    <span>{{ module.completedTopicsCount }}/{{ module.topics.length }}</span>
+                    <span>{{ module.completedTopicsCount }}/{{ module.topics?.length || 0 }}</span>
                 </ng-template>
             </p-progressBar>
 
@@ -45,10 +47,13 @@
         <div>
             @for (topic of module.topics; track topic.id; let last = $last) {
                 <div
-                    class="border-200 py-3"
+                    class="border-200 py-3 flex align-items-center"
                     [ngClass]="{ 'border-none': last, 'border-bottom-1': !last }"
                 >
-                    <a [routerLink]="['/topic', topic.id]">{{ topic.name }}</a>
+                    <a class="mr-2" [routerLink]="['/topic', topic.id]">{{ topic.name }}</a>
+                    @if (topic.isCompleted) {
+                        <i class="pi pi-check-circle text-green-400"></i>
+                    }
                 </div>
             } @empty {
                 <span>Нет активных тем</span>

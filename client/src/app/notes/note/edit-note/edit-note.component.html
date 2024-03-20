@@ -1,5 +1,5 @@
 <p-card class="card">
-    <h1>{{ noteId ? 'Редактирование' : 'Создание' }} заметки</h1>
+    <h1>{{ note ? 'Редактирование' : 'Создание' }} заметки</h1>
 
     <form class="form" [formGroup]="noteForm" (ngSubmit)="sendForm()">
         <span class="p-float-label">
@@ -7,16 +7,7 @@
             <label for="name">Название</label>
         </span>
 
-        <span class="p-float-label">
-            <textarea
-                class="w-12"
-                id="context"
-                rows="5"
-                pInputTextarea
-                formControlName="content"
-            ></textarea>
-            <label for="context">Содержание</label>
-        </span>
+        <p-editor formControlName="content" [style]="{ height: '220px' }"></p-editor>
 
         <p-button label="Сохранить заметку" type="submit"></p-button>
     </form>

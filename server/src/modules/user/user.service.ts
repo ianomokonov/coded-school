@@ -21,6 +21,7 @@ import { SignInDto } from '@dtos/user/sign-in.dto';
 import { dateNow } from '@core/date-now.fn';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import * as process from 'process';
+import * as path from 'path';
 import { MailService } from '@mail/service';
 import { UpdateForgottenPassDto } from '@dtos/user/update-forgotten-pass.dto';
 
@@ -92,7 +93,7 @@ export class UserService {
     const data: ISendMailOptions = {
       to: email,
       subject: 'Сброс пароля',
-      template: 'reset-password/template',
+      template: path.join('reset-password', 'template'),
       context: {
         link:
           process.env.RESET_PASSWORD_URL +
@@ -125,6 +126,24 @@ export class UserService {
       where: { id },
     });
     return this.mapper.map(user, UserEntity, UserShortDto);
+  }
+  async getUserWithRoles(
+    id: number,
+  ): Promise<UserShortDto & { roles: string[] }> {
+    const user = await UserEntity.findOne({
+      where: { id },
+      relations: { roles: { role: true } },
+    });
+    const dto = this.mapper.map(user, UserEntity, UserShortDto);
+
+    return { ...dto, roles: user.roles.map((r) => r.role.name) };
+  }
+
+  async getAdmins(): Promise<UserShortDto[]> {
+    const users = await UserEntity.find({
+      where: { roles: { role: { name: 'admin' } } },
+    });
+    return this.mapper.mapArray(users, UserEntity, UserShortDto);
   }
 
   async getUserFullInfo(id: number): Promise<UserFullInfoDto> {

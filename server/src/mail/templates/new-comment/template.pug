@@ -1,0 +1,10 @@
+doctype html
+html
+    head
+        style
+            include styles.css
+    body
+        h1 Новый коментарий от пользователя #{user.firstName} #{user.secondName}
+        p Посмотреть #[a(href=link) урок]
+        div Текст комментария:
+        div !{dto.text}

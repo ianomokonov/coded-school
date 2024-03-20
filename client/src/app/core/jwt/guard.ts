@@ -8,6 +8,7 @@ export const jwtGuard: CanActivateFn = () => {
     if (jwtService.checkToken()) {
         return true;
     }
-    router.navigate(['/sign-in']);
-    return false;
+
+    router.navigate(['/sign-in'], { queryParams: { returnUrl: location.pathname } });
+    return true;
 };

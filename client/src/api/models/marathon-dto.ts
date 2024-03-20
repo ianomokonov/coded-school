@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
+import { MarathonInfoDto } from '../models/marathon-info-dto';
 export interface MarathonDto {
-  id: number;
-  name: string;
+  info: MarathonInfoDto;
+  isCompleted?: boolean;
 }

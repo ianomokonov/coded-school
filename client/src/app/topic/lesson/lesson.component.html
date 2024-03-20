@@ -1,0 +1,68 @@
+@if (lesson) {
+    <div class="container py-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ lesson.name }}</h2>
+            </div>
+        </p-card>
+        <div class="ql-snow mb-3">
+            <div class="ql-editor">
+                <div #text [innerHTML]="content" (selectionchange)="onSelectionChanged()"></div>
+            </div>
+        </div>
+        <p-contextMenu [target]="text" [model]="menuItems"></p-contextMenu>
+
+        @if (lesson.nextLessonId) {
+            <p-button
+                (onClick)="completeLesson()"
+                label="К следующему уроку"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        } @else if (lesson.nextTaskId) {
+            <p-button
+                [routerLink]="['/trainer', lesson.nextTaskId]"
+                label="К заданию"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        } @else {
+            <p-button
+                (onClick)="completeLesson()"
+                label="Следующая тема"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+            ></p-button>
+        }
+        <div class="pt-4 mt-5 border-top-1 border-200">
+            <coded-comments [quote]="quote" [lessonId]="lesson.id"></coded-comments>
+        </div>
+    </div>
+}
+
+<p-dialog
+    header="Создание заметки"
+    [(visible)]="showNoteModal"
+    [style]="{ width: '50vw' }"
+    (onHide)="showNoteModal = false"
+>
+    <form class="form" [formGroup]="noteForm" (ngSubmit)="sendForm()">
+        <span class="p-float-label mb-3">
+            <input class="w-12" pInputText type="text" formControlName="name" />
+            <label for="name">Название</label>
+        </span>
+
+        <div class="mb-3">
+            <p-editor formControlName="content" [style]="{ height: '320px' }"></p-editor>
+        </div>
+
+        <p-button label="Сохранить заметку" type="submit"></p-button>
+    </form>
+</p-dialog>
