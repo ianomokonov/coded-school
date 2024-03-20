@@ -38,7 +38,7 @@ export class AdminMarathonComponent implements OnInit {
                 body: { name: this.nameControl.value, difficulty: 'junior', points: 0 },
             })
             .subscribe(() => {
-                this.nameControl.setValue(null);
+                this.nameControl.reset();
                 this.getMarathons();
             });
     }

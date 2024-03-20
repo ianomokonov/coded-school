@@ -52,10 +52,12 @@ export class TrainerService {
       return dto;
     }
 
-    const resultFileNames = await this.getFiles(
+    let resultFileNames = await this.getFiles(
       trainer.templatesDir,
       'tasks-results',
     );
+
+    resultFileNames = resultFileNames.filter((fn) => fn !== 'image.png');
 
     dto.resultFiles = await Promise.all(
       resultFileNames.map(async (fn) => {

@@ -7,18 +7,35 @@
                 styleClass="mb-3"
             >
                 @if (comment.relativeComment) {
-                    <div
-                        class="mb-3 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
-                        [innerHTML]="comment.relativeComment.text"
-                    ></div>
+                    <div class="ql-snow">
+                        <div class="ql-editor">
+                            <div
+                                class="mb-3 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
+                                [innerHTML]="comment.relativeComment.text"
+                            ></div>
+                        </div>
+                    </div>
                 }
-                <p [innerHTML]="comment.text"></p>
+                <div class="ql-snow">
+                    <div class="ql-editor">
+                        <p [innerHTML]="comment.text"></p>
+                    </div>
+                </div>
                 @if (!comment.isEditing) {
-                    <p-button
-                        label="Ответить"
-                        [outlined]="true"
-                        (onClick)="onAnswer(comment)"
-                    ></p-button>
+                    <div class="flex gap-1">
+                        <p-button
+                            label="Ответить"
+                            [outlined]="true"
+                            (onClick)="onAnswer(comment)"
+                        ></p-button>
+                        <p-button
+                            label="Перейти к уроку"
+                            [outlined]="true"
+                            [routerLink]="['/lesson', comment.lessonId]"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                        ></p-button>
+                    </div>
                 } @else {
                     <coded-create-comment
                         (onSaveComment)="createComment($event, comment)"

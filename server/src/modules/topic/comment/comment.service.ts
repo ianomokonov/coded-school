@@ -34,7 +34,9 @@ export class CommentService {
     }
     const { id } = await CommentEntity.create({ userId, ...dto }).save();
     if (true || !user.roles.includes('admin')) {
+      //TODO убрать true
       const admins = await this.userService.getAdmins();
+      dto.text = FilesHelper.setImgBackUrl(dto.text);
 
       await Promise.all(
         admins.map(async (a) => {

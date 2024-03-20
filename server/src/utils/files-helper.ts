@@ -52,4 +52,18 @@ export class FilesHelper {
 
     await FilesHelper.removeFiles(clearedFileNames);
   }
+
+  static setImgBackUrl(content: string): string {
+    const fileNames = content.match(/img src=".+"/g);
+    if (!fileNames?.length) {
+      return content;
+    }
+
+    fileNames.forEach((fn) => {
+      const newFn = fn.replace('img src="', `img src="${process.env.BACK_URL}`);
+      content = content.replaceAll(fn, newFn);
+    });
+
+    return content;
+  }
 }

@@ -53,7 +53,7 @@
     [style]="{ width: '50vw' }"
     (onHide)="showNoteModal = false"
 >
-    <form class="form" [formGroup]="noteForm" (ngSubmit)="sendForm()">
+    <form class="form pt-3" [formGroup]="noteForm" (ngSubmit)="sendForm()">
         <span class="p-float-label mb-3">
             <input class="w-12" pInputText type="text" formControlName="name" />
             <label for="name">Название</label>

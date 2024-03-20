@@ -72,6 +72,8 @@ export class CommentsComponent implements OnInit {
         });
 
         this.fileUploadService.createComment(formData).subscribe(() => {
+            this.quoteHtml = undefined;
+            this.quoteString = undefined;
             this.getComments();
         });
     }
