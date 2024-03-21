@@ -81,3 +81,12 @@ a.p-button {
 .h-50vh {
     height: 50vh;
 }
+
+.quote-img {
+    height: 2rem;
+    width: auto;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    border-radius: var(--border-radius)
+}

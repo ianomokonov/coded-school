@@ -14,7 +14,7 @@
             >
                 @if (!!comment.quote) {
                     <div
-                        class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-indigo-500 bg-indigo-50"
+                        class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-indigo-500 bg-indigo-50 relative"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                             <path
@@ -33,7 +33,7 @@
                     <div class="ql-snow mb-3">
                         <div class="ql-editor">
                             <div
-                                class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50"
+                                class="mb-3 p-3 white-space-nowrap overflow-hidden text-overflow-ellipsis border-1 border-round border-dashed border-primary-500 bg-blue-50 relative"
                                 [innerHTML]="comment.relativeComment.text"
                             ></div>
                         </div>

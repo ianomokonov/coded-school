@@ -51,10 +51,22 @@ export class CommentsComponent implements OnInit {
             .readLessonComments({ id: this.lessonId })
             .pipe(takeUntil(this.destroy$))
             .subscribe((comments) => {
-                this.comments = comments.map((c) => ({
-                    ...c,
-                    quoteHtml: c.quote && this.dom.bypassSecurityTrustHtml(c.quote),
-                }));
+                this.comments = comments.map((c) => {
+                    const preparedQuote = c.quote && this.prepareQuote(c.quote);
+                    const relativeContent =
+                        c.relativeComment && this.prepareQuote(c.relativeComment.text);
+                    return {
+                        ...c,
+                        relativeComment: c.relativeComment
+                            ? {
+                                  ...c.relativeComment,
+                                  text: relativeContent!,
+                              }
+                            : undefined,
+                        quote: preparedQuote,
+                        quoteHtml: preparedQuote && this.dom.bypassSecurityTrustHtml(preparedQuote),
+                    };
+                });
             });
     }
 
@@ -90,5 +102,27 @@ export class CommentsComponent implements OnInit {
 
     onAnswer(comment: Comment) {
         comment.isEditing = !comment.isEditing;
+    }
+
+    private prepareQuote(quote: string) {
+        const imgs = quote.match(/<img src=".*"/);
+        // console.log(quote, imgs);
+
+        if (!imgs?.length) {
+            return quote;
+        }
+
+        const firstImg = imgs[0].replace('<img', '<img class="quote-img"');
+
+        imgs.forEach((img, index) => {
+            if (!index) {
+                quote = quote.replace(img, firstImg);
+                return;
+            }
+
+            quote = quote.replace(img, '');
+        });
+
+        return quote;
     }
 }
