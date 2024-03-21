@@ -7,9 +7,10 @@ import {
 } from '@nestjs/swagger';
 import { exec } from 'child_process';
 import { ValidationPipe } from '@nestjs/common';
+import { MyLogger } from './logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: new MyLogger() });
   app.setGlobalPrefix('api');
   const documentOptions: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
