@@ -21,18 +21,22 @@ coded-trainer {
 }
 
 .p-float-label input:focus ~ label,
+.p-float-label input:-webkit-autofill ~ label,
+.p-float-label p-password:has(input:-webkit-autofill) ~ label,
 .p-float-label input.p-filled ~ label,
 .p-float-label textarea:focus ~ label,
 .p-float-label textarea.p-filled ~ label,
 .p-float-label .p-inputwrapper-focus ~ label,
 .p-float-label .p-inputwrapper-filled ~ label {
     top: 1rem;
+    font-size: 12px;
 }
 
 .p-inputtext {
     padding-top: 1rem;
     padding-bottom: 1rem;
     &:focus,
+    &:-webkit-autofill,
     &.p-filled {
         padding-top: 1.5rem;
         padding-bottom: 0.5rem;
