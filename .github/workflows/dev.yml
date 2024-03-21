@@ -3,7 +3,7 @@ name: Deploy DEV
 on:
   push:
     branches:
-      - feature/CODED-75
+      - master
 
 jobs:
   deploy:
