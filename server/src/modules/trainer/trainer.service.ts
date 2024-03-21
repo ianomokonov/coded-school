@@ -92,6 +92,9 @@ export class TrainerService {
     await nodeHtmlToImage({
       output: path.join(imgPath, imgName),
       html,
+      puppeteerArgs: {
+        args: ['--no-sandbox'],
+      },
     });
     const { equal } = await looksSame(
       path.join(imgPath, imgName),
@@ -296,6 +299,9 @@ export class TrainerService {
           'image.png',
         ),
         html,
+        puppeteerArgs: {
+          args: ['--no-sandbox'], //TODO небезопасно, в проде нужно настраивать без этого флага
+        },
       });
     }
   }
