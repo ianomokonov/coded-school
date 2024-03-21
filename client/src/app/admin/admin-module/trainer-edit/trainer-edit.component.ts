@@ -9,6 +9,8 @@ import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileuploa
 import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
 import { FileUploadService } from '@app/services/file-upload.service';
 import { EditorHelper } from '@app/utils/editor-helper';
+import { DestroyService } from '@core/destroy.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -21,6 +23,7 @@ import { EditorHelper } from '@app/utils/editor-helper';
         RouterModule,
         FileUploadModule,
     ],
+    providers: [DestroyService],
     templateUrl: './trainer-edit.component.html',
 })
 export class TrainerEditComponent implements OnInit {
@@ -35,6 +38,7 @@ export class TrainerEditComponent implements OnInit {
         private activeRoute: ActivatedRoute,
         private fb: FormBuilder,
         private router: Router,
+        private destroy$: DestroyService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -45,7 +49,7 @@ export class TrainerEditComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        this.activeRoute.params.subscribe(({ id }) => {
+        this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
             this.uploader?.clear();
             if (id === 'create') {
                 this.form.patchValue({
@@ -62,10 +66,13 @@ export class TrainerEditComponent implements OnInit {
             }
             this.form.get('files')?.setValidators([]);
             this.form.get('resultFiles')?.setValidators([]);
-            this.trainerService.getTrainerFull({ id }).subscribe((m) => {
-                this.trainer = m;
-                this.form.patchValue({ ...m, files: null, resultFiles: null });
-            });
+            this.trainerService
+                .getTrainerFull({ id })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((m) => {
+                    this.trainer = m;
+                    this.form.patchValue({ ...m, files: null, resultFiles: null });
+                });
         });
     }
 
@@ -109,7 +116,10 @@ export class TrainerEditComponent implements OnInit {
             prevFiles.forEach((p) => {
                 formData.append('filesToDelete[]', p);
             });
-            this.withUploadService.updateTrainer(this.trainer.id, formData).subscribe(() => {});
+            this.withUploadService
+                .updateTrainer(this.trainer.id, formData)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(() => {});
             return;
         }
 
@@ -117,16 +127,19 @@ export class TrainerEditComponent implements OnInit {
             formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
         }
 
-        this.withUploadService.createTrainer(formData).subscribe((id) => {
-            if (this.activeRoute.snapshot.queryParams['marathonId']) {
-                this.router.navigate([
-                    `/admin`,
-                    'marathons',
-                    this.activeRoute.snapshot.queryParams['marathonId'],
-                ]);
-                return;
-            }
-            this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
-        });
+        this.withUploadService
+            .createTrainer(formData)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((id) => {
+                if (this.activeRoute.snapshot.queryParams['marathonId']) {
+                    this.router.navigate([
+                        `/admin`,
+                        'marathons',
+                        this.activeRoute.snapshot.queryParams['marathonId'],
+                    ]);
+                    return;
+                }
+                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            });
     }
 }

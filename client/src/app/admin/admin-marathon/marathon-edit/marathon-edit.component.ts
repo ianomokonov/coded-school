@@ -5,10 +5,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ButtonModule } from 'primeng/button';
 import { PickListModule } from 'primeng/picklist';
 import { MarathonInfoDto, TrainerShortDto } from '@api/index';
-import { forkJoin } from 'rxjs';
+import { forkJoin, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
+import { DestroyService } from '@core/destroy.service';
 
 @Component({
     selector: 'coded-marathon-edit',
@@ -22,6 +23,7 @@ import { DropdownModule } from 'primeng/dropdown';
         DropdownModule,
         RouterModule,
     ],
+    providers: [DestroyService],
     templateUrl: './marathon-edit.component.html',
     styleUrl: './marathon-edit.component.scss',
 })
@@ -50,6 +52,7 @@ export class MarathonEditComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
+        private destroy$: DestroyService,
     ) {
         this.marathonForm = this.fb.group({
             name: [null, Validators.required],
@@ -59,7 +62,7 @@ export class MarathonEditComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe(({ id }) => {
+        this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
             if (!id) {
                 return;
             }
@@ -71,14 +74,16 @@ export class MarathonEditComponent implements OnInit {
         forkJoin([
             this.trainerService.getAllTrainers(),
             this.marathonService.readMarathonInfo({ id }),
-        ]).subscribe(([trainers, marathon]) => {
-            this.marathon = marathon;
-            this.marathonForm.patchValue(marathon);
-            this.sourceItems = trainers.filter(
-                (t) => !marathon.trainers?.find((tt) => t.id === tt.id),
-            );
-            this.targetItems = marathon.trainers || [];
-        });
+        ])
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(([trainers, marathon]) => {
+                this.marathon = marathon;
+                this.marathonForm.patchValue(marathon);
+                this.sourceItems = trainers.filter(
+                    (t) => !marathon.trainers?.find((tt) => t.id === tt.id),
+                );
+                this.targetItems = marathon.trainers || [];
+            });
     }
 
     onSave() {
@@ -92,14 +97,18 @@ export class MarathonEditComponent implements OnInit {
                     trainers: this.targetItems,
                 },
             })
+            .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
                 this.initData(this.marathon!.id);
             });
     }
 
     onDelete() {
-        this.marathonService.deleteUserMarathon({ id: this.marathon!.id }).subscribe(() => {
-            this.router.navigate(['../'], { relativeTo: this.activatedRoute });
-        });
+        this.marathonService
+            .deleteUserMarathon({ id: this.marathon!.id })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+            });
     }
 }

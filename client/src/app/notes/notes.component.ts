@@ -33,7 +33,7 @@ export class NotesComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.activeRoute.queryParams.subscribe(({ moduleId }) => {
+        this.activeRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(({ moduleId }) => {
             this.notesService
                 .getAllNotes({ isFavorite: this.isSidebar, moduleId })
                 .pipe(takeUntil(this.destroy$))

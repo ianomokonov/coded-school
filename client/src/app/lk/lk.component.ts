@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ClipboardService } from 'ngx-clipboard';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { NotesComponent } from '../notes/notes.component';
 
@@ -56,6 +56,7 @@ export class PersonalCabinetComponent implements OnInit {
         private messageService: MessageService,
         private clipboardService: ClipboardService,
         private router: Router,
+        private destroy$: DestroyService,
     ) {}
 
     ngOnInit(): void {
@@ -63,9 +64,12 @@ export class PersonalCabinetComponent implements OnInit {
     }
 
     logOut(): void {
-        this.userService.logout().subscribe(() => {
-            this.router.navigate(['/sign-in']);
-        });
+        this.userService
+            .logout()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.router.navigate(['/sign-in']);
+            });
     }
 
     copyReferLink(link: string): void {

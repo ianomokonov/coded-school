@@ -9,14 +9,16 @@ import {
     TopicTreeDto,
     TrainerService,
 } from '@api/index';
+import { DestroyService } from '@core/destroy.service';
 import { MessageService, TreeDragDropService, TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { TreeModule, TreeNodeDropEvent } from 'primeng/tree';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-admin-module',
     standalone: true,
-    providers: [TreeDragDropService],
+    providers: [TreeDragDropService, DestroyService],
     imports: [TreeModule, MenuModule, RouterModule],
     templateUrl: './admin-module.component.html',
 })
@@ -30,6 +32,7 @@ export class AdminModuleComponent {
         private trainerService: TrainerService,
         private router: Router,
         private toastService: MessageService,
+        private destroy$: DestroyService,
     ) {
         this.updateTree();
     }
@@ -76,6 +79,7 @@ export class AdminModuleComponent {
                     topicId: event.dragNode?.data.parentId,
                 },
             })
+            .pipe(takeUntil(this.destroy$))
             .subscribe(() => {});
     }
 
@@ -86,24 +90,28 @@ export class AdminModuleComponent {
             case 'module': {
                 this.modulesService
                     .deleteUserModule({ id: item.data.id })
+                    .pipe(takeUntil(this.destroy$))
                     .subscribe(() => this.updateTree());
                 return;
             }
             case 'topic': {
                 this.topicService
                     .deleteTopic({ id: item.data.id })
+                    .pipe(takeUntil(this.destroy$))
                     .subscribe(() => this.updateTree());
                 return;
             }
             case 'lesson': {
                 this.lessonsService
                     .deleteLesson({ id: item.data.id })
+                    .pipe(takeUntil(this.destroy$))
                     .subscribe(() => this.updateTree());
                 return;
             }
             case 'trainer': {
                 this.trainerService
                     .deleteTrainer({ id: item.data.id })
+                    .pipe(takeUntil(this.destroy$))
                     .subscribe(() => this.updateTree());
                 return;
             }
@@ -114,28 +122,31 @@ export class AdminModuleComponent {
     }
 
     private updateTree() {
-        this.modulesService.getModulesTree().subscribe((dto) => {
-            this.modules = [
-                ...dto.modules.map((m) => this.getTree(m)),
-                {
-                    label: 'Создать модуль',
-                    draggable: false,
-                    droppable: false,
-                    data: { url: `/admin/module/create`, type: 'create' },
-                    styleClass: 'border-bottom-1 border-200',
-                    icon: 'pi pi-plus',
-                },
-                ...dto.trainers.map((t) => this.getTree(t)),
-                {
-                    label: 'Создать тренажер',
-                    data: { url: `/admin/trainer/create`, type: 'create' },
-                    icon: 'pi pi-plus',
+        this.modulesService
+            .getModulesTree()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((dto) => {
+                this.modules = [
+                    ...dto.modules.map((m) => this.getTree(m)),
+                    {
+                        label: 'Создать модуль',
+                        draggable: false,
+                        droppable: false,
+                        data: { url: `/admin/module/create`, type: 'create' },
+                        styleClass: 'border-bottom-1 border-200',
+                        icon: 'pi pi-plus',
+                    },
+                    ...dto.trainers.map((t) => this.getTree(t)),
+                    {
+                        label: 'Создать тренажер',
+                        data: { url: `/admin/trainer/create`, type: 'create' },
+                        icon: 'pi pi-plus',
 
-                    draggable: false,
-                    droppable: false,
-                },
-            ];
-        });
+                        draggable: false,
+                        droppable: false,
+                    },
+                ];
+            });
     }
 
     private getTree(

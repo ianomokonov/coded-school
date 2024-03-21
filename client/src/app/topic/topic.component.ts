@@ -6,10 +6,13 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
+import { DestroyService } from '@core/destroy.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-topic',
     standalone: true,
+    providers: [DestroyService],
     imports: [ProgressBarModule, CardModule, RouterModule, CommonModule, AvatarModule],
     templateUrl: './topic.component.html',
 })
@@ -19,12 +22,16 @@ export class TopicComponent implements OnInit {
     constructor(
         private topicService: TopicService,
         private activeRoute: ActivatedRoute,
+        private destroy$: DestroyService,
     ) {}
     ngOnInit(): void {
-        this.activeRoute.params.subscribe(({ id }) => {
-            this.topicService.readTopic({ id }).subscribe((m) => {
-                this.topic = m;
-            });
+        this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
+            this.topicService
+                .readTopic({ id })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((m) => {
+                    this.topic = m;
+                });
         });
     }
 

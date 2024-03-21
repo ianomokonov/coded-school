@@ -7,10 +7,13 @@ import { LessonDto, LessonService } from '@api/index';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadService } from '@app/services/file-upload.service';
 import { EditorHelper } from '@app/utils/editor-helper';
+import { DestroyService } from '@core/destroy.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-lesson-edit',
     standalone: true,
+    providers: [DestroyService],
     imports: [EditorModule, ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule],
     templateUrl: './lesson-edit.component.html',
 })
@@ -24,6 +27,7 @@ export class LessonEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private fileUploadService: FileUploadService,
+        private destroy$: DestroyService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -31,16 +35,19 @@ export class LessonEditComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        this.activeRoute.params.subscribe(({ id }) => {
+        this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
             if (id === 'create') {
                 this.form.patchValue({ name: null });
                 this.lesson = undefined;
                 return;
             }
-            this.lessonService.readLesson({ id }).subscribe((m) => {
-                this.lesson = m;
-                this.form.patchValue(m);
-            });
+            this.lessonService
+                .readLesson({ id })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((m) => {
+                    this.lesson = m;
+                    this.form.patchValue(m);
+                });
         });
     }
 
@@ -70,15 +77,21 @@ export class LessonEditComponent implements OnInit {
             prevFiles.forEach((p) => {
                 formData.append('filesToDelete[]', p);
             });
-            this.fileUploadService.updateLesson(this.lesson.id, formData).subscribe(() => {
-                if (!this.lesson) {
-                    return;
-                }
-                this.lessonService.readLesson({ id: this.lesson.id }).subscribe((m) => {
-                    this.lesson = m;
-                    this.form.patchValue(m);
+            this.fileUploadService
+                .updateLesson(this.lesson.id, formData)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(() => {
+                    if (!this.lesson) {
+                        return;
+                    }
+                    this.lessonService
+                        .readLesson({ id: this.lesson.id })
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe((m) => {
+                            this.lesson = m;
+                            this.form.patchValue(m);
+                        });
                 });
-            });
             return;
         }
 
@@ -88,8 +101,11 @@ export class LessonEditComponent implements OnInit {
 
         formData.append('topicId', this.activeRoute.snapshot.queryParams['parentId']);
 
-        this.fileUploadService.createLesson(formData).subscribe((id) => {
-            this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
-        });
+        this.fileUploadService
+            .createLesson(formData)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((id) => {
+                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            });
     }
 }

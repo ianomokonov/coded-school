@@ -89,11 +89,14 @@ export class LessonComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        this.activeRoute.params.subscribe(({ id }) => {
-            this.lessonService.readLesson({ id }).subscribe((m) => {
-                this.lesson = m;
-                this.content = this.dom.bypassSecurityTrustHtml(m.content);
-            });
+        this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
+            this.lessonService
+                .readLesson({ id })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((m) => {
+                    this.lesson = m;
+                    this.content = this.dom.bypassSecurityTrustHtml(m.content);
+                });
         });
     }
 
@@ -115,13 +118,16 @@ export class LessonComponent implements OnInit {
         if (!this.lesson) {
             return;
         }
-        this.lessonService.completeLesson({ id: this.lesson?.id }).subscribe(() => {
-            if (this.lesson?.nextLessonId) {
-                this.router.navigate(['/lesson', this.lesson.nextLessonId]);
-                return;
-            }
-            this.router.navigate(['/module', this.lesson?.moduleId]);
-        });
+        this.lessonService
+            .completeLesson({ id: this.lesson?.id })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                if (this.lesson?.nextLessonId) {
+                    this.router.navigate(['/lesson', this.lesson.nextLessonId]);
+                    return;
+                }
+                this.router.navigate(['/module', this.lesson?.moduleId]);
+            });
     }
 
     sendForm(): void {

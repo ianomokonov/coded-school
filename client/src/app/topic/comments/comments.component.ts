@@ -9,10 +9,13 @@ import { Comment } from './models/comment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EditorHelper } from '@app/utils/editor-helper';
 import { FileUploadService } from '@app/services/file-upload.service';
+import { DestroyService } from '@core/destroy.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'coded-comments',
     standalone: true,
+    providers: [DestroyService],
     imports: [ButtonModule, CardModule, RouterModule, AvatarModule, CreateCommentComponent],
     templateUrl: './comments.component.html',
     styles: `
@@ -37,18 +40,22 @@ export class CommentsComponent implements OnInit {
         private commentService: CommentService,
         private dom: DomSanitizer,
         private fileUploadService: FileUploadService,
+        private destroy$: DestroyService,
     ) {}
     ngOnInit(): void {
         this.getComments();
     }
 
     getComments() {
-        this.commentService.readLessonComments({ id: this.lessonId }).subscribe((comments) => {
-            this.comments = comments.map((c) => ({
-                ...c,
-                quoteHtml: c.quote && this.dom.bypassSecurityTrustHtml(c.quote),
-            }));
-        });
+        this.commentService
+            .readLessonComments({ id: this.lessonId })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((comments) => {
+                this.comments = comments.map((c) => ({
+                    ...c,
+                    quoteHtml: c.quote && this.dom.bypassSecurityTrustHtml(c.quote),
+                }));
+            });
     }
 
     createComment(text: string, relativeCommentId?: number) {
@@ -71,11 +78,14 @@ export class CommentsComponent implements OnInit {
             formData.append('files', f);
         });
 
-        this.fileUploadService.createComment(formData).subscribe(() => {
-            this.quoteHtml = undefined;
-            this.quoteString = undefined;
-            this.getComments();
-        });
+        this.fileUploadService
+            .createComment(formData)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.quoteHtml = undefined;
+                this.quoteString = undefined;
+                this.getComments();
+            });
     }
 
     onAnswer(comment: Comment) {
