@@ -108,6 +108,7 @@ export class AdminModuleComponent {
                     .subscribe(() => this.updateTree());
                 return;
             }
+            case 'test':
             case 'trainer': {
                 this.trainerService
                     .deleteTrainer({ id: item.data.id })

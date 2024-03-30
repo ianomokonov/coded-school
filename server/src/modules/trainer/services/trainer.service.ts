@@ -8,6 +8,7 @@ import { path as rootPath } from 'app-root-path';
 import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 import { FilesHelper } from 'src/utils/files-helper';
 import { TrainerShortDto } from '../dto/trainer-short.dto';
+import { TrainerType } from '../entity/trainer-type';
 
 @Injectable()
 export class TrainerService {
@@ -24,7 +25,11 @@ export class TrainerService {
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
     }
-    await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+    if (trainer.type === TrainerType.TRAINER) {
+      await remove(path.join(rootPath, 'src', 'tasks', trainer.templatesDir));
+      await FilesHelper.removeFilesFromContent(trainer.task);
+    }
+
     await LessonEntity.update(
       { nextTaskId: id },
       { nextLessonId: trainer.nextLessonId, nextTaskId: trainer.nextTaskId },
@@ -34,6 +39,5 @@ export class TrainerService {
       { nextLessonId: trainer.nextLessonId, nextTaskId: trainer.nextTaskId },
     );
     await TrainerEntity.delete({ id });
-    await FilesHelper.removeFilesFromContent(trainer.task);
   }
 }
