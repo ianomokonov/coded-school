@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { OrderListModule } from 'primeng/orderlist';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 
 @Component({
     selector: 'coded-test-edit',
@@ -24,6 +25,8 @@ import { OrderListModule } from 'primeng/orderlist';
         InputGroupModule,
         InputGroupAddonModule,
         OrderListModule,
+        NgClass,
+        NgTemplateOutlet,
     ],
     providers: [DestroyService],
     templateUrl: './test-edit.component.html',
@@ -32,6 +35,7 @@ import { OrderListModule } from 'primeng/orderlist';
 export class TestEditComponent implements OnInit {
     test: TestDto | undefined;
     form: FormGroup;
+    sortableQuestions = false;
 
     constructor(
         private testService: TrainerTestService,
@@ -39,7 +43,6 @@ export class TestEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
-        private cdr: ChangeDetectorRef,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -80,6 +83,24 @@ export class TestEditComponent implements OnInit {
         });
     }
 
+    // Исправление бага PrimeNG: https://github.com/primefaces/primevue/issues/4643
+    onEnterAnswer(event: Event, answerForm: FormGroup) {
+        if ((event as KeyboardEvent).code !== 'Space') {
+            return;
+        }
+        const target = event.target as HTMLInputElement;
+        const start = target.selectionStart;
+
+        if (!start || !target.selectionEnd) {
+            return;
+        }
+        const substringStart = target.value.substring(0, start);
+        const substringEnd = target.value.substring(target.selectionEnd);
+
+        answerForm.patchValue({ label: substringStart + ' ' + substringEnd });
+        target.setSelectionRange(start + 1, start + 1);
+    }
+
     getQuestionControls() {
         return (this.form.get('questions') as FormArray).controls as FormGroup[];
     }
@@ -89,11 +110,15 @@ export class TestEditComponent implements OnInit {
     }
 
     addQuestion() {
-        (this.form.get('questions') as FormArray).push(
-            this.fb.group({
-                question: [null, Validators.required],
-                answers: this.fb.array([]),
-            }),
+        this.form.setControl(
+            'questions',
+            this.fb.array([
+                ...(this.form.get('questions') as FormArray).controls,
+                this.fb.group({
+                    question: [null, Validators.required],
+                    answers: this.fb.array([]),
+                }),
+            ]),
         );
     }
 
@@ -108,8 +133,6 @@ export class TestEditComponent implements OnInit {
                 }),
             ]),
         );
-
-        this.cdr.detectChanges();
     }
 
     deleteQuestion(index: number) {
@@ -118,6 +141,16 @@ export class TestEditComponent implements OnInit {
 
     deleteAnswer(questionForm: FormGroup, index: number) {
         (questionForm.get('answers') as FormArray).removeAt(index);
+    }
+
+    setSortableQuestions() {
+        this.sortableQuestions = !this.sortableQuestions;
+
+        if (this.sortableQuestions) {
+            this.form.disable();
+            return;
+        }
+        this.form.enable();
     }
 
     onSave(): void {
