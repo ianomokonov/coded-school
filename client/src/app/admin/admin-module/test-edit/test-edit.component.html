@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <!-- eslint-disable @angular-eslint/template/elements-content -->
 <form [formGroup]="form" (ngSubmit)="onSave()">
     <span class="p-float-label mb-3">
@@ -24,39 +25,44 @@
                 </p-inputGroup>
 
                 <div class="pb-2">
-                    @for (
-                        answer of getAnswerControls(question);
-                        track answerIndex;
-                        let answerIndex = $index
-                    ) {
-                        <div class="mb-1" [formGroup]="answer">
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    ><p-checkbox
-                                        formControlName="isCorrect"
-                                        [binary]="true"
-                                    ></p-checkbox
-                                ></p-inputGroupAddon>
-                                <span class="p-float-label">
-                                    <input
-                                        class="w-12"
-                                        [id]="'cor_' + questionIndex + '_' + answerIndex"
-                                        pInputText
-                                        formControlName="label"
-                                    />
-                                    <label [for]="'cor_' + questionIndex + '_' + answerIndex"
-                                        >Ответ</label
-                                    >
-                                </span>
-                                <button
-                                    type="button"
-                                    pButton
-                                    icon="pi pi-times"
-                                    class="p-button-outlined"
-                                    (click)="deleteAnswer(question, answerIndex)"
-                                ></button>
-                            </p-inputGroup>
-                        </div>
+                    @if (getAnswerControls(question).length) {
+                        <p-orderList
+                            [value]="getAnswerControls(question)"
+                            [listStyle]="{ 'max-height': '30rem' }"
+                            [dragdrop]="true"
+                        >
+                            <ng-template let-answer let-index="index" pTemplate="item">
+                                <div class="mb-1 flex align-items-center" [formGroup]="answer">
+                                    <i class="pi pi-sort mr-3"></i>
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon
+                                            ><p-checkbox
+                                                formControlName="isCorrect"
+                                                [binary]="true"
+                                            ></p-checkbox
+                                        ></p-inputGroupAddon>
+                                        <span class="p-float-label">
+                                            <input
+                                                [id]="'cor_' + questionIndex + '_' + index"
+                                                class="w-12"
+                                                pInputText
+                                                formControlName="label"
+                                            />
+                                            <label [for]="'cor_' + questionIndex + '_' + index"
+                                                >Ответ</label
+                                            >
+                                        </span>
+                                        <button
+                                            type="button"
+                                            pButton
+                                            icon="pi pi-times"
+                                            class="p-button-outlined"
+                                            (click)="deleteAnswer(question, index)"
+                                        ></button>
+                                    </p-inputGroup>
+                                </div>
+                            </ng-template>
+                        </p-orderList>
                     }
                 </div>
 

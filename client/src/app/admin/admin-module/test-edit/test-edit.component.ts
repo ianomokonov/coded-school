@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { OrderListModule } from 'primeng/orderlist';
 
 @Component({
     selector: 'coded-test-edit',
@@ -22,9 +23,11 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
         CheckboxModule,
         InputGroupModule,
         InputGroupAddonModule,
+        OrderListModule,
     ],
     providers: [DestroyService],
     templateUrl: './test-edit.component.html',
+    styleUrl: './test-edit.component.scss',
 })
 export class TestEditComponent implements OnInit {
     test: TestDto | undefined;
@@ -36,6 +39,7 @@ export class TestEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
+        private cdr: ChangeDetectorRef,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -94,12 +98,18 @@ export class TestEditComponent implements OnInit {
     }
 
     addAddAnswer(questionForm: FormGroup) {
-        (questionForm.get('answers') as FormArray).push(
-            this.fb.group({
-                label: [null, Validators.required],
-                isCorrect: [false],
-            }),
+        questionForm.setControl(
+            'answers',
+            this.fb.array([
+                ...(questionForm.get('answers') as FormArray).controls,
+                this.fb.group({
+                    label: [null, Validators.required],
+                    isCorrect: [false],
+                }),
+            ]),
         );
+
+        this.cdr.detectChanges();
     }
 
     deleteQuestion(index: number) {

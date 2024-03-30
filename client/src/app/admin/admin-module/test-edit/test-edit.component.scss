@@ -1,0 +1,10 @@
+::ng-deep {
+    .p-orderlist-controls {
+        display: none;
+    }
+
+    .p-orderlist-list {
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+}
