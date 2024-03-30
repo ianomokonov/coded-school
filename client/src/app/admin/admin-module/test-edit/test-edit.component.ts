@@ -8,11 +8,21 @@ import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @Component({
     selector: 'coded-test-edit',
     standalone: true,
-    imports: [ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule, CheckboxModule],
+    imports: [
+        ReactiveFormsModule,
+        InputTextModule,
+        ButtonModule,
+        RouterModule,
+        CheckboxModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+    ],
     providers: [DestroyService],
     templateUrl: './test-edit.component.html',
 })
@@ -92,6 +102,14 @@ export class TestEditComponent implements OnInit {
         );
     }
 
+    deleteQuestion(index: number) {
+        (this.form.get('questions') as FormArray).removeAt(index);
+    }
+
+    deleteAnswer(questionForm: FormGroup, index: number) {
+        (questionForm.get('answers') as FormArray).removeAt(index);
+    }
+
     onSave(): void {
         if (this.form.invalid) {
             markInvalidFields(this.form);
@@ -111,8 +129,6 @@ export class TestEditComponent implements OnInit {
         if (this.activeRoute.snapshot.queryParams['parentId']) {
             formValue.topicId = this.activeRoute.snapshot.queryParams['parentId'];
         }
-
-        console.log(formValue);
 
         this.testService
             .createTest({ body: formValue })
