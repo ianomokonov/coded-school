@@ -6,11 +6,11 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { UpdateTrainerDto } from '../../models/update-trainer-dto';
+import { UpdateTaskDto } from '../../models/update-task-dto';
 
 export interface UpdateTrainer$Params {
   id: number;
-      body: UpdateTrainerDto
+      body: UpdateTaskDto
 }
 
 export function updateTrainer(http: HttpClient, rootUrl: string, params: UpdateTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
@@ -30,4 +30,4 @@ export function updateTrainer(http: HttpClient, rootUrl: string, params: UpdateT
   );
 }
 
-updateTrainer.PATH = '/api/trainer/{id}';
+updateTrainer.PATH = '/api/task/{id}';

@@ -1,13 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface LessonDto {
-  content: string;
+import { TestQuestionDto } from '../models/test-question-dto';
+export interface TestDto {
   id: number;
-  isCompleted?: boolean;
-  moduleId: number;
   name: string;
   nextLessonId?: number;
   nextTaskId?: number;
   nextTaskType?: 'trainer' | 'test';
-  topicId: number;
+  questions: Array<TestQuestionDto>;
+  type: 'trainer' | 'test';
 }

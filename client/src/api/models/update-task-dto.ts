@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface UpdateTrainerDto {
+export interface UpdateTaskDto {
   filesToDelete?: Array<string>;
   name?: string;
   task?: string;

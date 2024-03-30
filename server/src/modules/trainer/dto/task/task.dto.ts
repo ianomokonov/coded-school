@@ -1,13 +1,10 @@
 import { AutoMap } from '@automapper/classes';
-import { FileDto } from './files-tree.dto';
+import { FileDto } from '../files-tree.dto';
+import { TrainerShortDto } from '../trainer-short.dto';
 
-export class TrainerDto {
-  id: number;
-  name: string;
+export class TaskDto extends TrainerShortDto {
   task: string;
   templatesDir: string;
-  nextLessonId?: number;
-  nextTaskId?: number;
   @AutoMap(() => [FileDto])
   files: FileDto[];
   @AutoMap(() => [FileDto])

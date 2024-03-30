@@ -6,15 +6,17 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { CreateTrainerDto } from '../../models/create-trainer-dto';
+import { CheckTestDto } from '../../models/check-test-dto';
 
-export interface CreateTrainer$Params {
-      body: CreateTrainerDto
+export interface CheckTest$Params {
+  id: number;
+      body: CheckTestDto
 }
 
-export function createTrainer(http: HttpClient, rootUrl: string, params: CreateTrainer$Params, context?: HttpContext): Observable<BaseResponse<number>> {
-  const rb = new RequestBuilder(rootUrl, createTrainer.PATH, 'post');
+export function checkTest(http: HttpClient, rootUrl: string, params: CheckTest$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
+  const rb = new RequestBuilder(rootUrl, checkTest.PATH, 'post');
   if (params) {
+    rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');
   }
 
@@ -23,9 +25,9 @@ export function createTrainer(http: HttpClient, rootUrl: string, params: CreateT
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as BaseResponse<number>;
+      return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as BaseResponse<boolean>;
     })
   );
 }
 
-createTrainer.PATH = '/api/trainer';
+checkTest.PATH = '/api/test/check';

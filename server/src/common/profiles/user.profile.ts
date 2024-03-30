@@ -33,12 +33,16 @@ import { LessonDto } from '@modules/topic/lesson/dto/lesson.dto';
 import { CommentEntity } from '@modules/topic/comment/entity/comment.entity';
 import { CommentDto } from '@modules/topic/comment/dto/comment.dto';
 import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
-import { TrainerDto } from '@modules/trainer/dto/trainer.dto';
+import { TaskDto } from '@modules/trainer/dto/task/task.dto';
 import { ModuleTreeDto } from '@dtos/module/module-tree.dto';
 import { TopicTreeDto } from '@dtos/topic/topic-tree.dto';
 import { TopicChildDto } from '@dtos/topic/topic-child.dto';
 import { MarathonInfoDto } from '@dtos/marathon/marathon-info.dto';
 import { TrainerShortDto } from '@modules/trainer/dto/trainer-short.dto';
+import { TrainerQuestionEntity } from '@modules/trainer/entity/trainer-question.entity';
+import { TestQuestionDto } from '@modules/trainer/dto/test/test-question.dto';
+import { QuestionAnswerEntity } from '@modules/trainer/entity/question-answer.entity';
+import { QuestionAnswerDto } from '@modules/trainer/dto/test/question-answer.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -52,21 +56,44 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, NoteEntity, NoteDto);
       createMap(mapper, ModuleEntity, ModuleDto);
       createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(mapper, QuestionAnswerEntity, QuestionAnswerDto);
+      createMap(mapper, TrainerQuestionEntity, TestQuestionDto);
+      createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(
+        mapper,
+        TrainerEntity,
+        TrainerShortDto,
+        forMember(
+          (d) => d.nextTaskType,
+          mapFrom((s) => s.nextTask?.type),
+        ),
+      );
       createMap(
         mapper,
         MarathonEntity,
         MarathonInfoDto,
         forMember(
           (d) => d.trainers,
-          mapFrom((s) => s.trainers?.map((t) => t.trainer)),
+          mapFrom((s) =>
+            s.trainers?.map((t) =>
+              mapper.map(t.trainer, TrainerEntity, TrainerShortDto),
+            ),
+          ),
         ),
       );
       createMap(mapper, AchievementEntity, AchievementDto);
       createMap(mapper, TopicEntity, TopicDto);
-      createMap(mapper, LessonEntity, LessonDto);
+      createMap(
+        mapper,
+        LessonEntity,
+        LessonDto,
+        forMember(
+          (d) => d.nextTaskType,
+          mapFrom((s) => s.nextTask?.type),
+        ),
+      );
       createMap(mapper, CommentEntity, CommentDto);
-      createMap(mapper, TrainerEntity, TrainerDto);
-      createMap(mapper, TrainerEntity, TrainerShortDto);
+      createMap(mapper, TrainerEntity, TaskDto);
       createMap(mapper, ModuleEntity, ModuleTreeDto);
       createMap(
         mapper,
@@ -83,7 +110,7 @@ export class UserProfile extends AutomapperProfile {
         TopicChildDto,
         forMember(
           (d) => d.type,
-          mapFrom(() => 'trainer'),
+          mapFrom((s) => s.type),
         ),
       );
       createMap(

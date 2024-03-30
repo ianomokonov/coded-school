@@ -40,3 +40,4 @@ lerna-debug.log*
 .npmrc
 
 static
+coded_log.txt

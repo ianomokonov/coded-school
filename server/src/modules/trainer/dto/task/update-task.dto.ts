@@ -1,4 +1,4 @@
-export class UpdateTrainerDto {
+export class UpdateTaskDto {
   topicId?: number;
   name?: string;
   templatesDir?: string;

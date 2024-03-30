@@ -1,5 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface CheckTrainerDto {
+export interface CheckTaskDto {
   html: string;
 }

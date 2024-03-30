@@ -7,3 +7,5 @@ export { TopicService } from './services/topic.service';
 export { LessonService } from './services/lesson.service';
 export { CommentService } from './services/comment.service';
 export { TrainerService } from './services/trainer.service';
+export { TrainerTaskService } from './services/trainer-task.service';
+export { TrsinerTestService } from './services/trsiner-test.service';

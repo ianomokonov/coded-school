@@ -6,8 +6,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { TrainerType } from './trainer-type';
+import { TrainerQuestionEntity } from './trainer-question.entity';
 
 @Entity('trainer', {
   schema: 'mod',
@@ -21,8 +25,15 @@ export class TrainerEntity extends BaseEntity {
   })
   name: string;
 
+  @Column({
+    type: 'enum',
+    enum: TrainerType,
+    default: TrainerType.TRAINER,
+  })
+  type: TrainerType;
+
   @Column('varchar', {
-    nullable: false,
+    nullable: true,
   })
   templatesDir: string;
 
@@ -45,4 +56,14 @@ export class TrainerEntity extends BaseEntity {
   @JoinColumn({ name: 'topicId' })
   @AutoMap(() => TopicEntity)
   topic: TopicEntity;
+
+  @OneToMany(() => TrainerQuestionEntity, (question) => question.trainer)
+  @JoinColumn({ name: 'id' })
+  @AutoMap(() => [TrainerQuestionEntity])
+  questions: TrainerQuestionEntity[];
+
+  @OneToOne(() => TrainerEntity, { nullable: true })
+  @JoinColumn({ name: 'nextTaskId' })
+  @AutoMap(() => TrainerEntity)
+  nextTask: TrainerEntity;
 }

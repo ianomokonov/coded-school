@@ -5,4 +5,6 @@ export interface TrainerShortDto {
   name: string;
   nextLessonId?: number;
   nextTaskId?: number;
+  nextTaskType?: 'trainer' | 'test';
+  type: 'trainer' | 'test';
 }

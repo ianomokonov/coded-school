@@ -1,7 +1,6 @@
-export class CreateTrainerDto {
+export class CreateTaskDto {
   topicId: number;
   name: string;
   templatesDir: string;
   task: string;
-  files: Express.Multer.File[];
 }

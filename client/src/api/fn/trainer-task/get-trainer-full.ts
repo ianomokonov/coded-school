@@ -6,13 +6,13 @@ import { filter, map } from 'rxjs/operators';
 import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { TrainerDto } from '../../models/trainer-dto';
+import { TaskDto } from '../../models/task-dto';
 
 export interface GetTrainerFull$Params {
   id: number;
 }
 
-export function getTrainerFull(http: HttpClient, rootUrl: string, params: GetTrainerFull$Params, context?: HttpContext): Observable<BaseResponse<TrainerDto>> {
+export function getTrainerFull(http: HttpClient, rootUrl: string, params: GetTrainerFull$Params, context?: HttpContext): Observable<BaseResponse<TaskDto>> {
   const rb = new RequestBuilder(rootUrl, getTrainerFull.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
@@ -23,9 +23,9 @@ export function getTrainerFull(http: HttpClient, rootUrl: string, params: GetTra
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as BaseResponse<TrainerDto>;
+      return r as BaseResponse<TaskDto>;
     })
   );
 }
 
-getTrainerFull.PATH = '/api/trainer/{id}/full';
+getTrainerFull.PATH = '/api/task/{id}/full';

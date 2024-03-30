@@ -1,3 +1,5 @@
+import { TrainerType } from '@modules/trainer/entity/trainer-type';
+
 export class LessonDto {
   id: number;
   name: string;
@@ -7,4 +9,5 @@ export class LessonDto {
   content: string;
   nextLessonId?: number;
   nextTaskId?: number;
+  nextTaskType?: TrainerType;
 }
