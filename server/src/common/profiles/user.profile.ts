@@ -43,6 +43,7 @@ import { TrainerQuestionEntity } from '@modules/trainer/entity/trainer-question.
 import { TestQuestionDto } from '@modules/trainer/dto/test/test-question.dto';
 import { QuestionAnswerEntity } from '@modules/trainer/entity/question-answer.entity';
 import { QuestionAnswerDto } from '@modules/trainer/dto/test/question-answer.dto';
+import { TestDto } from '@modules/trainer/dto/test/test.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -59,6 +60,7 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, QuestionAnswerEntity, QuestionAnswerDto);
       createMap(mapper, TrainerQuestionEntity, TestQuestionDto);
       createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(mapper, TrainerEntity, TestDto);
       createMap(
         mapper,
         TrainerEntity,

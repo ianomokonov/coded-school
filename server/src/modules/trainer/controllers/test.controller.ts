@@ -5,7 +5,7 @@ import { TestDto } from '../dto/test/test.dto';
 import { CheckTestDto } from '../dto/test/check-test.dto';
 import { SaveTestDto } from '../dto/test/save-test.dto';
 
-@ApiTags('Trsiner:Test')
+@ApiTags('Trainer:Test')
 @Controller('test')
 export class TestController {
   constructor(private testService: TestService) {}

@@ -7,7 +7,9 @@ import { CheckTestDto } from '../dto/test/check-test.dto';
 import { SaveTestDto } from '../dto/test/save-test.dto';
 import { TrainerQuestionEntity } from '../entity/trainer-question.entity';
 import { QuestionAnswerEntity } from '../entity/question-answer.entity';
-import { In } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
+import { TrainerType } from '../entity/trainer-type';
+import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 
 @Injectable()
 export class TestService {
@@ -16,6 +18,7 @@ export class TestService {
   public async create(dto: SaveTestDto) {
     const { id: trainerId } = await TrainerEntity.create({
       topicId: dto.topicId,
+      type: TrainerType.TEST,
       name: dto.name,
     }).save();
 
@@ -33,26 +36,38 @@ export class TestService {
         );
       }),
     );
+    await TrainerEntity.update(
+      {
+        id: Not(trainerId),
+        topicId: dto.topicId,
+        nextLessonId: IsNull(),
+        nextTaskId: IsNull(),
+      },
+      { nextTaskId: trainerId },
+    );
+    await LessonEntity.update(
+      { topicId: dto.topicId, nextLessonId: IsNull(), nextTaskId: IsNull() },
+      { nextTaskId: trainerId },
+    );
     return trainerId;
   }
   public async update(id: number, dto: SaveTestDto) {
     await TrainerEntity.update({ id }, { name: dto.name });
-    Promise.all(
-      dto.questions.map(async (q) => {
-        await TrainerQuestionEntity.update(
-          { id: q.id },
-          {
-            question: q.question,
-          },
-        );
-
-        await QuestionAnswerEntity.delete({ questionId: q.id });
+    await TrainerQuestionEntity.delete({ trainerId: id });
+    await Promise.all(
+      dto.questions.map(async (q, index) => {
+        const { id: questionId } = await TrainerQuestionEntity.create({
+          question: q.question,
+          trainerId: id,
+          order: index,
+        }).save();
 
         await Promise.all(
           q.answers.map(async (answer) => {
             await QuestionAnswerEntity.create({
               ...answer,
-              questionId: q.id,
+              questionId,
+              order: index,
             }).save();
           }),
         );
@@ -70,6 +85,7 @@ export class TestService {
     const test = await TrainerEntity.findOne({
       where: { id },
       relations: { questions: { answers: true }, nextTask: true },
+      order: { questions: { order: 'ASC', answers: { order: 'ASC' } } },
     });
     if (!test) {
       throw new NotFoundException('Тренажер не найден');

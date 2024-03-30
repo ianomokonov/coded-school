@@ -14,7 +14,7 @@ import { LessonService } from './services/lesson.service';
 import { CommentService } from './services/comment.service';
 import { TrainerService } from './services/trainer.service';
 import { TrainerTaskService } from './services/trainer-task.service';
-import { TrsinerTestService } from './services/trsiner-test.service';
+import { TrainerTestService } from './services/trainer-test.service';
 
 /**
  * Module that provides all services and configuration.
@@ -34,7 +34,7 @@ import { TrsinerTestService } from './services/trsiner-test.service';
     CommentService,
     TrainerService,
     TrainerTaskService,
-    TrsinerTestService,
+    TrainerTestService,
     ApiConfiguration
   ],
 })

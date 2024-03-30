@@ -8,6 +8,7 @@ import { AdminCommentsComponent } from './admin-comments/admin-comments.componen
 import { TrainerEditComponent } from './admin-module/trainer-edit/trainer-edit.component';
 import { AdminMarathonComponent } from './admin-marathon/admin-marathon.component';
 import { MarathonEditComponent } from './admin-marathon/marathon-edit/marathon-edit.component';
+import { TestEditComponent } from './admin-module/test-edit/test-edit.component';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -33,6 +34,10 @@ export const ADMIN_ROUTES: Routes = [
                     {
                         path: 'trainer/:id',
                         component: TrainerEditComponent,
+                    },
+                    {
+                        path: 'test/:id',
+                        component: TestEditComponent,
                     },
                 ],
             },

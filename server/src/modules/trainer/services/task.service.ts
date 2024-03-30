@@ -14,6 +14,7 @@ import { FilesHelper } from 'src/utils/files-helper';
 import nodeHtmlToImage from 'node-html-to-image';
 import * as looksSame from 'looks-same';
 import { TaskDto } from '../dto/task/task.dto';
+import { TrainerType } from '../entity/trainer-type';
 
 @Injectable()
 export class TaskService {
@@ -114,6 +115,7 @@ export class TaskService {
     );
     const { id } = await TrainerEntity.create({
       name: dto.name,
+      type: TrainerType.TRAINER,
       templatesDir: dto.templatesDir,
       task: dto.task,
       topicId: dto.topicId,

@@ -9,20 +9,20 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { BaseResponse } from '../base-response';
 
-import { checkTest } from '../fn/trsiner-test/check-test';
-import { CheckTest$Params } from '../fn/trsiner-test/check-test';
-import { createTest } from '../fn/trsiner-test/create-test';
-import { CreateTest$Params } from '../fn/trsiner-test/create-test';
-import { getTest } from '../fn/trsiner-test/get-test';
-import { GetTest$Params } from '../fn/trsiner-test/get-test';
-import { getTestFull } from '../fn/trsiner-test/get-test-full';
-import { GetTestFull$Params } from '../fn/trsiner-test/get-test-full';
+import { checkTest } from '../fn/trainer-test/check-test';
+import { CheckTest$Params } from '../fn/trainer-test/check-test';
+import { createTest } from '../fn/trainer-test/create-test';
+import { CreateTest$Params } from '../fn/trainer-test/create-test';
+import { getTest } from '../fn/trainer-test/get-test';
+import { GetTest$Params } from '../fn/trainer-test/get-test';
+import { getTestFull } from '../fn/trainer-test/get-test-full';
+import { GetTestFull$Params } from '../fn/trainer-test/get-test-full';
 import { TestDto } from '../models/test-dto';
-import { updateTest } from '../fn/trsiner-test/update-test';
-import { UpdateTest$Params } from '../fn/trsiner-test/update-test';
+import { updateTest } from '../fn/trainer-test/update-test';
+import { UpdateTest$Params } from '../fn/trainer-test/update-test';
 
 @Injectable({ providedIn: 'root' })
-export class TrsinerTestService extends BaseService {
+export class TrainerTestService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }

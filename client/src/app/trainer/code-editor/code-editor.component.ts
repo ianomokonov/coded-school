@@ -9,7 +9,7 @@ import { DestroyService } from '@core/destroy.service';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
 import { fileFormat } from './file-formatter';
-import { FileDto, TrainerDto } from '@api/index';
+import { FileDto, TaskDto } from '@api/index';
 
 @Component({
     selector: 'coded-editor',
@@ -49,7 +49,7 @@ export class CodedEditorComponent implements OnChanges {
         },
     };
 
-    @Input() trainer!: TrainerDto;
+    @Input() trainer!: TaskDto;
     files: TreeNode[] = [];
     selectedFile: FileDto | undefined;
 

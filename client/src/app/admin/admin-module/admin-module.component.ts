@@ -200,6 +200,13 @@ export class AdminModuleComponent {
                         draggable: false,
                         droppable: false,
                     },
+                    {
+                        label: 'Создать тест',
+                        data: { url: `/admin/test/create`, type: 'create', parentId: module.id },
+                        icon: 'pi pi-plus',
+                        draggable: false,
+                        droppable: false,
+                    },
                 ],
             };
         }

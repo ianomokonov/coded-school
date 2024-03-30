@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, Renderer2 } from '@angular/core';
 import { CodedEditorComponent } from './code-editor/code-editor.component';
-import { TrainerDto, TrainerService } from '@api/index';
+import { TaskDto, TrainerTaskService } from '@api/index';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
@@ -15,11 +15,11 @@ import { ButtonModule } from 'primeng/button';
     styleUrl: './trainer.component.scss',
 })
 export class TrainerComponent implements OnInit {
-    trainer: (TrainerDto & { isChecked?: boolean }) | undefined;
+    trainer: (TaskDto & { isChecked?: boolean }) | undefined;
     static = { html: '', css: '' };
     constructor(
         private renderer: Renderer2,
-        private trainerService: TrainerService,
+        private taskService: TrainerTaskService,
         private cdr: ChangeDetectorRef,
         private destroy$: DestroyService,
         private activatedRoute: ActivatedRoute,
@@ -27,7 +27,7 @@ export class TrainerComponent implements OnInit {
 
     ngOnInit() {
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
-            this.trainerService
+            this.taskService
                 .getTrainer({ id })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe((m) => {
@@ -67,7 +67,7 @@ export class TrainerComponent implements OnInit {
             html = html.replace('<head>', `<head><style>${this.static.css}</style>`);
         }
 
-        this.trainerService
+        this.taskService
             .checkTrainer({ id: this.trainer?.id, body: { html } })
             .pipe(takeUntil(this.destroy$))
             .subscribe((result) => {

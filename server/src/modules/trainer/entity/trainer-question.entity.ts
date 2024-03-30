@@ -26,7 +26,12 @@ export class TrainerQuestionEntity extends BaseEntity {
   @Column({ nullable: false })
   trainerId: number;
 
-  @ManyToOne(() => TrainerEntity, (trainer) => trainer.questions)
+  @Column({ nullable: false })
+  order: number;
+
+  @ManyToOne(() => TrainerEntity, (trainer) => trainer.questions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'trainerId' })
   @AutoMap(() => TrainerEntity)
   trainer: TrainerEntity;

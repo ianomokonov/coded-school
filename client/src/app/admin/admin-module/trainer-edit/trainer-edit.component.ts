@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { TrainerDto, TrainerService } from '@api/index';
+import { TaskDto, TrainerTaskService } from '@api/index';
 import { EditorModule } from 'primeng/editor';
 import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { markInvalidFields } from '@app/utils/mark-invalid-fileds';
@@ -27,13 +27,13 @@ import { takeUntil } from 'rxjs';
     templateUrl: './trainer-edit.component.html',
 })
 export class TrainerEditComponent implements OnInit {
-    trainer: TrainerDto | undefined;
+    trainer: TaskDto | undefined;
     form: FormGroup;
 
     @ViewChild('uploader') uploader: FileUpload | undefined;
 
     constructor(
-        private trainerService: TrainerService,
+        private taskService: TrainerTaskService,
         private withUploadService: FileUploadService,
         private activeRoute: ActivatedRoute,
         private fb: FormBuilder,
@@ -66,7 +66,7 @@ export class TrainerEditComponent implements OnInit {
             }
             this.form.get('files')?.setValidators([]);
             this.form.get('resultFiles')?.setValidators([]);
-            this.trainerService
+            this.taskService
                 .getTrainerFull({ id })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe((m) => {
