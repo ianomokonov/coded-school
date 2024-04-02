@@ -17,6 +17,7 @@ import { getTrainer } from '../fn/trainer-task/get-trainer';
 import { GetTrainer$Params } from '../fn/trainer-task/get-trainer';
 import { getTrainerFull } from '../fn/trainer-task/get-trainer-full';
 import { GetTrainerFull$Params } from '../fn/trainer-task/get-trainer-full';
+import { TaskCheckResultDto } from '../models/task-check-result-dto';
 import { TaskDto } from '../models/task-dto';
 import { updateTrainer } from '../fn/trainer-task/update-trainer';
 import { UpdateTrainer$Params } from '../fn/trainer-task/update-trainer';
@@ -111,7 +112,7 @@ export class TrainerTaskService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  checkTrainer$Response(params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
+  checkTrainer$Response(params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<TaskCheckResultDto>> {
     return checkTrainer(this.http, this.rootUrl, params, context);
   }
 
@@ -121,9 +122,9 @@ export class TrainerTaskService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  checkTrainer(params: CheckTrainer$Params, context?: HttpContext): Observable<boolean> {
+  checkTrainer(params: CheckTrainer$Params, context?: HttpContext): Observable<TaskCheckResultDto> {
     return this.checkTrainer$Response(params, context).pipe(
-      map((r: BaseResponse<boolean>): boolean => r.body)
+      map((r: BaseResponse<TaskCheckResultDto>): TaskCheckResultDto => r.body)
     );
   }
 

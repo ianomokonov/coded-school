@@ -17,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
 export class TrainerComponent implements OnInit {
     trainer: (TaskDto & { isChecked?: boolean }) | undefined;
     static = { html: '', css: '' };
+    errorMessages: string[] = [];
     constructor(
         private renderer: Renderer2,
         private taskService: TrainerTaskService,
@@ -74,7 +75,8 @@ export class TrainerComponent implements OnInit {
                 if (!this.trainer) {
                     return;
                 }
-                this.trainer.isChecked = result;
+                this.trainer.isChecked = result.isCorrect;
+                this.errorMessages = result.messages || [];
             });
     }
 }

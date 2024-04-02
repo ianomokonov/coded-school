@@ -15,6 +15,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CheckTaskDto } from '../dto/task/check-trainer.dto';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
+import { TaskCheckResultDto } from '../dto/task/task-check-result.dto';
 
 @ApiTags('Trainer:Task')
 @Controller('task')
@@ -35,7 +36,7 @@ export class TaskController {
   async checkTrainer(
     @Param('id') id: number,
     @Body() body: CheckTaskDto,
-  ): Promise<boolean> {
+  ): Promise<TaskCheckResultDto> {
     return this.taskService.check(id, body.html);
   }
 

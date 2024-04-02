@@ -15,6 +15,8 @@ import nodeHtmlToImage from 'node-html-to-image';
 import * as looksSame from 'looks-same';
 import { TaskDto } from '../dto/task/task.dto';
 import { TrainerType } from '../entity/trainer-type';
+import { TrainerPatternEntity } from '../entity/trainer-pattern.entity';
+import { TaskCheckResultDto } from '../dto/task/task-check-result.dto';
 
 @Injectable()
 export class TaskService {
@@ -30,6 +32,10 @@ export class TaskService {
     }
 
     const fileNames = await FilesHelper.getFiles(trainer.templatesDir);
+
+    if (!withResults) {
+      trainer.patterns = [];
+    }
 
     const dto = this.mapper.map(trainer, TrainerEntity, TaskDto);
 
@@ -121,6 +127,14 @@ export class TaskService {
       topicId: dto.topicId,
     }).save();
 
+    await Promise.all(
+      dto.patterns.map(async (p) => {
+        await TrainerPatternEntity.create({
+          ...p,
+        }).save();
+      }),
+    );
+
     await TrainerEntity.update(
       {
         id: Not(id),
@@ -168,6 +182,16 @@ export class TaskService {
     await TrainerEntity.update(
       { id: trainerId },
       { name: dto.name, task: dto.task, templatesDir: dto.templatesDir },
+    );
+
+    await TrainerPatternEntity.delete({ trainerId });
+
+    await Promise.all(
+      dto.patterns.map(async (p) => {
+        await TrainerPatternEntity.create({
+          ...p,
+        }).save();
+      }),
     );
 
     if (!files?.length && !resultFiles?.length) {
@@ -271,11 +295,35 @@ export class TaskService {
     }
   }
 
-  async check(id: number, html: string): Promise<boolean> {
-    const trainer = await TrainerEntity.findOne({ where: { id } });
+  async check(id: number, html: string): Promise<TaskCheckResultDto> {
+    const trainer = await TrainerEntity.findOne({
+      where: { id },
+      relations: { patterns: true },
+    });
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
     }
+
+    // Проверка регулярок
+    if (trainer.patterns?.length) {
+      const messages = [];
+
+      trainer.patterns.forEach((p) => {
+        const exist = new RegExp(p.pattern).test(html);
+
+        if (exist === p.shouldExist) {
+          return;
+        }
+
+        messages.push(p.comment);
+      });
+
+      if (messages.length) {
+        return { isCorrect: false, messages };
+      }
+    }
+
+    // Сравнение картинок
     const imgPath = path.join(rootPath, 'src', 'generated');
     const imgName = `${uuidv4()}.png`;
     await ensureDir(imgPath);
@@ -297,6 +345,6 @@ export class TaskService {
       ),
     );
     remove(path.join(imgPath, imgName));
-    return equal;
+    return { isCorrect: equal };
   }
 }
