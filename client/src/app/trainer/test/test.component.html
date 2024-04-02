@@ -1,0 +1,67 @@
+@if (test) {
+    <div class="container py-5">
+        <p-avatar
+            styleClass="cursor-pointer mt-5 mb-5"
+            shape="circle"
+            icon="pi pi-angle-left"
+            size="large"
+            routerLink="/lk"
+        ></p-avatar>
+        <p-card class="mb-3">
+            <div class="flex justify-content-between align-items-center pb-3">
+                <h2 class="m-0">{{ test.name }}</h2>
+            </div>
+        </p-card>
+
+        <h2 class="mи-5">Ответьте на вопросы</h2>
+
+        @for (question of test.questions; track question.id) {
+            <p-card [styleClass]="'mb-3'" class="mb-3" [header]="question.question">
+                <div class="py-3">
+                    @for (answer of question.answers; track answer.id) {
+                        <div class="mb-2">
+                            <p-checkbox
+                                [label]="answer.label"
+                                [binary]="true"
+                                [(ngModel)]="answer.isChecked"
+                            ></p-checkbox>
+                        </div>
+                    }
+                </div>
+            </p-card>
+        }
+        <div class="flex">
+            <p-button
+                class="mr-1"
+                [outlined]="true"
+                [severity]="test.isChecked ? 'success' : ''"
+                label="Проверить"
+                (onClick)="onCheck()"
+            ></p-button>
+            @if (test.nextLessonId) {
+                <p-button
+                    [disabled]="!this.test.isChecked"
+                    label="К следующему уроку"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    [routerLink]="['/lesson', test.nextLessonId]"
+                ></p-button>
+            } @else if (test.nextTaskId) {
+                <p-button
+                    [disabled]="!this.test.isChecked"
+                    [routerLink]="['/trainer', test.nextTaskId]"
+                    label="К заданию"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                ></p-button>
+            } @else {
+                <p-button
+                    [disabled]="!this.test.isChecked"
+                    label="Следующая тема"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                ></p-button>
+            }
+        </div>
+    </div>
+}

@@ -28,7 +28,7 @@
             ></p-button>
         } @else if (lesson.nextTaskId) {
             <p-button
-                [routerLink]="['/trainer', lesson.nextTaskId]"
+                [routerLink]="['/trainer', lesson.nextTaskId, lesson.nextTaskType]"
                 label="К заданию"
                 icon="pi pi-arrow-right"
                 iconPos="right"
