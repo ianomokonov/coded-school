@@ -57,6 +57,7 @@
             } @else {
                 <p-button
                     [disabled]="!this.test.isChecked"
+                    [routerLink]="['/module', test.moduleId]"
                     label="Следующая тема"
                     icon="pi pi-arrow-right"
                     iconPos="right"

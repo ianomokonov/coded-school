@@ -84,12 +84,14 @@ export class TestService {
   public async read(id: number, full = false) {
     const test = await TrainerEntity.findOne({
       where: { id },
-      relations: { questions: { answers: true }, nextTask: true },
+      relations: { topic: true, questions: { answers: true }, nextTask: true },
       order: { questions: { order: 'ASC', answers: { order: 'ASC' } } },
     });
     if (!test) {
       throw new NotFoundException('Тренажер не найден');
     }
+    console.log(test);
+
     if (!full) {
       test.questions.forEach((q) => {
         q.answers.forEach((a) => {

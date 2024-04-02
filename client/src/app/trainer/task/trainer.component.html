@@ -21,7 +21,7 @@
                     ></p-button>
                     @if (trainer.nextLessonId) {
                         <p-button
-                            [disabled]="!this.trainer.isChecked"
+                            [disabled]="!trainer.isChecked"
                             label="К следующему уроку"
                             icon="pi pi-arrow-right"
                             iconPos="right"
@@ -29,7 +29,7 @@
                         ></p-button>
                     } @else if (trainer.nextTaskId) {
                         <p-button
-                            [disabled]="!this.trainer.isChecked"
+                            [disabled]="!trainer.isChecked"
                             [routerLink]="['/trainer', trainer.nextTaskId]"
                             label="К заданию"
                             icon="pi pi-arrow-right"
@@ -37,7 +37,8 @@
                         ></p-button>
                     } @else {
                         <p-button
-                            [disabled]="!this.trainer.isChecked"
+                            [disabled]="!trainer.isChecked"
+                            [routerLink]="['/module', trainer.moduleId]"
                             label="Следующая тема"
                             icon="pi pi-arrow-right"
                             iconPos="right"

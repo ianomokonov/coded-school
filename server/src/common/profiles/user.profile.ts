@@ -60,7 +60,7 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, QuestionAnswerEntity, QuestionAnswerDto);
       createMap(mapper, TrainerQuestionEntity, TestQuestionDto);
       createMap(mapper, MarathonEntity, MarathonDto);
-      createMap(mapper, TrainerEntity, TestDto);
+
       createMap(
         mapper,
         TrainerEntity,
@@ -69,6 +69,16 @@ export class UserProfile extends AutomapperProfile {
           (d) => d.nextTaskType,
           mapFrom((s) => s.nextTask?.type),
         ),
+        forMember(
+          (d) => d.moduleId,
+          mapFrom((s) => s.topic?.moduleId),
+        ),
+      );
+      createMap(
+        mapper,
+        TrainerEntity,
+        TestDto,
+        extend(TrainerEntity, TrainerShortDto),
       );
       createMap(
         mapper,
@@ -95,7 +105,12 @@ export class UserProfile extends AutomapperProfile {
         ),
       );
       createMap(mapper, CommentEntity, CommentDto);
-      createMap(mapper, TrainerEntity, TaskDto);
+      createMap(
+        mapper,
+        TrainerEntity,
+        TaskDto,
+        extend(TrainerEntity, TrainerShortDto),
+      );
       createMap(mapper, ModuleEntity, ModuleTreeDto);
       createMap(
         mapper,
