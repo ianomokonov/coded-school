@@ -8,5 +8,6 @@ export interface LessonDto {
   name: string;
   nextLessonId?: number;
   nextTaskId?: number;
+  nextTaskType?: 'trainer' | 'test';
   topicId: number;
 }

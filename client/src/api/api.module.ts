@@ -13,6 +13,8 @@ import { TopicService } from './services/topic.service';
 import { LessonService } from './services/lesson.service';
 import { CommentService } from './services/comment.service';
 import { TrainerService } from './services/trainer.service';
+import { TrainerTaskService } from './services/trainer-task.service';
+import { TrainerTestService } from './services/trainer-test.service';
 
 /**
  * Module that provides all services and configuration.
@@ -31,6 +33,8 @@ import { TrainerService } from './services/trainer.service';
     LessonService,
     CommentService,
     TrainerService,
+    TrainerTaskService,
+    TrainerTestService,
     ApiConfiguration
   ],
 })

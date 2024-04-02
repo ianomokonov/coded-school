@@ -108,6 +108,7 @@ export class AdminModuleComponent {
                     .subscribe(() => this.updateTree());
                 return;
             }
+            case 'test':
             case 'trainer': {
                 this.trainerService
                     .deleteTrainer({ id: item.data.id })
@@ -196,6 +197,13 @@ export class AdminModuleComponent {
                     {
                         label: 'Создать тренажер',
                         data: { url: `/admin/trainer/create`, type: 'create', parentId: module.id },
+                        icon: 'pi pi-plus',
+                        draggable: false,
+                        droppable: false,
+                    },
+                    {
+                        label: 'Создать тест',
+                        data: { url: `/admin/test/create`, type: 'create', parentId: module.id },
                         icon: 'pi pi-plus',
                         draggable: false,
                         droppable: false,

@@ -2,6 +2,7 @@ import * as path from 'path';
 import { path as rootPath } from 'app-root-path';
 import { ensureDir, writeFile, remove } from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
+import * as files from 'fs';
 
 export class FilesHelper {
   static async uploadFilesWithReplace(
@@ -65,5 +66,34 @@ export class FilesHelper {
     });
 
     return content;
+  }
+
+  static async getFiles(
+    dir: string,
+    parentFolder = 'tasks',
+  ): Promise<string[]> {
+    const currPath = path.join(rootPath, 'src', parentFolder, dir);
+    const resultFiles = [];
+    files.readdirSync(currPath).forEach((el) => {
+      const isDir = el.split('.').length === 1;
+      if (isDir) {
+        return;
+      }
+
+      resultFiles.push(el);
+    });
+    return resultFiles;
+  }
+
+  static async readFile(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      files.readFile(filePath, 'utf8', (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
   }
 }

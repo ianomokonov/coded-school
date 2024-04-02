@@ -1,11 +1,13 @@
 import { AutoMap } from '@automapper/classes';
 import { TopicEntity } from '@entities/topic/topic.entity';
+import { TrainerEntity } from '@modules/trainer/entity/trainer.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -40,4 +42,9 @@ export class LessonEntity extends BaseEntity {
   @JoinColumn({ name: 'topicId' })
   @AutoMap(() => TopicEntity)
   topic: TopicEntity;
+
+  @OneToOne(() => TrainerEntity, { nullable: true })
+  @JoinColumn({ name: 'nextTaskId' })
+  @AutoMap(() => TrainerEntity)
+  nextTask: TrainerEntity;
 }

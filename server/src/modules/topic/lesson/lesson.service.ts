@@ -106,7 +106,7 @@ export class LessonService {
   async read(id: number, userId?: number): Promise<LessonDto> {
     const lesson = await LessonEntity.findOne({
       where: { id },
-      relations: { topic: true },
+      relations: { topic: true, nextTask: true },
     });
     if (!lesson) {
       throw new NotFoundException('Урок не найден');

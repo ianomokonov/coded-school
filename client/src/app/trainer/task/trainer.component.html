@@ -1,0 +1,52 @@
+@if (trainer) {
+    <div class="grid h-full m-0">
+        <div class="col p-0 h-full">
+            <div class="h-50">
+                <coded-editor [trainer]="trainer" (onCode)="onCodeChanged($event)"></coded-editor>
+            </div>
+            <div class="p-3 flex flex-column h-50 overflow-auto">
+                <h3>{{ trainer.name }}</h3>
+                <div class="ql-snow mb-3 flex-grow-1">
+                    <div class="ql-editor">
+                        <div #text [innerHTML]="trainer.task"></div>
+                    </div>
+                </div>
+                <div class="flex">
+                    <p-button
+                        class="mr-1"
+                        [outlined]="true"
+                        [severity]="this.trainer.isChecked ? 'success' : ''"
+                        label="Проверить"
+                        (onClick)="onCheck()"
+                    ></p-button>
+                    @if (trainer.nextLessonId) {
+                        <p-button
+                            [disabled]="!trainer.isChecked"
+                            label="К следующему уроку"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                            [routerLink]="['/lesson', trainer.nextLessonId]"
+                        ></p-button>
+                    } @else if (trainer.nextTaskId) {
+                        <p-button
+                            [disabled]="!trainer.isChecked"
+                            [routerLink]="['/trainer', trainer.nextTaskId]"
+                            label="К заданию"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                        ></p-button>
+                    } @else {
+                        <p-button
+                            [disabled]="!trainer.isChecked"
+                            [routerLink]="['/module', trainer.moduleId]"
+                            label="Следующая тема"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                        ></p-button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col p-0 h-full overflow-hidden border-left-1 border-200"><iframe></iframe></div>
+    </div>
+}
