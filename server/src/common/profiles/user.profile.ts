@@ -44,6 +44,8 @@ import { TestQuestionDto } from '@modules/trainer/dto/test/test-question.dto';
 import { QuestionAnswerEntity } from '@modules/trainer/entity/question-answer.entity';
 import { QuestionAnswerDto } from '@modules/trainer/dto/test/question-answer.dto';
 import { TestDto } from '@modules/trainer/dto/test/test.dto';
+import { TrainerPatternEntity } from '@modules/trainer/entity/trainer-pattern.entity';
+import { TrainerPatternDto } from '@modules/trainer/dto/task/trainer-pattern.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -60,6 +62,7 @@ export class UserProfile extends AutomapperProfile {
       createMap(mapper, QuestionAnswerEntity, QuestionAnswerDto);
       createMap(mapper, TrainerQuestionEntity, TestQuestionDto);
       createMap(mapper, MarathonEntity, MarathonDto);
+      createMap(mapper, TrainerPatternEntity, TrainerPatternDto);
 
       createMap(
         mapper,

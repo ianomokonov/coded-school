@@ -6,3 +6,15 @@
     // flex-grow: 1;
     border: none;
 }
+
+.has-messages {
+    .iframe {
+        height: calc(100% - 20rem);
+    }
+}
+
+.messages {
+    height: 20rem;
+    overflow: auto;
+    padding: 1rem;
+}

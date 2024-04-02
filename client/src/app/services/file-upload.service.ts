@@ -11,11 +11,11 @@ export class FileUploadService extends BaseService {
     }
 
     createTrainer(formData: FormData) {
-        return this.http.post(this.rootUrl + '/api/trainer', formData);
+        return this.http.post(this.rootUrl + '/api/task', formData);
     }
 
     updateTrainer(id: number, formData: FormData) {
-        return this.http.put(this.rootUrl + '/api/trainer/' + id, formData);
+        return this.http.put(this.rootUrl + '/api/task/' + id, formData);
     }
 
     createLesson(formData: FormData) {

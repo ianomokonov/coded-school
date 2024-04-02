@@ -25,7 +25,7 @@ export class TaskService {
   async read(id: number, withResults = false): Promise<TaskDto> {
     const trainer = await TrainerEntity.findOne({
       where: { id },
-      relations: { nextTask: true },
+      relations: { nextTask: true, topic: true, patterns: true },
     });
     if (!trainer) {
       throw new NotFoundException('Тренажер не найден');
@@ -131,6 +131,7 @@ export class TaskService {
       dto.patterns.map(async (p) => {
         await TrainerPatternEntity.create({
           ...p,
+          trainerId: id,
         }).save();
       }),
     );
@@ -190,6 +191,7 @@ export class TaskService {
       dto.patterns.map(async (p) => {
         await TrainerPatternEntity.create({
           ...p,
+          trainerId,
         }).save();
       }),
     );

@@ -57,6 +57,9 @@ export class TaskController {
       contentFiles: Express.Multer.File[];
     },
   ) {
+    // объект в FormData можно передать только json
+    body.patterns = JSON.parse(body.patterns.toString());
+
     return this.taskService.create(
       body,
       files.files,
@@ -82,6 +85,8 @@ export class TaskController {
       contentFiles: Express.Multer.File[];
     },
   ) {
+    // объект в FormData можно передать только json
+    body.patterns = JSON.parse(body.patterns.toString());
     return this.taskService.update(
       id,
       body,
