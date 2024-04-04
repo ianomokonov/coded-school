@@ -58,5 +58,39 @@
             </ng-template>
         </p-fileUpload>
     </div>
+    <div class="mb-3 pt-3 border-top-1 border-200">
+        <div class="flex align-items-center justify-content-between">
+            <h3>Регулярные выражения</h3>
+            <p-button icon="pi pi-plus" (onClick)="onAddPattern()"></p-button>
+        </div>
+        @for (patternGroup of patterns; track $index) {
+            <div
+                class="pattern p-3 border-1 border-round border-100 mb-3"
+                [formGroup]="patternGroup"
+            >
+                <p-inputGroup styleClass="mb-3">
+                    <span class="p-float-label">
+                        <input id="reg" class="w-12" pInputText formControlName="pattern" />
+                        <label for="reg">Регулярное выражение</label>
+                    </span>
+                    <p-inputGroupAddon>
+                        <p-checkbox formControlName="shouldExist" [binary]="true"></p-checkbox>
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+                <textarea
+                    class="mb-3 w-full"
+                    formControlName="comment"
+                    rows="5"
+                    pInputTextarea
+                ></textarea>
+                <p-button
+                    label="Удалить"
+                    [severity]="'danger'"
+                    [outlined]="true"
+                    (onClick)="onDeletePattern($index)"
+                ></p-button>
+            </div>
+        }
+    </div>
     <p-button label="Сохранить" type="submit"></p-button>
 </form>

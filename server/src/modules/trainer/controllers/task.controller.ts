@@ -15,6 +15,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CheckTaskDto } from '../dto/task/check-trainer.dto';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
+import { TaskCheckResultDto } from '../dto/task/task-check-result.dto';
 
 @ApiTags('Trainer:Task')
 @Controller('task')
@@ -35,7 +36,7 @@ export class TaskController {
   async checkTrainer(
     @Param('id') id: number,
     @Body() body: CheckTaskDto,
-  ): Promise<boolean> {
+  ): Promise<TaskCheckResultDto> {
     return this.taskService.check(id, body.html);
   }
 
@@ -56,6 +57,9 @@ export class TaskController {
       contentFiles: Express.Multer.File[];
     },
   ) {
+    // объект в FormData можно передать только json
+    body.patterns = JSON.parse(body.patterns.toString());
+
     return this.taskService.create(
       body,
       files.files,
@@ -81,6 +85,8 @@ export class TaskController {
       contentFiles: Express.Multer.File[];
     },
   ) {
+    // объект в FormData можно передать только json
+    body.patterns = JSON.parse(body.patterns.toString());
     return this.taskService.update(
       id,
       body,

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TaskDto, TrainerTaskService } from '@api/index';
@@ -11,6 +11,10 @@ import { FileUploadService } from '@app/services/file-upload.service';
 import { EditorHelper } from '@app/utils/editor-helper';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -22,6 +26,10 @@ import { takeUntil } from 'rxjs';
         ButtonModule,
         RouterModule,
         FileUploadModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        CheckboxModule,
+        InputTextareaModule,
     ],
     providers: [DestroyService],
     templateUrl: './trainer-edit.component.html',
@@ -31,6 +39,10 @@ export class TrainerEditComponent implements OnInit {
     form: FormGroup;
 
     @ViewChild('uploader') uploader: FileUpload | undefined;
+
+    get patterns(): FormGroup[] {
+        return (this.form.get('patterns') as FormArray).controls as FormGroup[];
+    }
 
     constructor(
         private taskService: TrainerTaskService,
@@ -46,6 +58,7 @@ export class TrainerEditComponent implements OnInit {
             task: [null, Validators.required],
             files: [null, Validators.required],
             resultFiles: [null, Validators.required],
+            patterns: this.fb.array([]),
         });
     }
     ngOnInit(): void {
@@ -58,6 +71,7 @@ export class TrainerEditComponent implements OnInit {
                     task: null,
                     files: null,
                     resultFiles: null,
+                    patterns: [],
                 });
                 this.form.get('files')?.setValidators(Validators.required);
                 this.form.get('resultFiles')?.setValidators(Validators.required);
@@ -72,12 +86,38 @@ export class TrainerEditComponent implements OnInit {
                 .subscribe((m) => {
                     this.trainer = m;
                     this.form.patchValue({ ...m, files: null, resultFiles: null });
+                    this.form.setControl(
+                        'patterns',
+                        this.fb.array(
+                            m.patterns?.map((p) =>
+                                this.fb.group({
+                                    pattern: [p.pattern, Validators.required],
+                                    shouldExist: [p.shouldExist],
+                                    comment: [p.comment, Validators.required],
+                                }),
+                            ) || [],
+                        ),
+                    );
                 });
         });
     }
 
     onUpload(event: FileSelectEvent, controlName: string) {
         this.form.patchValue({ [controlName]: event.currentFiles });
+    }
+
+    onAddPattern() {
+        (this.form.get('patterns') as FormArray).push(
+            this.fb.group({
+                pattern: [null, Validators.required],
+                shouldExist: [false],
+                comment: [null, Validators.required],
+            }),
+        );
+    }
+
+    onDeletePattern(index: number) {
+        (this.form.get('patterns') as FormArray).removeAt(index);
     }
 
     onSave(): void {
@@ -110,6 +150,9 @@ export class TrainerEditComponent implements OnInit {
             formValue.resultFiles.forEach((f: File) => {
                 formData.append('resultFiles', f);
             });
+        }
+        if (formValue.patterns?.length) {
+            formData.append('patterns', JSON.stringify(formValue.patterns));
         }
 
         if (this.trainer) {

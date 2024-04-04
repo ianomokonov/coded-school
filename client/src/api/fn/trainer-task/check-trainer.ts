@@ -7,13 +7,14 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { CheckTaskDto } from '../../models/check-task-dto';
+import { TaskCheckResultDto } from '../../models/task-check-result-dto';
 
 export interface CheckTrainer$Params {
   id: number;
       body: CheckTaskDto
 }
 
-export function checkTrainer(http: HttpClient, rootUrl: string, params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<boolean>> {
+export function checkTrainer(http: HttpClient, rootUrl: string, params: CheckTrainer$Params, context?: HttpContext): Observable<BaseResponse<TaskCheckResultDto>> {
   const rb = new RequestBuilder(rootUrl, checkTrainer.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
@@ -25,7 +26,7 @@ export function checkTrainer(http: HttpClient, rootUrl: string, params: CheckTra
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as BaseResponse<boolean>;
+      return r as BaseResponse<TaskCheckResultDto>;
     })
   );
 }

@@ -47,6 +47,20 @@
                 </div>
             </div>
         </div>
-        <div class="col p-0 h-full overflow-hidden border-left-1 border-200"><iframe></iframe></div>
+        <div
+            class="col p-0 h-full overflow-hidden border-left-1 border-200"
+            [ngClass]="{ 'has-messages': errorMessages.length }"
+        >
+            <iframe></iframe>
+            @if (errorMessages.length) {
+                <div class="messages">
+                    <p-messages
+                        [(value)]="errorMessages"
+                        [enableService]="false"
+                        [closable]="false"
+                    ></p-messages>
+                </div>
+            }
+        </div>
     </div>
 }

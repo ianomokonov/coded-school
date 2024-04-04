@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { TrainerType } from './trainer-type';
 import { TrainerQuestionEntity } from './trainer-question.entity';
+import { TrainerPatternEntity } from './trainer-pattern.entity';
 
 @Entity('trainer', {
   schema: 'mod',
@@ -61,6 +62,11 @@ export class TrainerEntity extends BaseEntity {
   @JoinColumn({ name: 'id' })
   @AutoMap(() => [TrainerQuestionEntity])
   questions: TrainerQuestionEntity[];
+
+  @OneToMany(() => TrainerPatternEntity, (pattern) => pattern.trainer)
+  @JoinColumn({ name: 'id' })
+  @AutoMap(() => [TrainerPatternEntity])
+  patterns: TrainerPatternEntity[];
 
   @OneToOne(() => TrainerEntity, { nullable: true })
   @JoinColumn({ name: 'nextTaskId' })

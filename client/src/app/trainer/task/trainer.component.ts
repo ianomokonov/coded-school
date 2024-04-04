@@ -5,18 +5,22 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
+import { MessagesModule } from 'primeng/messages';
+import { Message } from 'primeng/api';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'coded-trainer',
     standalone: true,
     templateUrl: './trainer.component.html',
-    imports: [CodedEditorComponent, ButtonModule, RouterModule],
+    imports: [CodedEditorComponent, ButtonModule, RouterModule, MessagesModule, NgClass],
     providers: [DestroyService],
     styleUrl: './trainer.component.scss',
 })
 export class TrainerComponent implements OnInit {
     trainer: (TaskDto & { isChecked?: boolean }) | undefined;
     static = { html: '', css: '' };
+    errorMessages: Message[] = [];
     constructor(
         private renderer: Renderer2,
         private taskService: TrainerTaskService,
@@ -74,7 +78,9 @@ export class TrainerComponent implements OnInit {
                 if (!this.trainer) {
                     return;
                 }
-                this.trainer.isChecked = result;
+                this.trainer.isChecked = result.isCorrect;
+                this.errorMessages =
+                    result.messages?.map((m) => ({ severity: 'error', detail: m })) || [];
             });
     }
 }
