@@ -58,7 +58,7 @@ export class TaskController {
     },
   ) {
     // объект в FormData можно передать только json
-    body.patterns = JSON.parse(body.patterns.toString());
+    body.patterns = body.patterns ? JSON.parse(body.patterns.toString()) : [];
 
     return this.taskService.create(
       body,

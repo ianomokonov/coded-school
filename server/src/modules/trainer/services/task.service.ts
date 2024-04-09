@@ -4,7 +4,7 @@ import { TrainerEntity } from '../entity/trainer.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
-import { ensureDir, writeFile, remove } from 'fs-extra';
+import { ensureDir, writeFile, remove, existsSync } from 'fs-extra';
 import { path as rootPath } from 'app-root-path';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
 import { IsNull, Not } from 'typeorm';
@@ -82,7 +82,7 @@ export class TaskService {
   async create(
     dto: CreateTaskDto,
     files: Express.Multer.File[],
-    resultFiles: Express.Multer.File[],
+    resultFiles?: Express.Multer.File[],
     contentFiles?: Express.Multer.File[],
   ): Promise<number> {
     if (contentFiles?.length) {
@@ -107,18 +107,65 @@ export class TaskService {
         await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
       }),
     );
-    uploadFolder = path.join(
-      rootPath,
-      'src',
-      'tasks-results',
-      dto.templatesDir,
-    );
-    await ensureDir(uploadFolder);
-    await Promise.all(
-      resultFiles.map(async (f) => {
-        await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
-      }),
-    );
+    if (resultFiles?.length) {
+      uploadFolder = path.join(
+        rootPath,
+        'src',
+        'tasks-results',
+        dto.templatesDir,
+      );
+      await ensureDir(uploadFolder);
+      await Promise.all(
+        resultFiles.map(async (f) => {
+          await writeFile(path.join(uploadFolder, f.originalname), f.buffer);
+        }),
+      );
+
+      const resultFileNames = await FilesHelper.getFiles(
+        dto.templatesDir,
+        'tasks-results',
+      );
+
+      const resultFilesContent = await Promise.all(
+        resultFileNames.map(async (fn) => {
+          const fileContent = await FilesHelper.readFile(
+            path.join(rootPath, 'src', 'tasks-results', dto.templatesDir, fn),
+          );
+
+          return {
+            label: fn,
+            content: fileContent,
+          };
+        }),
+      );
+      let html = resultFilesContent.find((f) =>
+        f.label.includes('html'),
+      )?.content;
+      const css = resultFilesContent.find((f) =>
+        f.label.includes('css'),
+      )?.content;
+
+      if (!html) {
+        return;
+      }
+      if (css) {
+        html = html.replace('<head>', `<head><style>${css}</style>`);
+      }
+      await nodeHtmlToImage({
+        output: path.join(
+          rootPath,
+          'src',
+          'tasks-results',
+          dto.templatesDir,
+          'image.png',
+        ),
+        html,
+        puppeteerArgs: {
+          args: ['--no-sandbox'], //TODO небезопасно, в проде нужно настраивать без этого флага
+        },
+      });
+    }
+
     const { id } = await TrainerEntity.create({
       name: dto.name,
       type: TrainerType.TRAINER,
@@ -127,14 +174,16 @@ export class TaskService {
       topicId: dto.topicId,
     }).save();
 
-    await Promise.all(
-      dto.patterns.map(async (p) => {
-        await TrainerPatternEntity.create({
-          ...p,
-          trainerId: id,
-        }).save();
-      }),
-    );
+    if (dto.patterns?.length) {
+      await Promise.all(
+        dto.patterns.map(async (p) => {
+          await TrainerPatternEntity.create({
+            ...p,
+            trainerId: id,
+          }).save();
+        }),
+      );
+    }
 
     await TrainerEntity.update(
       {
@@ -187,14 +236,16 @@ export class TaskService {
 
     await TrainerPatternEntity.delete({ trainerId });
 
-    await Promise.all(
-      dto.patterns.map(async (p) => {
-        await TrainerPatternEntity.create({
-          ...p,
-          trainerId,
-        }).save();
-      }),
-    );
+    if (dto.patterns?.length) {
+      await Promise.all(
+        dto.patterns.map(async (p) => {
+          await TrainerPatternEntity.create({
+            ...p,
+            trainerId,
+          }).save();
+        }),
+      );
+    }
 
     if (!files?.length && !resultFiles?.length) {
       return;
@@ -323,6 +374,20 @@ export class TaskService {
       if (messages.length) {
         return { isCorrect: false, messages };
       }
+    }
+
+    if (
+      !existsSync(
+        path.join(
+          rootPath,
+          'src',
+          'tasks-results',
+          trainer.templatesDir,
+          'image.png',
+        ),
+      )
+    ) {
+      return { isCorrect: true };
     }
 
     // Сравнение картинок

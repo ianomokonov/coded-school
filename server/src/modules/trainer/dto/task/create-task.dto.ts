@@ -5,5 +5,5 @@ export class CreateTaskDto {
   name: string;
   templatesDir: string;
   task: string;
-  patterns: TrainerPatternDto[];
+  patterns?: TrainerPatternDto[];
 }
