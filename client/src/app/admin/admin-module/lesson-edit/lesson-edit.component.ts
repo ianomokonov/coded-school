@@ -9,6 +9,7 @@ import { FileUploadService } from '@app/services/file-upload.service';
 import { EditorHelper } from '@app/utils/editor-helper';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { AdminModuleService } from '../admin-module.service';
 
 @Component({
     selector: 'coded-lesson-edit',
@@ -28,6 +29,7 @@ export class LessonEditComponent implements OnInit {
         private router: Router,
         private fileUploadService: FileUploadService,
         private destroy$: DestroyService,
+        private adminModuleService: AdminModuleService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -37,7 +39,7 @@ export class LessonEditComponent implements OnInit {
     ngOnInit(): void {
         this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
             if (id === 'create') {
-                this.form.patchValue({ name: null });
+                this.form.reset();
                 this.lesson = undefined;
                 return;
             }
@@ -81,6 +83,7 @@ export class LessonEditComponent implements OnInit {
                 .updateLesson(this.lesson.id, formData)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
+                    this.adminModuleService.treeUpdated$.next();
                     if (!this.lesson) {
                         return;
                     }
@@ -105,6 +108,7 @@ export class LessonEditComponent implements OnInit {
             .createLesson(formData)
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
+                this.adminModuleService.treeUpdated$.next();
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

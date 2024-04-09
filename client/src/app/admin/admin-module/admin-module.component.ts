@@ -14,11 +14,12 @@ import { MessageService, TreeDragDropService, TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { TreeModule, TreeNodeDropEvent } from 'primeng/tree';
 import { takeUntil } from 'rxjs';
+import { AdminModuleService } from './admin-module.service';
 
 @Component({
     selector: 'coded-admin-module',
     standalone: true,
-    providers: [TreeDragDropService, DestroyService],
+    providers: [TreeDragDropService, DestroyService, AdminModuleService],
     imports: [TreeModule, MenuModule, RouterModule],
     templateUrl: './admin-module.component.html',
 })
@@ -33,7 +34,11 @@ export class AdminModuleComponent {
         private router: Router,
         private toastService: MessageService,
         private destroy$: DestroyService,
+        private adminModuleService: AdminModuleService,
     ) {
+        this.adminModuleService.treeUpdated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+            this.updateTree();
+        });
         this.updateTree();
     }
 
@@ -128,7 +133,7 @@ export class AdminModuleComponent {
             .pipe(takeUntil(this.destroy$))
             .subscribe((dto) => {
                 this.modules = [
-                    ...dto.modules.map((m) => this.getTree(m)),
+                    ...dto.modules.map((m) => this.getTree(m, undefined, this.modules)),
                     {
                         label: 'Создать модуль',
                         draggable: false,
@@ -153,7 +158,9 @@ export class AdminModuleComponent {
     private getTree(
         module: ModuleTreeDto | TopicTreeDto | TopicChildDto,
         parentId?: number,
+        brotherNodes?: TreeNode[],
     ): TreeNode {
+        const curNode = brotherNodes?.find((m) => m.data.id === module.id);
         if ('topics' in module) {
             return {
                 label: module.name,
@@ -161,8 +168,10 @@ export class AdminModuleComponent {
                 droppable: false,
                 data: { url: `/admin/module/${module.id}`, type: 'module', id: module.id },
                 icon: 'pi pi-server',
+                expanded: curNode?.expanded,
                 children: [
-                    ...(module.topics?.map((t) => this.getTree(t, module.id)) || []),
+                    ...(module.topics?.map((t) => this.getTree(t, module.id, curNode?.children)) ||
+                        []),
                     {
                         label: 'Создать тему',
                         data: { url: `/admin/topic/create`, type: 'create', parentId: module.id },
@@ -180,8 +189,11 @@ export class AdminModuleComponent {
                 draggable: false,
                 droppable: false,
                 data: { url: `/admin/topic/${module.id}`, type: 'topic', id: module.id, parentId },
+                expanded: curNode?.expanded,
                 children: [
-                    ...(module.children?.map((t) => this.getTree(t, module.id)) || []),
+                    ...(module.children?.map((t) =>
+                        this.getTree(t, module.id, curNode?.children),
+                    ) || []),
                     {
                         label: 'Создать урок',
                         data: {

@@ -15,6 +15,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { AdminModuleService } from '../admin-module.service';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -51,6 +52,7 @@ export class TrainerEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
+        private adminModuleService: AdminModuleService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -162,7 +164,9 @@ export class TrainerEditComponent implements OnInit {
             this.withUploadService
                 .updateTrainer(this.trainer.id, formData)
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {});
+                .subscribe(() => {
+                    this.adminModuleService.treeUpdated$.next();
+                });
             return;
         }
 
@@ -182,6 +186,8 @@ export class TrainerEditComponent implements OnInit {
                     ]);
                     return;
                 }
+
+                this.adminModuleService.treeUpdated$.next();
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

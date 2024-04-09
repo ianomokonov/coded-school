@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TopicDto, TopicService } from '@api/index';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { AdminModuleService } from '../admin-module.service';
 
 @Component({
     selector: 'coded-topic-edit',
@@ -24,6 +25,7 @@ export class TopicEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
+        private adminModuleService: AdminModuleService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -62,6 +64,7 @@ export class TopicEditComponent implements OnInit {
                 })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
+                    this.adminModuleService.treeUpdated$.next();
                     if (!this.lesson) {
                         return;
                     }
@@ -80,6 +83,7 @@ export class TopicEditComponent implements OnInit {
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
+                this.adminModuleService.treeUpdated$.next();
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

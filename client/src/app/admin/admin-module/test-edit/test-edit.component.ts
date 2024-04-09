@@ -12,6 +12,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { OrderListModule } from 'primeng/orderlist';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { AdminModuleService } from '../admin-module.service';
 
 @Component({
     selector: 'coded-test-edit',
@@ -43,6 +44,8 @@ export class TestEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
+
+        private adminModuleService: AdminModuleService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -165,7 +168,9 @@ export class TestEditComponent implements OnInit {
             this.testService
                 .updateTest({ id: this.test.id, body: formValue })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {});
+                .subscribe(() => {
+                    this.adminModuleService.treeUpdated$.next();
+                });
             return;
         }
 
@@ -177,6 +182,7 @@ export class TestEditComponent implements OnInit {
             .createTest({ body: formValue })
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
+                this.adminModuleService.treeUpdated$.next();
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

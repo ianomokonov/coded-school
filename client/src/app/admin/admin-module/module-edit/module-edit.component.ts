@@ -6,6 +6,7 @@ import { ModuleDto, ModuleService } from '@api/index';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { AdminModuleService } from '../admin-module.service';
 
 @Component({
     selector: 'coded-module-edit',
@@ -24,6 +25,7 @@ export class ModuleEditComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private destroy$: DestroyService,
+        private adminModuleService: AdminModuleService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -62,6 +64,7 @@ export class ModuleEditComponent implements OnInit {
                 })
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
+                    this.adminModuleService.treeUpdated$.next();
                     if (!this.module) {
                         return;
                     }
@@ -74,6 +77,7 @@ export class ModuleEditComponent implements OnInit {
             .createUserModule({ body: { name } })
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
+                this.adminModuleService.treeUpdated$.next();
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }
