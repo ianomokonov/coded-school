@@ -22,6 +22,7 @@ import { AdminModuleService } from './admin-module.service';
     providers: [TreeDragDropService, DestroyService, AdminModuleService],
     imports: [TreeModule, MenuModule, RouterModule],
     templateUrl: './admin-module.component.html',
+    styleUrl: './admin-module.component.scss',
 })
 export class AdminModuleComponent {
     modules: TreeNode[] | undefined;

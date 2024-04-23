@@ -13,7 +13,7 @@
             (onNodeDrop)="nodeDrop($event)"
         >
             <ng-template let-node pTemplate="default">
-                <div class="flex justify-content-between">
+                <div class="flex justify-content-between {{node.data.type}}">
                     <span class="mr-3">{{ node.label }}</span>
                     @if (node.data.type !== 'create') {
                         <i class="pi pi-trash clickable" (click)="deleteItem($event, node)"></i>
