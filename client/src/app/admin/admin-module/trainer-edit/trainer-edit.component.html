@@ -92,5 +92,8 @@
             </div>
         }
     </div>
-    <p-button label="Сохранить" type="submit"></p-button>
+    <div class="flex justify-content-between">
+        <p-button label="Сохранить тренажер" type="submit" class="mr-1"></p-button>
+        <p-button label="Добавить регулярное выражение" [outlined]="true" (onClick)="onAddPattern()"></p-button>
+    </div>
 </form>
