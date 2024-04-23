@@ -16,6 +16,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { AdminModuleService } from '../admin-module.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-trainer-edit',
@@ -53,6 +54,8 @@ export class TrainerEditComponent implements OnInit {
         private router: Router,
         private destroy$: DestroyService,
         private adminModuleService: AdminModuleService,
+
+        private toastService: MessageService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -65,43 +68,47 @@ export class TrainerEditComponent implements OnInit {
     }
     ngOnInit(): void {
         this.activeRoute.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
-            this.uploader?.clear();
-            if (id === 'create') {
-                this.form.patchValue({
-                    name: null,
-                    templatesDir: null,
-                    task: null,
-                    files: null,
-                    resultFiles: null,
-                    patterns: [],
-                });
-                this.form.get('files')?.setValidators(Validators.required);
-                this.form.get('resultFiles')?.setValidators(Validators.required);
-                this.trainer = undefined;
-                return;
-            }
-            this.form.get('files')?.setValidators([]);
-            this.form.get('resultFiles')?.setValidators([]);
-            this.taskService
-                .getTrainerFull({ id })
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((m) => {
-                    this.trainer = m;
-                    this.form.patchValue({ ...m, files: null, resultFiles: null });
-                    this.form.setControl(
-                        'patterns',
-                        this.fb.array(
-                            m.patterns?.map((p) =>
-                                this.fb.group({
-                                    pattern: [p.pattern, Validators.required],
-                                    shouldExist: [p.shouldExist],
-                                    comment: [p.comment, Validators.required],
-                                }),
-                            ) || [],
-                        ),
-                    );
-                });
+            this.updateTrainer(id);
         });
+    }
+
+    updateTrainer(id: number | string) {
+        this.uploader?.clear();
+        if (id === 'create') {
+            this.form.patchValue({
+                name: null,
+                templatesDir: null,
+                task: null,
+                files: null,
+                resultFiles: null,
+                patterns: [],
+            });
+            this.form.get('files')?.setValidators(Validators.required);
+            this.form.get('resultFiles')?.setValidators(Validators.required);
+            this.trainer = undefined;
+            return;
+        }
+        this.form.get('files')?.setValidators([]);
+        this.form.get('resultFiles')?.setValidators([]);
+        this.taskService
+            .getTrainerFull({ id: id as number })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((m) => {
+                this.trainer = m;
+                this.form.patchValue({ ...m, files: null, resultFiles: null });
+                this.form.setControl(
+                    'patterns',
+                    this.fb.array(
+                        m.patterns?.map((p) =>
+                            this.fb.group({
+                                pattern: [p.pattern, Validators.required],
+                                shouldExist: [p.shouldExist],
+                                comment: [p.comment, Validators.required],
+                            }),
+                        ) || [],
+                    ),
+                );
+            });
     }
 
     onUpload(event: FileSelectEvent, controlName: string) {
@@ -166,6 +173,11 @@ export class TrainerEditComponent implements OnInit {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
                     this.adminModuleService.treeUpdated$.next();
+                    this.updateTrainer(this.trainer!.id);
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Тренажер сохранен',
+                    });
                 });
             return;
         }
@@ -178,6 +190,10 @@ export class TrainerEditComponent implements OnInit {
             .createTrainer(formData)
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Тренажер сохранен',
+                });
                 if (this.activeRoute.snapshot.queryParams['marathonId']) {
                     this.router.navigate([
                         `/admin`,

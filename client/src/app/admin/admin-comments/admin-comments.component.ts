@@ -8,6 +8,7 @@ import { CommentService } from '@api/services';
 import { Comment } from '@app/topic/comments/models/comment';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-admin-comments',
@@ -22,6 +23,7 @@ export class AdminCommentsComponent implements OnInit {
     constructor(
         private commentService: CommentService,
         private destroy$: DestroyService,
+        private toastService: MessageService,
     ) {}
 
     ngOnInit(): void {
@@ -52,6 +54,10 @@ export class AdminCommentsComponent implements OnInit {
                 this.comments.unshift(comment);
                 relativeComment.isEditing = false;
                 this.skip += 1;
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Комментарий сохранен',
+                });
             });
     }
 

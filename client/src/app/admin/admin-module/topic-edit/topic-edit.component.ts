@@ -7,6 +7,7 @@ import { TopicDto, TopicService } from '@api/index';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
 import { AdminModuleService } from '../admin-module.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-topic-edit',
@@ -26,6 +27,7 @@ export class TopicEditComponent implements OnInit {
         private router: Router,
         private destroy$: DestroyService,
         private adminModuleService: AdminModuleService,
+        private toastService: MessageService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -65,10 +67,11 @@ export class TopicEditComponent implements OnInit {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
                     this.adminModuleService.treeUpdated$.next();
-                    if (!this.lesson) {
-                        return;
-                    }
-                    this.lesson.name = name;
+                    this.lesson!.name = name;
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Тема сохранена',
+                    });
                 });
             return;
         }
@@ -84,6 +87,10 @@ export class TopicEditComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
                 this.adminModuleService.treeUpdated$.next();
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Тема сохранена',
+                });
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
 import { AdminModuleService } from '../admin-module.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-module-edit',
@@ -26,6 +27,7 @@ export class ModuleEditComponent implements OnInit {
         private router: Router,
         private destroy$: DestroyService,
         private adminModuleService: AdminModuleService,
+        private toastService: MessageService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -65,10 +67,11 @@ export class ModuleEditComponent implements OnInit {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
                     this.adminModuleService.treeUpdated$.next();
-                    if (!this.module) {
-                        return;
-                    }
-                    this.module.name = name;
+                    this.module!.name = name;
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Модуль сохранен',
+                    });
                 });
             return;
         }
@@ -78,6 +81,10 @@ export class ModuleEditComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
                 this.adminModuleService.treeUpdated$.next();
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Модуль сохранен',
+                });
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }

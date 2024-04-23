@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-admin-marathon',
@@ -21,6 +22,7 @@ export class AdminMarathonComponent implements OnInit {
     constructor(
         private marathonService: MarathonService,
         private destroy$: DestroyService,
+        private toastService: MessageService,
     ) {}
 
     ngOnInit(): void {
@@ -50,6 +52,10 @@ export class AdminMarathonComponent implements OnInit {
             .subscribe(() => {
                 this.nameControl.reset();
                 this.getMarathons();
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Марафон сохранен',
+                });
             });
     }
 }

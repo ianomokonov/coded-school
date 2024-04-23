@@ -10,6 +10,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
 import { DestroyService } from '@core/destroy.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-marathon-edit',
@@ -53,6 +54,7 @@ export class MarathonEditComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         private destroy$: DestroyService,
+        private toastService: MessageService,
     ) {
         this.marathonForm = this.fb.group({
             name: [null, Validators.required],
@@ -100,6 +102,10 @@ export class MarathonEditComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
                 this.initData(this.marathon!.id);
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Марафон сохранен',
+                });
             });
     }
 

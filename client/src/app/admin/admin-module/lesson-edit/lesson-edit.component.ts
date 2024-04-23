@@ -10,6 +10,7 @@ import { EditorHelper } from '@app/utils/editor-helper';
 import { DestroyService } from '@core/destroy.service';
 import { takeUntil } from 'rxjs';
 import { AdminModuleService } from '../admin-module.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'coded-lesson-edit',
@@ -30,6 +31,7 @@ export class LessonEditComponent implements OnInit {
         private fileUploadService: FileUploadService,
         private destroy$: DestroyService,
         private adminModuleService: AdminModuleService,
+        private toastService: MessageService,
     ) {
         this.form = fb.group({
             name: [null, Validators.required],
@@ -84,15 +86,16 @@ export class LessonEditComponent implements OnInit {
                 .pipe(takeUntil(this.destroy$))
                 .subscribe(() => {
                     this.adminModuleService.treeUpdated$.next();
-                    if (!this.lesson) {
-                        return;
-                    }
                     this.lessonService
-                        .readLesson({ id: this.lesson.id })
+                        .readLesson({ id: this.lesson!.id })
                         .pipe(takeUntil(this.destroy$))
                         .subscribe((m) => {
                             this.lesson = m;
                             this.form.patchValue(m);
+                            this.toastService.add({
+                                severity: 'success',
+                                detail: 'Урок сохранен',
+                            });
                         });
                 });
             return;
@@ -109,6 +112,10 @@ export class LessonEditComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((id) => {
                 this.adminModuleService.treeUpdated$.next();
+                this.toastService.add({
+                    severity: 'success',
+                    detail: 'Урок сохранен',
+                });
                 this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
             });
     }
