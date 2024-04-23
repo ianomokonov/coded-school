@@ -1,10 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="onSave()">
+<form [formGroup]="form" (ngSubmit)="onSave()" class="h-full flex flex-column">
     <span class="p-float-label mb-3">
         <input class="w-12" pInputText formControlName="name" />
         <label for="email">Название урока</label>
     </span>
-    <div class="mb-3">
-        <p-editor #editor formControlName="content" [style]="{ height: '320px' }"></p-editor>
+    <div class="mb-3 editor">
+        <p-editor #editor formControlName="content" [style]="{ height: 'calc(100% - 42px)' }"></p-editor>
     </div>
 
     <p-button label="Сохранить" type="submit"></p-button>

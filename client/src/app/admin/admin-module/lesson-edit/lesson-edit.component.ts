@@ -18,6 +18,17 @@ import { MessageService } from 'primeng/api';
     providers: [DestroyService],
     imports: [EditorModule, ReactiveFormsModule, InputTextModule, ButtonModule, RouterModule],
     templateUrl: './lesson-edit.component.html',
+    styles: `
+        .editor {
+            max-height: calc(100% - 130px);
+        }
+
+        ::ng-deep {
+            .p-editor-container {
+                height: 100%;
+            }
+        }
+    `,
 })
 export class LessonEditComponent implements OnInit {
     lesson: LessonDto | undefined;

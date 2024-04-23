@@ -1,5 +1,5 @@
-<div class="container">
-    <div class="flex align-items-center justify-content-between mb-5">
+<div class="container h-full">
+    <div class="flex align-items-center justify-content-between">
         <div class="flex align-items-center">
             <p-avatar
                 styleClass="cursor-pointer my-5 mr-3"
@@ -12,6 +12,5 @@
         </div>
         <p-tabMenu [model]="menuItems"></p-tabMenu>
     </div>
-
-    <router-outlet></router-outlet>
+    <div class="pages"><router-outlet></router-outlet></div>
 </div>

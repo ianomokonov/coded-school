@@ -1,8 +1,9 @@
-<div class="grid">
-    <div class="col-4">
+<div class="grid h-full">
+    <div class="col-4 h-full">
         <p-tree
             [value]="modules"
-            class="w-full block"
+            class="w-full block h-full"
+            scrollHeight="100%"
             selectionMode="single"
             (onNodeSelect)="nodeSelect($event)"
             [draggableNodes]="true"
@@ -22,5 +23,5 @@
             </ng-template>
         </p-tree>
     </div>
-    <div class="col"><router-outlet></router-outlet></div>
+    <div class="col h-full"><router-outlet></router-outlet></div>
 </div>

@@ -10,6 +10,11 @@ import { MenuItem } from 'primeng/api';
     standalone: true,
     imports: [TabMenuModule, RouterModule, CommonModule, AvatarModule],
     templateUrl: './admin.component.html',
+    styles: `
+        .pages {
+            height: calc(100% - 104px);
+        }
+    `,
 })
 export class AdminComponent {
     menuItems: MenuItem[] = [
