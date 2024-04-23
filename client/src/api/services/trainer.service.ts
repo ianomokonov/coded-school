@@ -13,6 +13,8 @@ import { deleteTrainer } from '../fn/trainer/delete-trainer';
 import { DeleteTrainer$Params } from '../fn/trainer/delete-trainer';
 import { getAllTrainers } from '../fn/trainer/get-all-trainers';
 import { GetAllTrainers$Params } from '../fn/trainer/get-all-trainers';
+import { getTrainerFile } from '../fn/trainer/get-trainer-file';
+import { GetTrainerFile$Params } from '../fn/trainer/get-trainer-file';
 import { TrainerShortDto } from '../models/trainer-short-dto';
 
 @Injectable({ providedIn: 'root' })
@@ -21,8 +23,37 @@ export class TrainerService extends BaseService {
     super(config, http);
   }
 
+  /** Path part for operation `getTrainerFile()` */
+  static readonly GetTrainerFilePath = '/trainer/{id}/{fileName}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getTrainerFile()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTrainerFile$Response(params: GetTrainerFile$Params, context?: HttpContext): Observable<BaseResponse<{
+}>> {
+    return getTrainerFile(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getTrainerFile$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTrainerFile(params: GetTrainerFile$Params, context?: HttpContext): Observable<{
+}> {
+    return this.getTrainerFile$Response(params, context).pipe(
+      map((r: BaseResponse<{
+}>): {
+} => r.body)
+    );
+  }
+
   /** Path part for operation `getAllTrainers()` */
-  static readonly GetAllTrainersPath = '/api/trainer/all';
+  static readonly GetAllTrainersPath = '/api/admin-trainer/all';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -47,7 +78,7 @@ export class TrainerService extends BaseService {
   }
 
   /** Path part for operation `deleteTrainer()` */
-  static readonly DeleteTrainerPath = '/api/trainer/{id}';
+  static readonly DeleteTrainerPath = '/api/admin-trainer/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

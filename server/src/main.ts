@@ -6,12 +6,14 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import { exec } from 'child_process';
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { MyLogger } from './logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: new MyLogger() });
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: 'trainer/:id/:fileName', method: RequestMethod.GET }],
+  });
   const documentOptions: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };

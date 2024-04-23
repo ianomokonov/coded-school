@@ -18,6 +18,7 @@ import { MailService } from '@mail/service';
 import { TrainerModule } from '@modules/trainer/trainer.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { path as rootPath } from 'app-root-path';
+import { TrainerStaticController } from './trainer-static.controller';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { path as rootPath } from 'app-root-path';
     TopicModule,
     TrainerModule,
   ],
+  controllers: [TrainerStaticController],
   providers: [MailService],
 })
 export class AppModule {

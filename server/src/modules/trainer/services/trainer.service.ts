@@ -20,6 +20,15 @@ export class TrainerService {
     return this.mapper.mapArray(trainers, TrainerEntity, TrainerShortDto);
   }
 
+  async getTrainerFilePath(id: number): Promise<string> {
+    const trainer = await TrainerEntity.findOne({ where: { id } });
+    if (!trainer) {
+      return null;
+    }
+
+    return path.join(rootPath, 'src', 'tasks', trainer.templatesDir);
+  }
+
   async delete(id: number) {
     const trainer = await TrainerEntity.findOne({ where: { id } });
     if (!trainer) {

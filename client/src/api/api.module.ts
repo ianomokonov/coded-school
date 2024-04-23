@@ -4,6 +4,7 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
+import { TrainerService } from './services/trainer.service';
 import { UserService } from './services/user.service';
 import { ModuleService } from './services/module.service';
 import { MarathonService } from './services/marathon.service';
@@ -12,7 +13,6 @@ import { NotesService } from './services/notes.service';
 import { TopicService } from './services/topic.service';
 import { LessonService } from './services/lesson.service';
 import { CommentService } from './services/comment.service';
-import { TrainerService } from './services/trainer.service';
 import { TrainerTaskService } from './services/trainer-task.service';
 import { TrainerTestService } from './services/trainer-test.service';
 
@@ -24,6 +24,7 @@ import { TrainerTestService } from './services/trainer-test.service';
   exports: [],
   declarations: [],
   providers: [
+    TrainerService,
     UserService,
     ModuleService,
     MarathonService,
@@ -32,7 +33,6 @@ import { TrainerTestService } from './services/trainer-test.service';
     TopicService,
     LessonService,
     CommentService,
-    TrainerService,
     TrainerTaskService,
     TrainerTestService,
     ApiConfiguration

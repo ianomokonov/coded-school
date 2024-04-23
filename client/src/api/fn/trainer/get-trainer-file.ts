@@ -7,24 +7,28 @@ import { BaseResponse } from '../../base-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface DeleteTrainer$Params {
+export interface GetTrainerFile$Params {
   id: number;
+  fileName: string;
 }
 
-export function deleteTrainer(http: HttpClient, rootUrl: string, params: DeleteTrainer$Params, context?: HttpContext): Observable<BaseResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, deleteTrainer.PATH, 'delete');
+export function getTrainerFile(http: HttpClient, rootUrl: string, params: GetTrainerFile$Params, context?: HttpContext): Observable<BaseResponse<{
+}>> {
+  const rb = new RequestBuilder(rootUrl, getTrainerFile.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
+    rb.path('fileName', params.fileName, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as BaseResponse<void>;
+      return r as BaseResponse<{
+      }>;
     })
   );
 }
 
-deleteTrainer.PATH = '/api/admin-trainer/{id}';
+getTrainerFile.PATH = '/trainer/{id}/{fileName}';

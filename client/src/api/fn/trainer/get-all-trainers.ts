@@ -26,4 +26,4 @@ export function getAllTrainers(http: HttpClient, rootUrl: string, params?: GetAl
   );
 }
 
-getAllTrainers.PATH = '/api/trainer/all';
+getAllTrainers.PATH = '/api/admin-trainer/all';

@@ -4,16 +4,9 @@ import { TrainerService } from '../services/trainer.service';
 import { TrainerShortDto } from '../dto/trainer-short.dto';
 
 @ApiTags('Trainer')
-@Controller('trainer')
+@Controller('admin-trainer')
 export class TrainerController {
   constructor(private trainerService: TrainerService) {}
-
-  //   @Post()
-  // @ApiBearerAuth('JWT')
-  // @UseGuards(JwtAuthGuard)
-  //   async runEditor(): Promise<void> {
-  //     return this.editorService.runEditor();
-  //   }
 
   @Get('all')
   async getAllTrainers(): Promise<TrainerShortDto[]> {

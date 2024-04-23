@@ -11,5 +11,6 @@ import { TestController } from './controllers/test.controller';
   controllers: [TrainerController, TaskController, TestController],
   providers: [TrainerService, TaskService, TestService],
   imports: [TopicModule],
+  exports: [TrainerService],
 })
 export class TrainerModule {}
