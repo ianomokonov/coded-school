@@ -30,39 +30,54 @@
                 </div>
             </p-card>
         }
-        <div class="flex">
-            <p-button
-                class="mr-1"
-                [outlined]="true"
-                [severity]="test.isChecked ? 'success' : ''"
-                label="Проверить"
-                (onClick)="onCheck()"
-            ></p-button>
-            @if (test.nextLessonId) {
+        <div
+            class="flex"
+            [ngClass]="{
+                'justify-content-between': lessonId,
+                'justify-content-end': !lessonId
+            }"
+        >
+            @if (lessonId) {
                 <p-button
-                    [disabled]="!this.test.isChecked"
-                    label="К следующему уроку"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
-                    [routerLink]="['/lesson', test.nextLessonId]"
-                ></p-button>
-            } @else if (test.nextTaskId) {
-                <p-button
-                    [disabled]="!this.test.isChecked"
-                    [routerLink]="['/trainer', test.nextTaskId]"
-                    label="К заданию"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
-                ></p-button>
-            } @else {
-                <p-button
-                    [disabled]="!this.test.isChecked"
-                    [routerLink]="['/module', test.moduleId]"
-                    label="Следующая тема"
-                    icon="pi pi-arrow-right"
-                    iconPos="right"
+                    label="К уроку"
+                    icon="pi pi-arrow-left"
+                    [routerLink]="['/lesson', lessonId]"
                 ></p-button>
             }
+            <div>
+                <p-button
+                    class="mr-1"
+                    [outlined]="true"
+                    [severity]="test.isChecked ? 'success' : ''"
+                    label="Проверить"
+                    (onClick)="onCheck()"
+                ></p-button>
+                @if (test.nextLessonId) {
+                    <p-button
+                        [disabled]="!this.test.isChecked"
+                        label="К следующему уроку"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                        [routerLink]="['/lesson', test.nextLessonId]"
+                    ></p-button>
+                } @else if (test.nextTaskId) {
+                    <p-button
+                        [disabled]="!this.test.isChecked"
+                        [routerLink]="['/trainer', test.nextTaskId]"
+                        label="К заданию"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                    ></p-button>
+                } @else {
+                    <p-button
+                        [disabled]="!this.test.isChecked"
+                        [routerLink]="['/module', test.moduleId]"
+                        label="Следующая тема"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                    ></p-button>
+                }
+            </div>
         </div>
     </div>
 }

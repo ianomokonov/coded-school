@@ -9,17 +9,19 @@ import { Test } from './models/test';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'coded-test',
     standalone: true,
     templateUrl: './test.component.html',
-    imports: [ButtonModule, RouterModule, CardModule, CheckboxModule, FormsModule],
+    imports: [ButtonModule, RouterModule, CardModule, CheckboxModule, FormsModule, NgClass],
     providers: [DestroyService],
     styleUrl: './test.component.scss',
 })
 export class TestComponent implements OnInit {
     test: Test | undefined;
+    lessonId: number | undefined;
     constructor(
         private testService: TrainerTestService,
         private destroy$: DestroyService,
@@ -35,6 +37,9 @@ export class TestComponent implements OnInit {
                 .subscribe((m) => {
                     this.test = m;
                 });
+        });
+        this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(({ lessonId }) => {
+            this.lessonId = lessonId;
         });
     }
 
