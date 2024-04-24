@@ -41,6 +41,7 @@ export class TrainerEditComponent implements OnInit {
     form: FormGroup;
 
     @ViewChild('uploader') uploader: FileUpload | undefined;
+    @ViewChild('resultUploader') resultUploader: FileUpload | undefined;
 
     get patterns(): FormGroup[] {
         return (this.form.get('patterns') as FormArray).controls as FormGroup[];
@@ -61,8 +62,8 @@ export class TrainerEditComponent implements OnInit {
             name: [null, Validators.required],
             templatesDir: [null, Validators.required],
             task: [null, Validators.required],
-            files: [null, Validators.required],
-            resultFiles: [null, Validators.required],
+            files: [null],
+            resultFiles: [null],
             patterns: this.fb.array([]),
         });
     }
@@ -74,6 +75,7 @@ export class TrainerEditComponent implements OnInit {
 
     updateTrainer(id: number | string) {
         this.uploader?.clear();
+        this.resultUploader?.clear();
         if (id === 'create') {
             this.form.patchValue({
                 name: null,
@@ -83,13 +85,9 @@ export class TrainerEditComponent implements OnInit {
                 resultFiles: null,
                 patterns: [],
             });
-            this.form.get('files')?.setValidators(Validators.required);
-            this.form.get('resultFiles')?.setValidators(Validators.required);
             this.trainer = undefined;
             return;
         }
-        this.form.get('files')?.setValidators([]);
-        this.form.get('resultFiles')?.setValidators([]);
         this.taskService
             .getTrainerFull({ id: id as number })
             .pipe(takeUntil(this.destroy$))
