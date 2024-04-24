@@ -21,6 +21,7 @@ export class TrainerComponent implements OnInit {
     trainer: (TaskDto & { isChecked?: boolean }) | undefined;
     static = { html: '', css: '' };
     errorMessages: Message[] = [];
+    isChecking = false;
     constructor(
         private renderer: Renderer2,
         private taskService: TrainerTaskService,
@@ -65,6 +66,8 @@ export class TrainerComponent implements OnInit {
         if (!this.static.html) {
             return;
         }
+
+        this.isChecking = true;
         let html = this.static.html;
 
         if (this.static.css) {
@@ -74,13 +77,19 @@ export class TrainerComponent implements OnInit {
         this.taskService
             .checkTrainer({ id: this.trainer?.id, body: { html } })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((result) => {
-                if (!this.trainer) {
-                    return;
-                }
-                this.trainer.isChecked = result.isCorrect;
-                this.errorMessages =
-                    result.messages?.map((m) => ({ severity: 'error', detail: m })) || [];
+            .subscribe({
+                next: (result) => {
+                    if (!this.trainer) {
+                        return;
+                    }
+                    this.trainer.isChecked = result.isCorrect;
+                    this.errorMessages =
+                        result.messages?.map((m) => ({ severity: 'error', detail: m })) || [];
+                    this.isChecking = false;
+                },
+                error: () => {
+                    this.isChecking = false;
+                },
             });
     }
 }

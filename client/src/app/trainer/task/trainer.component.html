@@ -15,6 +15,7 @@
                     <p-button
                         class="mr-1"
                         [outlined]="true"
+                        [loading]="isChecking"
                         [severity]="this.trainer.isChecked ? 'success' : ''"
                         label="Проверить"
                         (onClick)="onCheck()"
