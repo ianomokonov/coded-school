@@ -11,40 +11,55 @@
                         <div #text [innerHTML]="trainer.task"></div>
                     </div>
                 </div>
-                <div class="flex">
-                    <p-button
-                        class="mr-1"
-                        [outlined]="true"
-                        [loading]="isChecking"
-                        [severity]="this.trainer.isChecked ? 'success' : ''"
-                        label="Проверить"
-                        (onClick)="onCheck()"
-                    ></p-button>
-                    @if (trainer.nextLessonId) {
+                <div
+                    class="flex justify-content-between"
+                    [ngClass]="{
+                        'justify-content-between': lessonId,
+                        'justify-content-end': !lessonId
+                    }"
+                >
+                    @if (lessonId) {
                         <p-button
-                            [disabled]="!trainer.isChecked"
-                            label="К следующему уроку"
-                            icon="pi pi-arrow-right"
-                            iconPos="right"
-                            [routerLink]="['/lesson', trainer.nextLessonId]"
-                        ></p-button>
-                    } @else if (trainer.nextTaskId) {
-                        <p-button
-                            [disabled]="!trainer.isChecked"
-                            [routerLink]="['/trainer', trainer.nextTaskId]"
-                            label="К заданию"
-                            icon="pi pi-arrow-right"
-                            iconPos="right"
-                        ></p-button>
-                    } @else {
-                        <p-button
-                            [disabled]="!trainer.isChecked"
-                            [routerLink]="['/module', trainer.moduleId]"
-                            label="Следующая тема"
-                            icon="pi pi-arrow-right"
-                            iconPos="right"
+                            label="К уроку"
+                            icon="pi pi-arrow-left"
+                            [routerLink]="['/lesson', lessonId]"
                         ></p-button>
                     }
+                    <div>
+                        <p-button
+                            class="mr-1"
+                            [outlined]="true"
+                            [loading]="isChecking"
+                            [severity]="this.trainer.isChecked ? 'success' : ''"
+                            label="Проверить"
+                            (onClick)="onCheck()"
+                        ></p-button>
+                        @if (trainer.nextLessonId) {
+                            <p-button
+                                [disabled]="!trainer.isChecked"
+                                label="К следующему уроку"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                                [routerLink]="['/lesson', trainer.nextLessonId]"
+                            ></p-button>
+                        } @else if (trainer.nextTaskId) {
+                            <p-button
+                                [disabled]="!trainer.isChecked"
+                                [routerLink]="['/trainer', trainer.nextTaskId]"
+                                label="К заданию"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            ></p-button>
+                        } @else {
+                            <p-button
+                                [disabled]="!trainer.isChecked"
+                                [routerLink]="['/module', trainer.moduleId]"
+                                label="Следующая тема"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            ></p-button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

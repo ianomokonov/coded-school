@@ -22,6 +22,7 @@ export class TrainerComponent implements OnInit {
     static = { html: '', css: '' };
     errorMessages: Message[] = [];
     isChecking = false;
+    lessonId: number | undefined;
     constructor(
         private renderer: Renderer2,
         private taskService: TrainerTaskService,
@@ -38,6 +39,10 @@ export class TrainerComponent implements OnInit {
                 .subscribe((m) => {
                     this.trainer = m;
                 });
+        });
+
+        this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe(({ lessonId }) => {
+            this.lessonId = lessonId;
         });
     }
 
