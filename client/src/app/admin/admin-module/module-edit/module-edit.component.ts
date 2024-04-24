@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 export class ModuleEditComponent implements OnInit {
     module: ModuleDto | undefined;
     form: FormGroup;
+    isSaving = false;
 
     constructor(
         private moduleService: ModuleService,
@@ -55,6 +56,7 @@ export class ModuleEditComponent implements OnInit {
             this.form.get('name')?.markAsDirty();
             return;
         }
+        this.isSaving = true;
 
         const { name } = this.form.getRawValue();
 
@@ -65,13 +67,19 @@ export class ModuleEditComponent implements OnInit {
                     body: { name },
                 })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {
-                    this.adminModuleService.treeUpdated$.next();
-                    this.module!.name = name;
-                    this.toastService.add({
-                        severity: 'success',
-                        detail: 'Модуль сохранен',
-                    });
+                .subscribe({
+                    next: () => {
+                        this.adminModuleService.treeUpdated$.next();
+                        this.module!.name = name;
+                        this.toastService.add({
+                            severity: 'success',
+                            detail: 'Модуль сохранен',
+                        });
+                        this.isSaving = false;
+                    },
+                    error: () => {
+                        this.isSaving = false;
+                    },
                 });
             return;
         }
@@ -79,13 +87,19 @@ export class ModuleEditComponent implements OnInit {
         this.moduleService
             .createUserModule({ body: { name } })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((id) => {
-                this.adminModuleService.treeUpdated$.next();
-                this.toastService.add({
-                    severity: 'success',
-                    detail: 'Модуль сохранен',
-                });
-                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            .subscribe({
+                next: (id) => {
+                    this.adminModuleService.treeUpdated$.next();
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Модуль сохранен',
+                    });
+                    this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.isSaving = false;
+                },
+                error: () => {
+                    this.isSaving = false;
+                },
             });
     }
 }

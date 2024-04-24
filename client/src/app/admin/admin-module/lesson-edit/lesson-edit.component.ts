@@ -33,6 +33,7 @@ import { MessageService } from 'primeng/api';
 export class LessonEditComponent implements OnInit {
     lesson: LessonDto | undefined;
     form: FormGroup;
+    isSaving = false;
 
     constructor(
         private lessonService: LessonService,
@@ -73,6 +74,8 @@ export class LessonEditComponent implements OnInit {
             return;
         }
 
+        this.isSaving = true;
+
         const { name, content } = this.form.getRawValue();
 
         const [prevFiles, newFiles, newContent] = EditorHelper.getFilesDelta(
@@ -100,13 +103,19 @@ export class LessonEditComponent implements OnInit {
                     this.lessonService
                         .readLesson({ id: this.lesson!.id })
                         .pipe(takeUntil(this.destroy$))
-                        .subscribe((m) => {
-                            this.lesson = m;
-                            this.form.patchValue(m);
-                            this.toastService.add({
-                                severity: 'success',
-                                detail: 'Урок сохранен',
-                            });
+                        .subscribe({
+                            next: (m) => {
+                                this.lesson = m;
+                                this.form.patchValue(m);
+                                this.toastService.add({
+                                    severity: 'success',
+                                    detail: 'Урок сохранен',
+                                });
+                                this.isSaving = false;
+                            },
+                            error: () => {
+                                this.isSaving = false;
+                            },
                         });
                 });
             return;
@@ -121,13 +130,19 @@ export class LessonEditComponent implements OnInit {
         this.fileUploadService
             .createLesson(formData)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((id) => {
-                this.adminModuleService.treeUpdated$.next();
-                this.toastService.add({
-                    severity: 'success',
-                    detail: 'Урок сохранен',
-                });
-                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            .subscribe({
+                next: (id) => {
+                    this.adminModuleService.treeUpdated$.next();
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Урок сохранен',
+                    });
+                    this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.isSaving = false;
+                },
+                error: () => {
+                    this.isSaving = false;
+                },
             });
     }
 }

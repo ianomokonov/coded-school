@@ -39,6 +39,7 @@ import { MessageService } from 'primeng/api';
 export class TrainerEditComponent implements OnInit {
     trainer: TaskDto | undefined;
     form: FormGroup;
+    isSaving = false;
 
     @ViewChild('uploader') uploader: FileUpload | undefined;
     @ViewChild('resultUploader') resultUploader: FileUpload | undefined;
@@ -132,6 +133,7 @@ export class TrainerEditComponent implements OnInit {
             markInvalidFields(this.form);
             return;
         }
+        this.isSaving = true;
 
         const formValue = this.form.getRawValue();
 
@@ -169,13 +171,19 @@ export class TrainerEditComponent implements OnInit {
             this.withUploadService
                 .updateTrainer(this.trainer.id, formData)
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {
-                    this.adminModuleService.treeUpdated$.next();
-                    this.updateTrainer(this.trainer!.id);
-                    this.toastService.add({
-                        severity: 'success',
-                        detail: 'Тренажер сохранен',
-                    });
+                .subscribe({
+                    next: () => {
+                        this.adminModuleService.treeUpdated$.next();
+                        this.updateTrainer(this.trainer!.id);
+                        this.toastService.add({
+                            severity: 'success',
+                            detail: 'Тренажер сохранен',
+                        });
+                        this.isSaving = false;
+                    },
+                    error: () => {
+                        this.isSaving = false;
+                    },
                 });
             return;
         }
@@ -187,22 +195,28 @@ export class TrainerEditComponent implements OnInit {
         this.withUploadService
             .createTrainer(formData)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((id) => {
-                this.toastService.add({
-                    severity: 'success',
-                    detail: 'Тренажер сохранен',
-                });
-                if (this.activeRoute.snapshot.queryParams['marathonId']) {
-                    this.router.navigate([
-                        `/admin`,
-                        'marathons',
-                        this.activeRoute.snapshot.queryParams['marathonId'],
-                    ]);
-                    return;
-                }
+            .subscribe({
+                next: (id) => {
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Тренажер сохранен',
+                    });
+                    if (this.activeRoute.snapshot.queryParams['marathonId']) {
+                        this.router.navigate([
+                            `/admin`,
+                            'marathons',
+                            this.activeRoute.snapshot.queryParams['marathonId'],
+                        ]);
+                        return;
+                    }
 
-                this.adminModuleService.treeUpdated$.next();
-                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.adminModuleService.treeUpdated$.next();
+                    this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.isSaving = false;
+                },
+                error: () => {
+                    this.isSaving = false;
+                },
             });
     }
 }

@@ -7,5 +7,5 @@
         <p-editor #editor formControlName="content" [style]="{ height: 'calc(100% - 42px)' }"></p-editor>
     </div>
 
-    <p-button label="Сохранить" type="submit"></p-button>
+    <p-button label="Сохранить" [loading]="isSaving" type="submit"></p-button>
 </form>

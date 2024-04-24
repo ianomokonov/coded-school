@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 export class TopicEditComponent implements OnInit {
     lesson: TopicDto | undefined;
     form: FormGroup;
+    isSaving = false;
 
     constructor(
         private topicService: TopicService,
@@ -55,6 +56,7 @@ export class TopicEditComponent implements OnInit {
             this.form.get('name')?.markAsDirty();
             return;
         }
+        this.isSaving = true;
 
         const { name } = this.form.getRawValue();
 
@@ -65,13 +67,19 @@ export class TopicEditComponent implements OnInit {
                     body: { name },
                 })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {
-                    this.adminModuleService.treeUpdated$.next();
-                    this.lesson!.name = name;
-                    this.toastService.add({
-                        severity: 'success',
-                        detail: 'Тема сохранена',
-                    });
+                .subscribe({
+                    next: () => {
+                        this.adminModuleService.treeUpdated$.next();
+                        this.lesson!.name = name;
+                        this.toastService.add({
+                            severity: 'success',
+                            detail: 'Тема сохранена',
+                        });
+                        this.isSaving = false;
+                    },
+                    error: () => {
+                        this.isSaving = false;
+                    },
                 });
             return;
         }
@@ -85,13 +93,19 @@ export class TopicEditComponent implements OnInit {
                 body: { name, moduleId: this.activeRoute.snapshot.queryParams['parentId'] },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((id) => {
-                this.adminModuleService.treeUpdated$.next();
-                this.toastService.add({
-                    severity: 'success',
-                    detail: 'Тема сохранена',
-                });
-                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            .subscribe({
+                next: (id) => {
+                    this.adminModuleService.treeUpdated$.next();
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Тема сохранена',
+                    });
+                    this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.isSaving = false;
+                },
+                error: () => {
+                    this.isSaving = false;
+                },
             });
     }
 }

@@ -93,7 +93,7 @@
         }
     </div>
     <div class="flex justify-content-between pb-3">
-        <p-button label="Сохранить тренажер" type="submit" class="mr-1"></p-button>
+        <p-button label="Сохранить тренажер" type="submit" [loading]="isSaving" class="mr-1"></p-button>
         <p-button label="Добавить регулярное выражение" [outlined]="true" (onClick)="onAddPattern()"></p-button>
     </div>
 </form>

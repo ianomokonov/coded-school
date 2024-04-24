@@ -38,6 +38,7 @@ export class TestEditComponent implements OnInit {
     test: TestDto | undefined;
     form: FormGroup;
     sortableQuestions = false;
+    isSaving = false;
 
     constructor(
         private testService: TrainerTestService,
@@ -162,6 +163,7 @@ export class TestEditComponent implements OnInit {
             markInvalidFields(this.form);
             return;
         }
+        this.isSaving = true;
 
         const formValue = this.form.getRawValue();
 
@@ -169,12 +171,18 @@ export class TestEditComponent implements OnInit {
             this.testService
                 .updateTest({ id: this.test.id, body: formValue })
                 .pipe(takeUntil(this.destroy$))
-                .subscribe(() => {
-                    this.adminModuleService.treeUpdated$.next();
-                    this.toastService.add({
-                        severity: 'success',
-                        detail: 'Тест сохранен',
-                    });
+                .subscribe({
+                    next: () => {
+                        this.adminModuleService.treeUpdated$.next();
+                        this.toastService.add({
+                            severity: 'success',
+                            detail: 'Тест сохранен',
+                        });
+                        this.isSaving = false;
+                    },
+                    error: () => {
+                        this.isSaving = false;
+                    },
                 });
             return;
         }
@@ -186,13 +194,19 @@ export class TestEditComponent implements OnInit {
         this.testService
             .createTest({ body: formValue })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((id) => {
-                this.adminModuleService.treeUpdated$.next();
-                this.toastService.add({
-                    severity: 'success',
-                    detail: 'Тест сохранен',
-                });
-                this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+            .subscribe({
+                next: (id) => {
+                    this.adminModuleService.treeUpdated$.next();
+                    this.toastService.add({
+                        severity: 'success',
+                        detail: 'Тест сохранен',
+                    });
+                    this.router.navigate([`../${id}`], { relativeTo: this.activeRoute });
+                    this.isSaving = false;
+                },
+                error: () => {
+                    this.isSaving = false;
+                },
             });
     }
 }
