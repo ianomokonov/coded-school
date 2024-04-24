@@ -6,11 +6,17 @@
         styleClass="w-12rem h-full overflow-auto"
         (onNodeSelect)="selectFile($event.node)"
     ></p-tree>
-    <ngs-code-editor
-        [theme]="theme"
-        [codeModel]="model"
-        [options]="options"
-        class="h-50vh w-12"
-        (valueChanged)="onCodeChanged($event)"
-    ></ngs-code-editor>
+    @if (!isImg()) {
+        <ngs-code-editor
+            [theme]="theme"
+            [codeModel]="model"
+            [options]="options"
+            class="h-50vh w-12"
+            (valueChanged)="onCodeChanged($event)"
+        ></ngs-code-editor>
+    } @else {
+        <div class="img">
+            <img [src]="pathname + selectedFile?.label" alt="" />
+        </div>
+    }
 </div>

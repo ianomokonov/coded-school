@@ -17,9 +17,11 @@ import { FileDto, TaskDto } from '@api/index';
     imports: [CodeEditorModule, DropdownModule, FormsModule, CardModule, TreeModule],
     templateUrl: './code-editor.component.html',
     providers: [DestroyService],
+    styleUrl: './code-editor.component.scss',
 })
 export class CodedEditorComponent implements OnChanges {
     loading: boolean = false;
+    pathname = window.location.pathname.replace(/\/[a-z]+$/, '/');
     readonly themeValues: LabelValue[] = [
         {
             label: 'Vs',
@@ -92,5 +94,9 @@ export class CodedEditorComponent implements OnChanges {
             html: this.trainer?.files?.find((f) => f.label.includes('html'))?.content || '',
             css: this.trainer?.files?.find((f) => f.label.includes('css'))?.content || '',
         });
+    }
+
+    isImg() {
+        return this.selectedFile && /\.(png|jpg|jpeg|gif)/.test(this.selectedFile.label);
     }
 }
