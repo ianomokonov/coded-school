@@ -5,6 +5,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} !/api [NC]
+    RewriteCond %{REQUEST_URI} !/trainer [NC]
     RewriteCond %{REQUEST_URI} !/static [NC]
     RewriteCond %{REQUEST_URI} !/userimages [NC]
     RewriteCond %{REQUEST_URI} !/taskfiles [NC]
