@@ -1,26 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as path from 'path';
+import { path as rootPath } from 'app-root-path';
 import { TrainerEntity } from '../entity/trainer.entity';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
 import { ensureDir, writeFile, remove, existsSync } from 'fs-extra';
-import { path as rootPath } from 'app-root-path';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
 import { IsNull, Not } from 'typeorm';
 import { LessonEntity } from '@modules/topic/lesson/entity/lesson.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { FilesHelper } from 'src/utils/files-helper';
-import nodeHtmlToImage from 'node-html-to-image';
-import * as looksSame from 'looks-same';
 import { TaskDto } from '../dto/task/task.dto';
 import { TrainerType } from '../entity/trainer-type';
 import { TrainerPatternEntity } from '../entity/trainer-pattern.entity';
 import { TaskCheckResultDto } from '../dto/task/task-check-result.dto';
+import { ImageService } from './image.service';
 
 @Injectable()
 export class TaskService {
-  constructor(@InjectMapper() private mapper: Mapper) {}
+  constructor(
+    @InjectMapper() private mapper: Mapper,
+    private imageService: ImageService,
+  ) {}
 
   async read(id: number, withResults = false): Promise<TaskDto> {
     const trainer = await TrainerEntity.findOne({
@@ -138,32 +140,11 @@ export class TaskService {
           };
         }),
       );
-      let html = resultFilesContent.find((f) =>
-        f.label.includes('html'),
-      )?.content;
-      const css = resultFilesContent.find((f) =>
-        f.label.includes('css'),
-      )?.content;
 
-      if (!html) {
-        return;
-      }
-      if (css) {
-        html = html.replace('<head>', `<head><style>${css}</style>`);
-      }
-      await nodeHtmlToImage({
-        output: path.join(
-          rootPath,
-          'src',
-          'tasks-results',
-          dto.templatesDir,
-          'image.png',
-        ),
-        html,
-        puppeteerArgs: {
-          args: ['--no-sandbox'], //TODO небезопасно, в проде нужно настраивать без этого флага
-        },
-      });
+      await this.imageService.generateFromFiles(
+        resultFilesContent,
+        path.join(rootPath, 'src', 'tasks-results', dto.templatesDir),
+      );
     }
 
     const { id } = await TrainerEntity.create({
@@ -296,55 +277,29 @@ export class TaskService {
         }),
       );
 
-      const resultFileNames = await FilesHelper.getFiles(
-        trainer.templatesDir,
-        'tasks-results',
-      );
-
       const resultFilesContent = await Promise.all(
-        resultFileNames.map(async (fn) => {
+        resultFiles.map(async (f) => {
           const fileContent = await FilesHelper.readFile(
             path.join(
               rootPath,
               'src',
               'tasks-results',
-              trainer.templatesDir,
-              fn,
+              dto.templatesDir,
+              f.originalname,
             ),
           );
 
           return {
-            label: fn,
+            label: f.originalname,
             content: fileContent,
           };
         }),
       );
-      let html = resultFilesContent.find((f) =>
-        f.label.includes('html'),
-      )?.content;
-      const css = resultFilesContent.find((f) =>
-        f.label.includes('css'),
-      )?.content;
 
-      if (!html) {
-        return;
-      }
-      if (css) {
-        html = html.replace('<head>', `<head><style>${css}</style>`);
-      }
-      await nodeHtmlToImage({
-        output: path.join(
-          rootPath,
-          'src',
-          'tasks-results',
-          trainer.templatesDir,
-          'image.png',
-        ),
-        html,
-        puppeteerArgs: {
-          args: ['--no-sandbox'], //TODO небезопасно, в проде нужно настраивать без этого флага
-        },
-      });
+      await this.imageService.generateFromFiles(
+        resultFilesContent,
+        path.join(rootPath, 'src', 'tasks-results', dto.templatesDir),
+      );
     }
   }
 
@@ -376,42 +331,19 @@ export class TaskService {
       }
     }
 
-    if (
-      !existsSync(
-        path.join(
-          rootPath,
-          'src',
-          'tasks-results',
-          trainer.templatesDir,
-          'image.png',
-        ),
-      )
-    ) {
+    const imagePath = path.join(
+      rootPath,
+      'src',
+      'tasks-results',
+      trainer.templatesDir,
+    );
+
+    if (!existsSync(path.join(imagePath, 'image.png'))) {
       return { isCorrect: true };
     }
 
     // Сравнение картинок
-    const imgPath = path.join(rootPath, 'src', 'generated');
-    const imgName = `${uuidv4()}.png`;
-    await ensureDir(imgPath);
-    await nodeHtmlToImage({
-      output: path.join(imgPath, imgName),
-      html,
-      puppeteerArgs: {
-        args: ['--no-sandbox'],
-      },
-    });
-    const { equal } = await looksSame(
-      path.join(imgPath, imgName),
-      path.join(
-        rootPath,
-        'src',
-        'tasks-results',
-        trainer.templatesDir,
-        'image.png',
-      ),
-    );
-    remove(path.join(imgPath, imgName));
-    return { isCorrect: equal };
+    const isCorrect = await this.imageService.compareWithHtml(html, imagePath);
+    return { isCorrect };
   }
 }

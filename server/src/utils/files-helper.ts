@@ -96,4 +96,9 @@ export class FilesHelper {
       });
     });
   }
+
+  static async readFileBase64(filePath: string) {
+    const image = files.readFileSync(filePath);
+    return image.toString('base64');
+  }
 }

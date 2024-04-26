@@ -6,10 +6,11 @@ import { TaskService } from './services/task.service';
 import { TestService } from './services/test.service';
 import { TaskController } from './controllers/task.controller';
 import { TestController } from './controllers/test.controller';
+import { ImageService } from './services/image.service';
 
 @Module({
   controllers: [TrainerController, TaskController, TestController],
-  providers: [TrainerService, TaskService, TestService],
+  providers: [TrainerService, TaskService, TestService, ImageService],
   imports: [TopicModule],
   exports: [TrainerService],
 })
