@@ -16,6 +16,7 @@ import { CheckTaskDto } from '../dto/task/check-trainer.dto';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
 import { TaskCheckResultDto } from '../dto/task/task-check-result.dto';
+import { FileDto } from '../dto/files-tree.dto';
 
 @ApiTags('Trainer:Task')
 @Controller('task')
@@ -25,6 +26,16 @@ export class TaskController {
   @Get(':id')
   async getTrainer(@Param('id') id: number): Promise<TaskDto> {
     return this.taskService.read(id);
+  }
+
+  @Get(':id/task-files')
+  async getTaskFiles(@Param('id') id: number): Promise<FileDto[]> {
+    return this.taskService.getFiles(id, false);
+  }
+
+  @Get(':id/task-result-files')
+  async getTaskResultFiles(@Param('id') id: number): Promise<FileDto[]> {
+    return this.taskService.getFiles(id, true);
   }
 
   @Get(':id/full')

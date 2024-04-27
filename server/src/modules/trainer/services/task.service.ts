@@ -81,6 +81,42 @@ export class TaskService {
     return dto;
   }
 
+  async getFiles(trainerId: number, resultFiles: boolean) {
+    const trainer = await TrainerEntity.findOne({
+      where: { id: trainerId },
+      relations: { nextTask: true, topic: true, patterns: true },
+    });
+    if (!trainer) {
+      throw new NotFoundException('Тренажер не найден');
+    }
+    let fileNames = await FilesHelper.getFiles(
+      trainer.templatesDir,
+      resultFiles ? 'tasks-results' : 'tasks',
+    );
+
+    fileNames = fileNames.filter((fn) => fn !== 'image.png');
+
+    return await Promise.all(
+      fileNames.map(async (fn) => {
+        const fileContent = await FilesHelper.readFile(
+          path.join(
+            rootPath,
+            'src',
+            resultFiles ? 'tasks-results' : 'tasks',
+            trainer.templatesDir,
+            fn,
+          ),
+          'base64',
+        );
+
+        return {
+          label: fn,
+          content: fileContent,
+        };
+      }),
+    );
+  }
+
   async create(
     dto: CreateTaskDto,
     files: Express.Multer.File[],

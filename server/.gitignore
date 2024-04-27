@@ -41,5 +41,5 @@ lerna-debug.log*
 
 static
 coded_log.txt
-src/tasks
-src/tasks-results
+tasks
+tasks-results

@@ -128,6 +128,26 @@ export class TrainerEditComponent implements OnInit {
         (this.form.get('patterns') as FormArray).removeAt(index);
     }
 
+    onDownloadFiles(resultFiles: boolean) {
+        const request = resultFiles
+            ? this.taskService.getTaskResultFiles({ id: this.trainer!.id })
+            : this.taskService.getTaskFiles({ id: this.trainer!.id });
+
+        request.subscribe((files) => {
+            files.forEach((f) => {
+                const linkSource = `data:image/jpeg;base64,${f.content}`;
+                const downloadLink = document.createElement('a');
+                document.body.appendChild(downloadLink);
+
+                downloadLink.href = linkSource;
+                downloadLink.target = '_self';
+                downloadLink.download = f.label;
+                downloadLink.click();
+                downloadLink.remove();
+            });
+        });
+    }
+
     onSave(): void {
         if (this.form.invalid) {
             markInvalidFields(this.form);

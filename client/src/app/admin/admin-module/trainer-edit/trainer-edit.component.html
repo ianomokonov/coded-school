@@ -25,11 +25,17 @@
         >
             <ng-template pTemplate="content">
                 @if (trainer?.files?.length && !form.get('files')?.value?.length) {
-                    <ul>
+                    <ul class="mb-2">
                         @for (file of trainer?.files; track file.label) {
                             <li>{{ file.label }}</li>
                         }
                     </ul>
+                    <p-button
+                        [outlined]="true"
+                        label="Скачать"
+                        icon="pi pi-download"
+                        (onClick)="onDownloadFiles(false)"
+                    ></p-button>
                 }
             </ng-template>
         </p-fileUpload>
@@ -49,11 +55,17 @@
         >
             <ng-template pTemplate="content">
                 @if (trainer?.resultFiles?.length && !form.get('resultFiles')?.value?.length) {
-                    <ul>
+                    <ul class="mb-2">
                         @for (file of trainer?.resultFiles; track file.label) {
                             <li>{{ file.label }}</li>
                         }
                     </ul>
+                    <p-button
+                        [outlined]="true"
+                        label="Скачать"
+                        icon="pi pi-download"
+                        (onClick)="onDownloadFiles(true)"
+                    ></p-button>
                 }
             </ng-template>
         </p-fileUpload>
@@ -93,7 +105,16 @@
         }
     </div>
     <div class="flex justify-content-between pb-3">
-        <p-button label="Сохранить тренажер" type="submit" [loading]="isSaving" class="mr-1"></p-button>
-        <p-button label="Добавить регулярное выражение" [outlined]="true" (onClick)="onAddPattern()"></p-button>
+        <p-button
+            label="Сохранить тренажер"
+            type="submit"
+            [loading]="isSaving"
+            class="mr-1"
+        ></p-button>
+        <p-button
+            label="Добавить регулярное выражение"
+            [outlined]="true"
+            (onClick)="onAddPattern()"
+        ></p-button>
     </div>
 </form>

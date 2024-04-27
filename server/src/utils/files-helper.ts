@@ -85,9 +85,12 @@ export class FilesHelper {
     return resultFiles;
   }
 
-  static async readFile(filePath: string): Promise<string> {
+  static async readFile(
+    filePath: string,
+    encoding: BufferEncoding = 'utf8',
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      files.readFile(filePath, 'utf8', (error, data) => {
+      files.readFile(filePath, encoding, (error, data) => {
         if (error) {
           reject(error);
         } else {

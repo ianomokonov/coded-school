@@ -13,6 +13,11 @@ import { checkTrainer } from '../fn/trainer-task/check-trainer';
 import { CheckTrainer$Params } from '../fn/trainer-task/check-trainer';
 import { createTrainer } from '../fn/trainer-task/create-trainer';
 import { CreateTrainer$Params } from '../fn/trainer-task/create-trainer';
+import { FileDto } from '../models/file-dto';
+import { getTaskFiles } from '../fn/trainer-task/get-task-files';
+import { GetTaskFiles$Params } from '../fn/trainer-task/get-task-files';
+import { getTaskResultFiles } from '../fn/trainer-task/get-task-result-files';
+import { GetTaskResultFiles$Params } from '../fn/trainer-task/get-task-result-files';
 import { getTrainer } from '../fn/trainer-task/get-trainer';
 import { GetTrainer$Params } from '../fn/trainer-task/get-trainer';
 import { getTrainerFull } from '../fn/trainer-task/get-trainer-full';
@@ -75,6 +80,56 @@ export class TrainerTaskService extends BaseService {
   updateTrainer(params: UpdateTrainer$Params, context?: HttpContext): Observable<void> {
     return this.updateTrainer$Response(params, context).pipe(
       map((r: BaseResponse<void>): void => r.body)
+    );
+  }
+
+  /** Path part for operation `getTaskFiles()` */
+  static readonly GetTaskFilesPath = '/api/task/{id}/task-files';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getTaskFiles()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTaskFiles$Response(params: GetTaskFiles$Params, context?: HttpContext): Observable<BaseResponse<Array<FileDto>>> {
+    return getTaskFiles(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getTaskFiles$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTaskFiles(params: GetTaskFiles$Params, context?: HttpContext): Observable<Array<FileDto>> {
+    return this.getTaskFiles$Response(params, context).pipe(
+      map((r: BaseResponse<Array<FileDto>>): Array<FileDto> => r.body)
+    );
+  }
+
+  /** Path part for operation `getTaskResultFiles()` */
+  static readonly GetTaskResultFilesPath = '/api/task/{id}/task-result-files';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getTaskResultFiles()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTaskResultFiles$Response(params: GetTaskResultFiles$Params, context?: HttpContext): Observable<BaseResponse<Array<FileDto>>> {
+    return getTaskResultFiles(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `getTaskResultFiles$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getTaskResultFiles(params: GetTaskResultFiles$Params, context?: HttpContext): Observable<Array<FileDto>> {
+    return this.getTaskResultFiles$Response(params, context).pipe(
+      map((r: BaseResponse<Array<FileDto>>): Array<FileDto> => r.body)
     );
   }
 
